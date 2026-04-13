@@ -1,0 +1,4 @@
+"CAM_PERMISSION" = "Questa app richiede l'accesso alla fotocamera per scattare foto per la data selezionata.";
+"MIC_PERMISSION" = "Questa app richiede l'accesso al microfono per registrare note audio.";
+"PHOTO_PERMISSION" = "Questa app richiede l'accesso alla galleria per selezionare foto per la data selezionata.";
+"PHOTO_ADD_PERMISSION" = "Questa app richiede l'autorizzazione per salvare foto nella tua libreria.";

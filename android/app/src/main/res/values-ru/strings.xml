@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Time Leak</string>
+    <string name="microphone_permission">Приложению требуется доступ к микрофону для записи аудиозаметок.</string>
+    <string name="camera_permission">Приложению требуется доступ к камере для создания фото к выбранной дате.</string>
+    <string name="gallery_permission">Приложению требуется доступ к галерее для выбора фотографий к выбранной дате.</string>
+</resources>

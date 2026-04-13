@@ -1,0 +1,67 @@
+name: time_leak_flutter
+description: "A new Flutter project with full localization support."
+publish_to: 'none'
+
+version: 1.0.0+2
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Локализация (обязательные пакеты)
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  # Управление состоянием (Cubit)
+  flutter_bloc: ^8.1.6
+
+  # Внедрение зависимостей (Service Locator)
+  get_it: ^7.7.0
+
+  # Дополнительные пакеты из твоего списка
+
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.2.3
+  google_fonts: ^8.0.2
+  image_picker: ^1.2.1
+  permission_handler: ^11.3.1
+  file_picker: ^8.1.2
+  record: ^6.2.0
+  path_provider: ^2.1.2
+  audioplayers: ^6.5.1
+  drift: ^2.14.0
+  sqlite3_flutter_libs: ^0.5.18
+  dio: ^5.9.1
+  auto_route: ^11.1.0
+  flutter_local_notifications: ^21.0.0
+
+  # audio_router: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  # Линты для чистого кода
+  flutter_lints: ^5.0.0
+  drift_dev: ^2.14.0
+  build_runner: ^2.11.1
+  auto_route_generator: ^10.5.0
+flutter:
+  # Включает генерацию кода для локализации (генерирует AppLocalizations)
+  generate: true
+  uses-material-design: true
+
+  # Регистрация ассетов для SVG
+  assets:
+    - assets/svg/
+
+  # Если планируешь использовать специфичные шрифты, раскомментируй ниже:
+  # fonts:
+  #   - family: MyFont
+  #     fonts:
+  #       - asset: assets/fonts/my_font.ttf

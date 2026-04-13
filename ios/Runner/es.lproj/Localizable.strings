@@ -1,0 +1,4 @@
+"CAM_PERMISSION" = "Esta aplicación requiere acceso a la cámara para tomar fotos de la fecha seleccionada.";
+"MIC_PERMISSION" = "Esta aplicación requiere acceso al micrófono para grabar notas de audio.";
+"PHOTO_PERMISSION" = "Esta aplicación requiere acceso a la galería para seleccionar fotos de la fecha seleccionada.";
+"PHOTO_ADD_PERMISSION" = "Esta aplicación requiere permiso para guardar fotos en su biblioteca.";

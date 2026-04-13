@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Time Leak</string>
+    <string name="microphone_permission">此應用程式需要訪問麥克風以錄製語音備忘錄。</string>
+    <string name="camera_permission">此應用程式需要訪問相機以拍攝所選日期的相片。</string>
+    <string name="gallery_permission">此應用程式需要訪問相簿以選擇所選日期的相片。</string>
+</resources>
