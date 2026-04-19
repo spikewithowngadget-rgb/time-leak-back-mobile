@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/core/router/app_router.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
+import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
 
 class DioClient {
@@ -57,6 +58,7 @@ class DioClient {
                 final retryResponse = await dio.fetch(e.requestOptions);
                 return handler.resolve(retryResponse);
               } catch (refreshError) {
+                PinSession.reset();
                 await db.deleteTokens();
                 sl<AppRouter>().replaceAll([const LoginRoute()]);
                 return handler.next(e);

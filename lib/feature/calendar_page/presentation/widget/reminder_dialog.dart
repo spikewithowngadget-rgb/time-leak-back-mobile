@@ -1,21 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
-import 'package:time_leak_flutter/feature/calendar_page/data/repository/calendar_repository.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
+import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 
 /// Форматирует текущее значение напоминания для отображения.
-String formatReminderLabel(int? minutes) {
-  if (minutes == null || minutes <= 0) return 'Не задано';
-  if (minutes == 24 * 60) return 'Каждый день';
-  if (minutes >= 24 * 60) return 'Через ${minutes ~/ (24 * 60)} д.';
-  if (minutes >= 60) return 'Через ${minutes ~/ 60} ч.';
-  return 'Через $minutes мин.';
+String formatReminderLabel(BuildContext context, int? minutes) {
+  final l10n = context.l10n;
+  if (minutes == null || minutes <= 0) return l10n.calendar_reminderLabel_notSet;
+  if (minutes == 24 * 60) return l10n.calendar_reminderLabel_everyDay;
+  if (minutes >= 24 * 60) return l10n.calendar_reminderLabel_inDays(minutes ~/ (24 * 60));
+  if (minutes >= 60) return l10n.calendar_reminderLabel_inHours(minutes ~/ 60);
+  return l10n.calendar_reminderLabel_inMinutes(minutes);
 }
 
 const int _everyDayMinutes = 24 * 60; // 1440
@@ -100,14 +102,15 @@ class _ReminderDialogState extends State<ReminderDialog> {
       final notificationService = sl<NotificationService>();
       final repo = sl<SyncedNotesRepository>();
 
+      final l10n = context.l10n;
       final notificationTitle = widget.entry.title?.trim().isNotEmpty == true
           ? widget.entry.title!
-          : SyncedNotesRepository.defaultTitleFor(widget.entry.date);
+          : calendarDefaultNoteTitle(l10n, widget.entry.date);
 
       await notificationService.scheduleFlexibleNotification(
         id: widget.entry.id,
         title: notificationTitle,
-        body: 'У вас заметка',
+        body: l10n.calendar_reminderNotificationBody,
         totalMinutes: totalMinutes,
       );
       await repo.updateReminder(widget.entry.id, totalMinutes);
@@ -123,7 +126,7 @@ class _ReminderDialogState extends State<ReminderDialog> {
       if (mounted) {
         TopSnackBar.show(
           context,
-          message: 'Ошибка при установке напоминания',
+          message: context.l10n.calendar_reminderDialog_setError,
           duration: const Duration(seconds: 2),
         );
       }
@@ -134,7 +137,8 @@ class _ReminderDialogState extends State<ReminderDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final currentLabel = formatReminderLabel(widget.entry.reminderMinutes);
+    final l10n = context.l10n;
+    final currentLabel = formatReminderLabel(context, widget.entry.reminderMinutes);
 
     return Dialog(
       backgroundColor: AppColors.backgroundColor,
@@ -154,7 +158,7 @@ class _ReminderDialogState extends State<ReminderDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Напоминание',
+                  l10n.calendar_reminderDialog_title,
                   style: AppStyle.style(22, fontWeight: FontWeight.w700, color: AppColors.black),
                 ),
                 IconButton(
@@ -176,7 +180,7 @@ class _ReminderDialogState extends State<ReminderDialog> {
                   Icon(Icons.schedule, size: 20, color: AppColors.black.withOpacity(0.7)),
                   const SizedBox(width: 10),
                   Text(
-                    'Сейчас: ',
+                    '${l10n.calendar_reminderDialog_current} ',
                     style: AppStyle.style(14, color: AppColors.grey2),
                   ),
                   Expanded(
@@ -190,20 +194,20 @@ class _ReminderDialogState extends State<ReminderDialog> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Изменить на',
+              l10n.calendar_reminderDialog_changeTo,
               style: AppStyle.style(14, color: AppColors.grey2),
             ),
             const SizedBox(height: 12),
             _OptionTile(
-              title: 'Каждый день',
-              subtitle: 'Через 24 часа',
+              title: l10n.calendar_reminderDialog_everyDay_title,
+              subtitle: l10n.calendar_reminderDialog_everyDay_subtitle,
               isSelected: _selectedOption == 'every_day',
               onTap: () => setState(() => _selectedOption = 'every_day'),
             ),
             const SizedBox(height: 10),
             _OptionTile(
-              title: 'Свой вариант',
-              subtitle: 'Укажите дни, часы или минуты',
+              title: l10n.calendar_reminderDialog_custom_title,
+              subtitle: l10n.calendar_reminderDialog_custom_subtitle,
               isSelected: _selectedOption == 'custom',
               onTap: () => setState(() => _selectedOption = 'custom'),
             ),
@@ -212,19 +216,19 @@ class _ReminderDialogState extends State<ReminderDialog> {
               Row(
                 children: [
                   _UnitChip(
-                  label: 'Дни',
+                  label: l10n.calendar_reminderDialog_unit_days,
                   selected: _customUnit == 'days',
                   onTap: () => setState(() => _customUnit = 'days'),
                 ),
                   const SizedBox(width: 8),
                   _UnitChip(
-                    label: 'Часы',
+                    label: l10n.calendar_reminderDialog_unit_hours,
                     selected: _customUnit == 'hours',
                     onTap: () => setState(() => _customUnit = 'hours'),
                   ),
                   const SizedBox(width: 8),
                   _UnitChip(
-                    label: 'Минуты',
+                    label: l10n.calendar_reminderDialog_unit_minutes,
                     selected: _customUnit == 'minutes',
                     onTap: () => setState(() => _customUnit = 'minutes'),
                   ),
@@ -265,7 +269,7 @@ class _ReminderDialogState extends State<ReminderDialog> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.black),
                       )
                     : Text(
-                        'Сохранить',
+                        l10n.calendar_reminderDialog_save,
                         style: AppStyle.style(16, fontWeight: FontWeight.bold, color: AppColors.black),
                       ),
               ),
@@ -277,24 +281,26 @@ class _ReminderDialogState extends State<ReminderDialog> {
   }
 
   String _hintForUnit(String unit) {
+    final l10n = context.l10n;
     switch (unit) {
       case 'days':
-        return 'Число дней';
+        return l10n.calendar_reminderDialog_hint_days;
       case 'hours':
-        return 'Число часов';
+        return l10n.calendar_reminderDialog_hint_hours;
       default:
-        return 'Число минут';
+        return l10n.calendar_reminderDialog_hint_minutes;
     }
   }
 
   String _suffixForUnit(String unit) {
+    final l10n = context.l10n;
     switch (unit) {
       case 'days':
-        return 'дн.';
+        return l10n.calendar_reminderDialog_suffix_days;
       case 'hours':
-        return 'ч.';
+        return l10n.calendar_reminderDialog_suffix_hours;
       default:
-        return 'мин.';
+        return l10n.calendar_reminderDialog_suffix_minutes;
     }
   }
 }

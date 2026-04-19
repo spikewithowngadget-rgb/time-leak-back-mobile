@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Time Leak Flutter</string>
+	<string>TimeLeak</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>time_leak_flutter</string>
+	<string>TimeLeak</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -74,5 +74,10 @@
 	<string>$(PHOTO_PERMISSION)</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PHOTO_ADD_PERMISSION)</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Unlock TimeLeak with Face ID</string>
+	<!-- Export compliance: standard HTTPS/OS crypto only (no custom non-exempt encryption). -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

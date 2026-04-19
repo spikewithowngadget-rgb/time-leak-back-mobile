@@ -9,7 +9,7 @@ import 'package:time_leak_flutter/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupLocator();
+  setupLocator(); 
   await sl<NotificationService>().init();
   runApp(const MyApp());
 }
@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
           return MaterialApp.router(
+            title: 'TimeLeak',
             routerConfig: appRouter.config(),
             debugShowCheckedModeBanner: false,
             locale: locale,

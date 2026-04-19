@@ -6,13 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
-import 'package:time_leak_flutter/feature/ads/data/model/ad_model.dart';
-import 'package:time_leak_flutter/feature/ads/data/repository/ads_repository.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/core/resources/svg.dart';
+import 'package:time_leak_flutter/core/router/app_router.dart';
+import 'package:time_leak_flutter/core/router/app_router.gr.dart';
+import 'package:time_leak_flutter/core/shared/button.dart';
+import 'package:time_leak_flutter/feature/ads/data/model/ad_model.dart';
+import 'package:time_leak_flutter/feature/ads/data/repository/ads_repository.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
-import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/cubit/calendar_cubit.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/action_panel.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/audio_player_widget.dart';
@@ -20,7 +23,11 @@ import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/cale
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/media_item_card.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/reminder_dialog.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
+import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
+import 'package:time_leak_flutter/feature/login/data/repository/auth_repository.dart';
+import 'package:time_leak_flutter/feature/pin/presentation/calendar_pin_gate.dart';
 import 'package:time_leak_flutter/feature/user/cubit/user_cubit.dart';
+import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
 
 @RoutePage()
 class CalendarPage extends StatelessWidget {
@@ -28,7 +35,9 @@ class CalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (context) => CalendarCubit(), child: const CalendarView());
+    return CalendarPinGate(
+      child: BlocProvider(create: (context) => CalendarCubit(), child: const CalendarView()),
+    );
   }
 }
 
@@ -58,6 +67,7 @@ class _CalendarViewState extends State<CalendarView> {
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
+        drawer: const _CalendarDrawer(),
         body: SafeArea(
           bottom: false,
           child: SingleChildScrollView(
@@ -84,6 +94,206 @@ class _CalendarViewState extends State<CalendarView> {
   }
 }
 
+/// Лёгкая анимация иконки меню перед открытием drawer (поворот + лёгкий scale).
+class _AnimatedDrawerMenuButton extends StatefulWidget {
+  const _AnimatedDrawerMenuButton();
+
+  @override
+  State<_AnimatedDrawerMenuButton> createState() => _AnimatedDrawerMenuButtonState();
+}
+
+class _AnimatedDrawerMenuButtonState extends State<_AnimatedDrawerMenuButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 260),
+  );
+  late final Animation<double> _t = CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleTap() async {
+    if (_controller.isAnimating) return;
+    await _controller.forward();
+    if (!mounted) return;
+    Scaffold.maybeOf(context)?.openDrawer();
+    await _controller.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+      onPressed: _handleTap,
+      icon: AnimatedBuilder(
+        animation: _t,
+        builder: (context, child) {
+          final v = _t.value;
+          return Transform.rotate(
+            angle: v * 0.42,
+            child: Transform.scale(scale: 1.0 - v * 0.1, child: child),
+          );
+        },
+        child: const Icon(Icons.menu_rounded, color: AppColors.black, size: 28),
+      ),
+    );
+  }
+}
+
+/// Логотип бренда в фирменном цвете (под фон шапки календаря).
+class _BrandLogoMark extends StatelessWidget {
+  const _BrandLogoMark({this.height = 28});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      AppSvg.brand,
+      height: height,
+      fit: BoxFit.contain,
+      colorFilter: const ColorFilter.mode(AppColors.brandColor1, BlendMode.srcIn),
+    );
+  }
+}
+
+// --- Боковое меню ---
+class _CalendarDrawer extends StatelessWidget {
+  const _CalendarDrawer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      backgroundColor: AppColors.backgroundColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Material(
+            color: AppColors.brandColor,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(18),
+              bottomRight: Radius.circular(18),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 4, 18),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [const _BrandLogoMark(height: 14)],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              children: [
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                  leading: const Icon(Icons.info_outline_rounded, color: AppColors.brandColor1, size: 26),
+                  title: Text(
+                    context.l10n.drawer_about,
+                    style: AppStyle.style(16, fontWeight: FontWeight.w600, color: AppColors.black),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context.router.push(const AboutRoute());
+                  },
+                ),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+                  child: Text(
+                    context.l10n.drawer_language,
+                    style: AppStyle.style(13, color: AppColors.grey, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: BlocBuilder<LocaleCubit, Locale>(
+                    buildWhen: (prev, curr) => prev.languageCode != curr.languageCode,
+                    builder: (context, locale) {
+                      final current = AppLanguage.values.firstWhere(
+                        (e) => e.code == locale.languageCode,
+                        orElse: () => AppLanguage.english,
+                      );
+                      const radius = 14.0;
+                      final borderRadius = BorderRadius.circular(radius);
+                      final borderIdle = OutlineInputBorder(
+                        borderRadius: borderRadius,
+                        borderSide: BorderSide(color: AppColors.brandColor1.withValues(alpha: 0.38)),
+                      );
+                      final borderFocused = OutlineInputBorder(
+                        borderRadius: borderRadius,
+                        borderSide: const BorderSide(color: AppColors.brandColor1, width: 1.5),
+                      );
+                      return InputDecorator(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.brandColor,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          border: borderIdle,
+                          enabledBorder: borderIdle,
+                          focusedBorder: borderFocused,
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<AppLanguage>(
+                            value: current,
+                            isExpanded: true,
+                            borderRadius: borderRadius,
+                            dropdownColor: AppColors.backgroundColor,
+                            style: AppStyle.style(15, color: AppColors.black, fontWeight: FontWeight.w500),
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: AppColors.brandColor1,
+                              size: 22,
+                            ),
+                            items: [
+                              for (final lang in AppLanguage.values)
+                                DropdownMenuItem<AppLanguage>(
+                                  value: lang,
+                                  child: Text(lang.label, style: AppStyle.style(15, color: AppColors.black)),
+                                ),
+                            ],
+                            onChanged: (v) {
+                              if (v != null) context.read<LocaleCubit>().changeLanguage(v);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: SafeArea(
+              top: false,
+              child: AppButton(
+                text: context.l10n.drawer_logout,
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await sl<AuthRepository>().logout();
+                  sl<AppRouter>().replaceAll([const LoginRoute()]);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // --- СЕКЦИЯ ХЕДЕРА ---
 class CalendarHeaderSection extends StatelessWidget {
   const CalendarHeaderSection({super.key});
@@ -99,7 +309,10 @@ class CalendarHeaderSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgPicture.asset(AppSvg.brand),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [const _BrandLogoMark(), const Spacer(), const _AnimatedDrawerMenuButton()],
+          ),
           const SizedBox(height: 34),
           const YearListSelector(),
           const SizedBox(height: 23),
@@ -186,21 +399,14 @@ class _NavButtonWithBadge extends StatelessWidget {
   final bool showBadge;
   final VoidCallback onPressed;
 
-  const _NavButtonWithBadge({
-    required this.icon,
-    required this.showBadge,
-    required this.onPressed,
-  });
+  const _NavButtonWithBadge({required this.icon, required this.showBadge, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        IconButton(
-          icon: Icon(icon),
-          onPressed: onPressed,
-        ),
+        IconButton(icon: Icon(icon), onPressed: onPressed),
         if (showBadge)
           Positioned(
             top: 4,
@@ -209,10 +415,7 @@ class _NavButtonWithBadge extends StatelessWidget {
             child: Container(
               width: 8,
               height: 8,
-              decoration: const BoxDecoration(
-                color: AppColors.red,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: AppColors.red, shape: BoxShape.circle),
             ),
           ),
       ],
@@ -262,10 +465,7 @@ class EntryItemWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        EntryTitleRow(
-          entry: entry,
-          onSave: (title) => cubit.updateEntryTitle(entry, title),
-        ),
+        EntryTitleRow(entry: entry, onSave: (title) => cubit.updateEntryTitle(entry, title)),
         const SizedBox(height: 6),
         if (entry.type == 'audio')
           AudioPlayerWidget(
@@ -301,14 +501,23 @@ class _EntryTitleRowState extends State<EntryTitleRow> {
   bool _editing = false;
   late TextEditingController _controller;
   late String _displayTitle;
+  bool _displayTitleInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_displayTitleInitialized) return;
+    _displayTitleInitialized = true;
     _displayTitle = widget.entry.title?.trim().isNotEmpty == true
         ? widget.entry.title!
-        : SyncedNotesRepository.defaultTitleFor(widget.entry.date);
-    _controller = TextEditingController(text: _displayTitle);
+        : calendarDefaultNoteTitle(context.l10n, widget.entry.date);
+    _controller.text = _displayTitle;
   }
 
   @override
@@ -317,7 +526,7 @@ class _EntryTitleRowState extends State<EntryTitleRow> {
     if (oldWidget.entry.id != widget.entry.id || oldWidget.entry.title != widget.entry.title) {
       _displayTitle = widget.entry.title?.trim().isNotEmpty == true
           ? widget.entry.title!
-          : SyncedNotesRepository.defaultTitleFor(widget.entry.date);
+          : calendarDefaultNoteTitle(context.l10n, widget.entry.date);
       _controller.text = _displayTitle;
       if (_editing) setState(() => _editing = false);
     }
@@ -348,10 +557,7 @@ class _EntryTitleRowState extends State<EntryTitleRow> {
     if (_editing) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.brandColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
+        decoration: BoxDecoration(color: AppColors.brandColor, borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
             Expanded(
@@ -408,6 +614,7 @@ class EntryActionMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<CalendarCubit>();
+    final l10n = context.l10n;
     return Container(
       margin: const EdgeInsets.only(top: 4),
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -415,21 +622,29 @@ class EntryActionMenu extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildItem(AppSvg.repeat, 'На Повторе', () {}),
+          _buildItem(AppSvg.repeat, l10n.calendar_action_onRepeat, () {}),
           _divider(),
-          _buildItem(AppSvg.trash, 'Удалить', () => cubit.deleteEntry(entry)),
+          _buildItem(AppSvg.trash, l10n.calendar_action_delete, () => cubit.deleteEntry(entry)),
           _divider(),
-          _buildItem(AppSvg.download, 'Скачать', () => cubit.downloadEntry(entry)),
+          _buildItem(AppSvg.download, l10n.calendar_action_download, () => cubit.downloadEntry(entry)),
           _divider(),
-          _buildItem(AppSvg.calendar, 'Напомнить', () => ReminderDialog.show(
-                context,
-                entry: entry,
-                onSaved: () {
-                  if (context.mounted) {
-                    TopSnackBar.show(context, message: 'Напоминание сохранено', duration: const Duration(seconds: 2));
-                  }
-                },
-              )),
+          _buildItem(
+            AppSvg.calendar,
+            l10n.calendar_action_remind,
+            () => ReminderDialog.show(
+              context,
+              entry: entry,
+              onSaved: () {
+                if (context.mounted) {
+                  TopSnackBar.show(
+                    context,
+                    message: l10n.calendar_status_reminderSaved,
+                    duration: const Duration(seconds: 2),
+                  );
+                }
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -470,7 +685,7 @@ class RecordingStatusIndicator extends StatelessWidget {
                 icon: const Icon(Icons.stop_circle_outlined, color: Colors.red),
                 onPressed: () => context.read<CalendarCubit>().stopRecording(),
               ),
-              Text("Запись: $duration"),
+              Text(context.l10n.calendar_recordingStatus(duration)),
             ],
           ),
         );

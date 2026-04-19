@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
 import 'package:time_leak_flutter/feature/register/data/models/register_models.dart';
 
@@ -92,6 +93,7 @@ class AuthRepository {
 
   /// Метод для выхода (удаление токенов из БД)
   Future<void> logout() async {
+    PinSession.reset();
     await _db.deleteTokens();
   }
 }

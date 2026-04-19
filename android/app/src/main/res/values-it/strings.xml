@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Time Leak</string>
+    <string name="app_name">TimeLeak</string>
     <string name="microphone_permission">Questa app richiede l\'accesso al microfono per registrare note audio.</string>
     <string name="camera_permission">Questa app richiede l\'accesso alla fotocamera per scattare foto per la data selezionata.</string>
     <string name="gallery_permission">Questa app richiede l\'accesso alla galleria per selezionare foto per la data selezionata.</string>

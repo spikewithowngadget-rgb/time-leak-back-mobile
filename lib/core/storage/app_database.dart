@@ -28,12 +28,21 @@ class AuthTokens extends Table {
   Set<Column> get primaryKey => {accessToken};
 }
 
-@DriftDatabase(tables: [CalendarEntries, AuthTokens])
+/// Одна строка (id = 1): локальный PIN для экрана календаря.
+class SecuritySettings extends Table {
+  IntColumn get id => integer()();
+  TextColumn get pinHash => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [CalendarEntries, AuthTokens, SecuritySettings])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
@@ -53,6 +62,9 @@ class AppDatabase extends _$AppDatabase {
         if (from < 7) {
           await m.addColumn(calendarEntries, calendarEntries.backendNoteId);
         }
+        if (from < 8) {
+          await m.createTable(securitySettings);
+        }
       },
     );
   }
@@ -69,6 +81,18 @@ class AppDatabase extends _$AppDatabase {
   Future<AuthToken?> getTokens() => select(authTokens).getSingleOrNull();
 
   Future<void> deleteTokens() => delete(authTokens).go();
+
+  Future<String?> getPinHash() async {
+    final row = await (select(securitySettings)..where((t) => t.id.equals(1))).getSingleOrNull();
+    return row?.pinHash;
+  }
+
+  Future<void> setPinHash(String hash) async {
+    await into(securitySettings).insert(
+      SecuritySettingsCompanion.insert(id: Value(1), pinHash: Value(hash)),
+      mode: InsertMode.replace,
+    );
+  }
 }
 
 LazyDatabase _openConnection() {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Time Leak</string>
+    <string name="app_name">TimeLeak</string>
     <string name="microphone_permission">This app requires access to the microphone for recording audio notes.</string>
     <string name="camera_permission">This app requires access to the camera to take photos for the selected date.</string>
     <string name="gallery_permission">This app requires access to the gallery to select photos.</string>

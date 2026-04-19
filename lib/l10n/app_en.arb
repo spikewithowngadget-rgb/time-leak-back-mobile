@@ -1,0 +1,121 @@
+{
+  "@@locale": "en",
+
+  "login_welcomeBack": "Welcome Back",
+  "login_subtitle": "Sign in to your TimeLeak account",
+  "login_phoneLabel": "Phone",
+  "login_passwordLabel": "Password",
+  "login_forgotPassword": "Forgot password?",
+  "login_signIn": "Sign in",
+
+  "pin_screenTitle": "Authorization",
+  "pin_accessCode": "Access code",
+  "pin_createCode": "Create access code",
+  "pin_confirmCode": "Confirm code",
+  "pin_wrongCode": "Wrong code",
+  "pin_codesDoNotMatch": "Codes do not match",
+  "pin_biometricReason": "Unlock the app",
+
+  "drawer_settings": "Settings",
+  "drawer_language": "Language",
+  "drawer_logout": "Log out",
+  "drawer_about": "About the app",
+
+  "about_title": "About",
+  "about_versionLabel": "Version",
+  "about_description": "TimeLeak helps you capture what matters and tie it to the date you need — photos, voice notes, documents, and more.",
+  "about_deleteAccount": "Delete account",
+  "about_deleteDialogTitle": "Deactivate account?",
+  "about_deleteDialogBody": "Your account will be deactivated. You will not be able to sign in again.",
+  "about_deleteDialogConfirm": "Deactivate",
+  "about_deleteDialogCancel": "Cancel",
+  "about_deleteErrorNoProfile": "Could not load your profile. Please try again.",
+  "about_deleteErrorForbidden": "Could not deactivate: access denied. The server must allow this action for logged-in users—contact support or your backend team.",
+
+  "onboarding_title": "Forgot?",
+  "onboarding_page1_bullets": "• driver's license expired => fine, retake, impound lot\n• wedding anniversary => trouble at home",
+  "onboarding_page1_question": "How do you remind yourself?",
+  "onboarding_page1_conclusion": "The TimeLeak mobile app will do it for you!",
+  "onboarding_page2_bullet": "• tax filing => fines for the accountant and the company",
+  "onboarding_page2_conclusion": "In TimeLeak, just take a photo, video, or voice note, or pick a document — then tap the date you need!",
+  "onboarding_next": "Next",
+  "onboarding_skip": "Skip",
+
+  "calendar_defaultNoteTitle": "Reminder from TimeLeak: {date} — you have a note",
+  "@calendar_defaultNoteTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "calendar_reminderNotificationBody": "You have a note",
+
+  "calendar_status_fileSaved": "File saved",
+  "calendar_status_saveError": "Save failed",
+  "calendar_status_fileDeleted": "File deleted",
+  "calendar_status_deleteError": "Delete failed",
+  "calendar_status_fileExportedToDownloads": "Saved to Downloads",
+  "calendar_status_exportError": "Export failed",
+
+  "calendar_action_onRepeat": "On repeat",
+  "calendar_action_delete": "Delete",
+  "calendar_action_download": "Download",
+  "calendar_action_remind": "Remind",
+  "calendar_status_reminderSaved": "Reminder saved",
+  "calendar_recordingStatus": "Recording: {duration}",
+  "@calendar_recordingStatus": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+
+  "calendar_reminderDialog_title": "Reminder",
+  "calendar_reminderDialog_current": "Now:",
+  "calendar_reminderDialog_changeTo": "Change to",
+  "calendar_reminderDialog_everyDay_title": "Every day",
+  "calendar_reminderDialog_everyDay_subtitle": "In 24 hours",
+  "calendar_reminderDialog_custom_title": "Custom",
+  "calendar_reminderDialog_custom_subtitle": "Specify days, hours, or minutes",
+  "calendar_reminderDialog_unit_days": "Days",
+  "calendar_reminderDialog_unit_hours": "Hours",
+  "calendar_reminderDialog_unit_minutes": "Minutes",
+  "calendar_reminderDialog_save": "Save",
+  "calendar_reminderDialog_setError": "Could not set reminder",
+
+  "calendar_reminderLabel_notSet": "Not set",
+  "calendar_reminderLabel_everyDay": "Every day",
+  "calendar_reminderLabel_inDays": "In {count} d.",
+  "@calendar_reminderLabel_inDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendar_reminderLabel_inHours": "In {count} h.",
+  "@calendar_reminderLabel_inHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "calendar_reminderLabel_inMinutes": "In {count} min.",
+  "@calendar_reminderLabel_inMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "calendar_reminderDialog_hint_days": "Number of days",
+  "calendar_reminderDialog_hint_hours": "Number of hours",
+  "calendar_reminderDialog_hint_minutes": "Number of minutes",
+  "calendar_reminderDialog_suffix_days": "d",
+  "calendar_reminderDialog_suffix_hours": "h",
+  "calendar_reminderDialog_suffix_minutes": "min"
+}

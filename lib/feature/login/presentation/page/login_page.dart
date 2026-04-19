@@ -5,9 +5,11 @@ import 'package:get_it/get_it.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/shared/button.dart';
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
+import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/feature/login/presentation/cubit/login_cubit.dart';
 
 @RoutePage()
@@ -43,6 +45,7 @@ class _LoginPageState extends State<LoginPage> {
       bloc: _loginCubit,
       listener: (context, state) {
         if (state is LoginSuccess) {
+          PinSession.reset();
           context.router.replaceAll([const CalendarRoute()]);
         } else if (state is LoginError) {
           TopSnackBar.show(context, message: state.message);
@@ -63,18 +66,18 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const SizedBox(height: 20),
                       Text(
-                        "Welcome Back",
+                        context.l10n.login_welcomeBack,
                         style: AppStyle.style(32, fontWeight: FontWeight.w800, color: AppColors.black),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Войдите в свой аккаунт Timeleak",
+                        context.l10n.login_subtitle,
                         style: AppStyle.style(16, color: AppColors.grey2),
                       ),
                       const SizedBox(height: 40),
 
                       // Метка Phone
-                      Text("Телефон", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
+                      Text(context.l10n.login_phoneLabel, style: AppStyle.style(14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 8),
                       AppTextField(
                         hintText: "+7 701 555 66 77",
@@ -86,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 20),
 
-                      Text("Пароль", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
+                      Text(context.l10n.login_passwordLabel, style: AppStyle.style(14, fontWeight: FontWeight.w600)),
                       const SizedBox(height: 8),
                       AppTextField(
                         hintText: "••••••••",
@@ -111,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                               ? null
                               : () => context.router.push(const ForgotPasswordRoute()),
                           child: Text(
-                            "Забыли пароль?",
+                            context.l10n.login_forgotPassword,
                             style: AppStyle.style(
                               14,
                               color: AppColors.brandColor1,
@@ -125,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                       state is LoginLoading
                           ? const Center(child: CircularProgressIndicator(color: AppColors.brandColor1))
                           : AppButton(
-                              text: "Войти",
+                              text: context.l10n.login_signIn,
                               onPressed: () {
                                 FocusScope.of(context).unfocus();
                                 // Вызываем метод кубита с правильными именованными параметрами

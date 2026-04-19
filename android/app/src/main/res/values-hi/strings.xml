@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Time Leak</string>
+    <string name="app_name">TimeLeak</string>
     <string name="microphone_permission">ऑडियो नोट्स रिकॉर्ड करने के लिए इस ऐप को माइक्रोफ़ोन एक्सेस की आवश्यकता है।</string>
     <string name="camera_permission">चुनी गई तारीख के लिए फोटो लेने के लिए इस ऐप को कैमरे के एक्सेस की आवश्यकता है।</string>
     <string name="gallery_permission">तस्वीरें चुनने के लिए इस ऐप को गैलरी एक्सेस की आवश्यकता है।</string>

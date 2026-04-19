@@ -1,6 +1,10 @@
+import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/calendar_repository.dart';
 import 'package:time_leak_flutter/feature/core/data/repository/notes_repository.dart';
+import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
+import 'package:time_leak_flutter/l10n/app_localizations.dart';
+import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
 
 /// Единый репозиторий: локальный календарь (CalendarRepository) + API заметок (NotesRepository).
 /// Все записи хранятся локально с привязкой к id бэкенда (backend_note_id); создание/обновление/удаление синхронно с API.
@@ -24,9 +28,6 @@ class SyncedNotesRepository {
   Stream<List<CalendarEntryModel>> watchCalendarsByRange(DateTime start, DateTime end) =>
       _local.watchCalendarsByRange(start, end);
 
-  /// Шаблон заголовка по умолчанию (делегируем в CalendarRepository).
-  static String defaultTitleFor(DateTime date) => CalendarRepository.defaultTitleFor(date);
-
   // --- Запись: локально + синхронизация с API ---
 
   /// Добавить запись: сохраняем локально, затем создаём заметку на бэке и сохраняем backend id.
@@ -34,14 +35,16 @@ class SyncedNotesRepository {
     required String pickedPath,
     required String type,
     required DateTime date,
+    required String noteTitle,
   }) async {
     final result = await _local.putCalendar(
       pickedPath: pickedPath,
       type: type,
       date: date,
+      title: noteTitle,
     );
     try {
-      final noteType = CalendarRepository.defaultTitleFor(date);
+      final noteType = noteTitle;
       final note = await _api.createNote(
         noteType: noteType,
         filePaths: [result.localPath],
@@ -73,7 +76,9 @@ class SyncedNotesRepository {
       try {
         await _api.updateNote(
           id: backendId,
-          noteType: title ?? model.title ?? CalendarRepository.defaultTitleFor(model.date),
+          noteType: title ??
+              model.title ??
+              calendarDefaultNoteTitle(lookupAppLocalizations(sl<LocaleCubit>().state), model.date),
         );
       } catch (_) {}
     }

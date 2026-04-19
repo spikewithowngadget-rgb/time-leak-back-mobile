@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
@@ -21,23 +20,25 @@ class CalendarRepository {
   Future<List<CalendarEntryModel>> getCalendarsByDate(DateTime date) async {
     final startOfDay = DateTime(date.year, date.month, date.day);
     final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
-    final list = await (_db.select(_db.calendarEntries)
-          ..where((t) => t.date.isBetweenValues(startOfDay, endOfDay)))
-        .get();
+    final list = await (_db.select(
+      _db.calendarEntries,
+    )..where((t) => t.date.isBetweenValues(startOfDay, endOfDay))).get();
     return list.map((e) => CalendarEntryModel.fromEntity(e)).toList();
   }
 
   /// Записи в диапазоне дат (разовый запрос).
   Future<List<CalendarEntryModel>> getCalendarsByRange(DateTime start, DateTime end) async {
-    final list = await (_db.select(_db.calendarEntries)..where((t) => t.date.isBetweenValues(start, end))).get();
+    final list = await (_db.select(
+      _db.calendarEntries,
+    )..where((t) => t.date.isBetweenValues(start, end))).get();
     return list.map((e) => CalendarEntryModel.fromEntity(e)).toList();
   }
 
   /// Есть ли локальная запись с таким backend_note_id (после синхронизации с бэка).
   Future<bool> hasEntryWithBackendNoteId(String backendNoteId) async {
-    final list = await (_db.select(_db.calendarEntries)
-          ..where((t) => t.backendNoteId.equals(backendNoteId)))
-        .get();
+    final list = await (_db.select(
+      _db.calendarEntries,
+    )..where((t) => t.backendNoteId.equals(backendNoteId))).get();
     return list.isNotEmpty;
   }
 
@@ -56,7 +57,9 @@ class CalendarRepository {
     required String title,
     required String backendNoteId,
   }) async {
-    await _db.into(_db.calendarEntries).insert(
+    await _db
+        .into(_db.calendarEntries)
+        .insert(
           CalendarEntriesCompanion.insert(
             localPath: localPath,
             originalName: originalName,
@@ -71,25 +74,19 @@ class CalendarRepository {
 
   /// Поток записей по дате (для UI).
   Stream<List<CalendarEntryModel>> watchCalendarsByDate(DateTime date) {
-    return _baseRepo.watchByDate(date).map(
-          (entities) => entities.map((e) => CalendarEntryModel.fromEntity(e)).toList(),
-        );
+    return _baseRepo
+        .watchByDate(date)
+        .map((entities) => entities.map((e) => CalendarEntryModel.fromEntity(e)).toList());
   }
 
   /// Поток записей в диапазоне (для точек в календаре).
   Stream<List<CalendarEntryModel>> watchCalendarsByRange(DateTime start, DateTime end) {
-    return _baseRepo.watchByRange(start, end).map(
-          (entities) => entities.map((e) => CalendarEntryModel.fromEntity(e)).toList(),
-        );
+    return _baseRepo
+        .watchByRange(start, end)
+        .map((entities) => entities.map((e) => CalendarEntryModel.fromEntity(e)).toList());
   }
 
   // --- Put (добавить) ---
-
-  /// Шаблон заголовка по умолчанию: «Напоминание от TimeLeak: 15 марта у вас заметка».
-  static String defaultTitleFor(DateTime date) {
-    final dateStr = DateFormat('d MMMM', 'ru').format(date);
-    return 'Напоминание от TimeLeak: $dateStr у вас заметка';
-  }
 
   /// Добавить запись: копирует файл в хранилище и создаёт запись в БД.
   /// Возвращает (id новой записи, localPath файла) для синхронизации с API.
@@ -97,11 +94,11 @@ class CalendarRepository {
     required String pickedPath,
     required String type,
     required DateTime date,
+    required String title,
   }) async {
     final String localPath = await _baseRepo.generateLocalPath(pickedPath);
     final String ext = p.extension(pickedPath).replaceFirst('.', '');
     final String nameWithoutExt = p.basenameWithoutExtension(pickedPath);
-    final String title = defaultTitleFor(date);
 
     final id = await _baseRepo.saveFilePermanently(
       originalPath: pickedPath,
@@ -130,28 +127,28 @@ class CalendarRepository {
     String? backendNoteId,
   }) async {
     await (_db.update(_db.calendarEntries)..where((t) => t.id.equals(model.id))).write(
-          CalendarEntriesCompanion(
-            originalName: originalName != null ? Value(originalName) : const Value.absent(),
-            date: date != null ? Value(date) : const Value.absent(),
-            reminderMinutes: reminderMinutes != null ? Value(reminderMinutes) : const Value.absent(),
-            title: title != null ? Value(title) : const Value.absent(),
-            backendNoteId: backendNoteId != null ? Value(backendNoteId) : const Value.absent(),
-          ),
-        );
+      CalendarEntriesCompanion(
+        originalName: originalName != null ? Value(originalName) : const Value.absent(),
+        date: date != null ? Value(date) : const Value.absent(),
+        reminderMinutes: reminderMinutes != null ? Value(reminderMinutes) : const Value.absent(),
+        title: title != null ? Value(title) : const Value.absent(),
+        backendNoteId: backendNoteId != null ? Value(backendNoteId) : const Value.absent(),
+      ),
+    );
   }
 
   /// Привязать локальную запись к заметке на бэкенде.
   Future<void> setBackendNoteId(int entryId, String backendNoteId) async {
     await (_db.update(_db.calendarEntries)..where((t) => t.id.equals(entryId))).write(
-          CalendarEntriesCompanion(backendNoteId: Value(backendNoteId)),
-        );
+      CalendarEntriesCompanion(backendNoteId: Value(backendNoteId)),
+    );
   }
 
   /// Обновить только минуты напоминания для записи.
   Future<void> updateReminder(int entryId, int? minutes) async {
     await (_db.update(_db.calendarEntries)..where((t) => t.id.equals(entryId))).write(
-          CalendarEntriesCompanion(reminderMinutes: minutes != null ? Value(minutes) : const Value.absent()),
-        );
+      CalendarEntriesCompanion(reminderMinutes: minutes != null ? Value(minutes) : const Value.absent()),
+    );
   }
 
   // --- Delete ---

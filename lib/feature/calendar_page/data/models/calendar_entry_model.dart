@@ -9,7 +9,7 @@ class CalendarEntryModel {
   final DateTime date;
   /// Минуты до напоминания (null — не задано, 1440 — каждый день).
   final int? reminderMinutes;
-  /// Заголовок заметки (по умолчанию «Напоминание от TimeLeak: 15 марта у вас заметка»).
+  /// Заголовок заметки (по умолчанию — локализованный шаблон из l10n `calendar_defaultNoteTitle`).
   final String? title;
   /// Id заметки на бэкенде (uuid из API).
   final String? backendNoteId;

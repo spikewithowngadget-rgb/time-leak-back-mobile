@@ -2,7 +2,7 @@ name: time_leak_flutter
 description: "A new Flutter project with full localization support."
 publish_to: 'none'
 
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ^3.9.2
@@ -38,6 +38,10 @@ dependencies:
   dio: ^5.9.1
   auto_route: ^11.1.0
   flutter_local_notifications: ^21.0.0
+  local_auth: ^2.3.0
+  crypto: ^3.0.6
+  shared_preferences: ^2.3.5
+  package_info_plus: ^8.3.0
 
   # audio_router: ^1.1.1
 
@@ -59,6 +63,7 @@ flutter:
   # Регистрация ассетов для SVG
   assets:
     - assets/svg/
+    - assets/png/
 
   # Если планируешь использовать специфичные шрифты, раскомментируй ниже:
   # fonts:

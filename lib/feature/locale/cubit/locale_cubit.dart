@@ -25,3 +25,35 @@ class LocaleCubit extends Cubit<Locale> {
     emit(Locale(language.code));
   }
 }
+
+/// Короткий код для компактных кнопок (онбординг, чипы).
+extension AppLanguageChipCode on AppLanguage {
+  String get chipCode => switch (this) {
+    AppLanguage.english => 'EN',
+    AppLanguage.russian => 'RU',
+    AppLanguage.chinese => 'ZH',
+    AppLanguage.hindi => 'HI',
+    AppLanguage.french => 'FR',
+    AppLanguage.german => 'DE',
+    AppLanguage.spanish => 'ES',
+    AppLanguage.italian => 'IT',
+    AppLanguage.portuguese => 'PT',
+    AppLanguage.arabic => 'AR',
+  };
+}
+
+extension AppLanguageLabel on AppLanguage {
+  /// Короткое название языка для списка в UI.
+  String get label => switch (this) {
+    AppLanguage.english => 'English',
+    AppLanguage.russian => 'Русский',
+    AppLanguage.chinese => '中文',
+    AppLanguage.hindi => 'हिन्दी',
+    AppLanguage.french => 'Français',
+    AppLanguage.german => 'Deutsch',
+    AppLanguage.spanish => 'Español',
+    AppLanguage.italian => 'Italiano',
+    AppLanguage.portuguese => 'Português',
+    AppLanguage.arabic => 'العربية',
+  };
+}

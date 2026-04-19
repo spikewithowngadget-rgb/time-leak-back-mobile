@@ -798,6 +798,209 @@ class AuthTokensCompanion extends UpdateCompanion<AuthToken> {
   }
 }
 
+class $SecuritySettingsTable extends SecuritySettings
+    with TableInfo<$SecuritySettingsTable, SecuritySetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SecuritySettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _pinHashMeta = const VerificationMeta(
+    'pinHash',
+  );
+  @override
+  late final GeneratedColumn<String> pinHash = GeneratedColumn<String>(
+    'pin_hash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, pinHash];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'security_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SecuritySetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pin_hash')) {
+      context.handle(
+        _pinHashMeta,
+        pinHash.isAcceptableOrUnknown(data['pin_hash']!, _pinHashMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SecuritySetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SecuritySetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pinHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pin_hash'],
+      ),
+    );
+  }
+
+  @override
+  $SecuritySettingsTable createAlias(String alias) {
+    return $SecuritySettingsTable(attachedDatabase, alias);
+  }
+}
+
+class SecuritySetting extends DataClass implements Insertable<SecuritySetting> {
+  final int id;
+  final String? pinHash;
+  const SecuritySetting({required this.id, this.pinHash});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || pinHash != null) {
+      map['pin_hash'] = Variable<String>(pinHash);
+    }
+    return map;
+  }
+
+  SecuritySettingsCompanion toCompanion(bool nullToAbsent) {
+    return SecuritySettingsCompanion(
+      id: Value(id),
+      pinHash: pinHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pinHash),
+    );
+  }
+
+  factory SecuritySetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SecuritySetting(
+      id: serializer.fromJson<int>(json['id']),
+      pinHash: serializer.fromJson<String?>(json['pinHash']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pinHash': serializer.toJson<String?>(pinHash),
+    };
+  }
+
+  SecuritySetting copyWith({
+    int? id,
+    Value<String?> pinHash = const Value.absent(),
+  }) => SecuritySetting(
+    id: id ?? this.id,
+    pinHash: pinHash.present ? pinHash.value : this.pinHash,
+  );
+  SecuritySetting copyWithCompanion(SecuritySettingsCompanion data) {
+    return SecuritySetting(
+      id: data.id.present ? data.id.value : this.id,
+      pinHash: data.pinHash.present ? data.pinHash.value : this.pinHash,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SecuritySetting(')
+          ..write('id: $id, ')
+          ..write('pinHash: $pinHash')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, pinHash);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SecuritySetting &&
+          other.id == this.id &&
+          other.pinHash == this.pinHash);
+}
+
+class SecuritySettingsCompanion extends UpdateCompanion<SecuritySetting> {
+  final Value<int> id;
+  final Value<String?> pinHash;
+  const SecuritySettingsCompanion({
+    this.id = const Value.absent(),
+    this.pinHash = const Value.absent(),
+  });
+  SecuritySettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.pinHash = const Value.absent(),
+  });
+  static Insertable<SecuritySetting> custom({
+    Expression<int>? id,
+    Expression<String>? pinHash,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pinHash != null) 'pin_hash': pinHash,
+    });
+  }
+
+  SecuritySettingsCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? pinHash,
+  }) {
+    return SecuritySettingsCompanion(
+      id: id ?? this.id,
+      pinHash: pinHash ?? this.pinHash,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pinHash.present) {
+      map['pin_hash'] = Variable<String>(pinHash.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SecuritySettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('pinHash: $pinHash')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -805,6 +1008,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $AuthTokensTable authTokens = $AuthTokensTable(this);
+  late final $SecuritySettingsTable securitySettings = $SecuritySettingsTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -812,6 +1018,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     calendarEntries,
     authTokens,
+    securitySettings,
   ];
 }
 
@@ -1237,6 +1444,137 @@ typedef $$AuthTokensTableProcessedTableManager =
       AuthToken,
       PrefetchHooks Function()
     >;
+typedef $$SecuritySettingsTableCreateCompanionBuilder =
+    SecuritySettingsCompanion Function({Value<int> id, Value<String?> pinHash});
+typedef $$SecuritySettingsTableUpdateCompanionBuilder =
+    SecuritySettingsCompanion Function({Value<int> id, Value<String?> pinHash});
+
+class $$SecuritySettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $SecuritySettingsTable> {
+  $$SecuritySettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pinHash => $composableBuilder(
+    column: $table.pinHash,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SecuritySettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SecuritySettingsTable> {
+  $$SecuritySettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pinHash => $composableBuilder(
+    column: $table.pinHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SecuritySettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SecuritySettingsTable> {
+  $$SecuritySettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get pinHash =>
+      $composableBuilder(column: $table.pinHash, builder: (column) => column);
+}
+
+class $$SecuritySettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SecuritySettingsTable,
+          SecuritySetting,
+          $$SecuritySettingsTableFilterComposer,
+          $$SecuritySettingsTableOrderingComposer,
+          $$SecuritySettingsTableAnnotationComposer,
+          $$SecuritySettingsTableCreateCompanionBuilder,
+          $$SecuritySettingsTableUpdateCompanionBuilder,
+          (
+            SecuritySetting,
+            BaseReferences<
+              _$AppDatabase,
+              $SecuritySettingsTable,
+              SecuritySetting
+            >,
+          ),
+          SecuritySetting,
+          PrefetchHooks Function()
+        > {
+  $$SecuritySettingsTableTableManager(
+    _$AppDatabase db,
+    $SecuritySettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SecuritySettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SecuritySettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SecuritySettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> pinHash = const Value.absent(),
+              }) => SecuritySettingsCompanion(id: id, pinHash: pinHash),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> pinHash = const Value.absent(),
+              }) => SecuritySettingsCompanion.insert(id: id, pinHash: pinHash),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SecuritySettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SecuritySettingsTable,
+      SecuritySetting,
+      $$SecuritySettingsTableFilterComposer,
+      $$SecuritySettingsTableOrderingComposer,
+      $$SecuritySettingsTableAnnotationComposer,
+      $$SecuritySettingsTableCreateCompanionBuilder,
+      $$SecuritySettingsTableUpdateCompanionBuilder,
+      (
+        SecuritySetting,
+        BaseReferences<_$AppDatabase, $SecuritySettingsTable, SecuritySetting>,
+      ),
+      SecuritySetting,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1245,4 +1583,6 @@ class $AppDatabaseManager {
       $$CalendarEntriesTableTableManager(_db, _db.calendarEntries);
   $$AuthTokensTableTableManager get authTokens =>
       $$AuthTokensTableTableManager(_db, _db.authTokens);
+  $$SecuritySettingsTableTableManager get securitySettings =>
+      $$SecuritySettingsTableTableManager(_db, _db.securitySettings);
 }

@@ -1,6 +1,6 @@
 {
-    "name": "time_leak_flutter",
-    "short_name": "time_leak_flutter",
+    "name": "TimeLeak",
+    "short_name": "TimeLeak",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

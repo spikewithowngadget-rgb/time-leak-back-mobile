@@ -9,7 +9,10 @@ import 'package:record/record.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
+import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
+import 'package:time_leak_flutter/l10n/app_localizations.dart';
+import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
 
 class CalendarState {
   final DateTime selectedDate;
@@ -172,23 +175,29 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   Future<void> saveEntry(String pickedPath, String type) async {
     if (state.clickedDate == null) return;
+    final l10n = lookupAppLocalizations(sl<LocaleCubit>().state);
     try {
-      final entryId = await _repo.putCalendar(pickedPath: pickedPath, type: type, date: state.clickedDate!);
+      final noteTitle = calendarDefaultNoteTitle(l10n, state.clickedDate!);
+      final entryId = await _repo.putCalendar(
+        pickedPath: pickedPath,
+        type: type,
+        date: state.clickedDate!,
+        noteTitle: noteTitle,
+      );
       // По умолчанию — напоминание «каждый день» (через 24 ч)
       const defaultReminderMinutes = 24 * 60; // 1440
       final notificationService = sl<NotificationService>();
-      final notificationTitle = SyncedNotesRepository.defaultTitleFor(state.clickedDate!);
       await notificationService.scheduleFlexibleNotification(
         id: entryId,
-        title: notificationTitle,
-        body: 'У вас заметка',
+        title: noteTitle,
+        body: l10n.calendar_reminderNotificationBody,
         totalMinutes: defaultReminderMinutes,
       );
       await _repo.updateReminder(entryId, defaultReminderMinutes);
-      emit(state.copyWith(message: "Файл успешно сохранен"));
+      emit(state.copyWith(message: l10n.calendar_status_fileSaved));
       _clearMessage();
     } catch (e) {
-      emit(state.copyWith(message: "Ошибка при сохранении"));
+      emit(state.copyWith(message: l10n.calendar_status_saveError));
       _clearMessage();
     }
   }
@@ -220,24 +229,26 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   // --- УДАЛЕНИЕ И ЭКСПОРТ ---
   Future<void> deleteEntry(CalendarEntryModel model) async {
+    final l10n = lookupAppLocalizations(sl<LocaleCubit>().state);
     try {
       await sl<NotificationService>().cancelNotification(model.id);
       await _repo.deleteCalendar(model);
-      emit(state.copyWith(clearActivePath: true, message: "Файл удален"));
+      emit(state.copyWith(clearActivePath: true, message: l10n.calendar_status_fileDeleted));
       _clearMessage();
     } catch (e) {
-      emit(state.copyWith(message: "Ошибка при удалении"));
+      emit(state.copyWith(message: l10n.calendar_status_deleteError));
       _clearMessage();
     }
   }
 
   Future<void> downloadEntry(CalendarEntryModel model) async {
+    final l10n = lookupAppLocalizations(sl<LocaleCubit>().state);
     try {
       await _repo.downloadCalendar(model);
-      emit(state.copyWith(clearActivePath: true, message: "Файл сохранен в Загрузки"));
+      emit(state.copyWith(clearActivePath: true, message: l10n.calendar_status_fileExportedToDownloads));
       _clearMessage();
     } catch (e) {
-      emit(state.copyWith(message: "Ошибка при экспорте"));
+      emit(state.copyWith(message: l10n.calendar_status_exportError));
       _clearMessage();
     }
   }
