@@ -66,7 +66,21 @@ class MediaItemCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.file(file, width: double.infinity, height: 200, fit: BoxFit.cover),
+                  child: Image.file(
+                    file,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: double.infinity,
+                        height: 200,
+                        color: AppColors.grey.withValues(alpha: 0.2),
+                        alignment: Alignment.center,
+                        child: Icon(Icons.broken_image_outlined, size: 48, color: AppColors.grey2),
+                      );
+                    },
+                  ),
                 ),
               ],
             ],

@@ -9,6 +9,7 @@ import 'package:time_leak_flutter/core/shared/button.dart';
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/register/presentation/cubit/register_cubit.dart';
+
 @RoutePage()
 class RegisterPasswordPage extends StatefulWidget {
   final String phone;
@@ -80,7 +81,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                       style: AppStyle.style(16, color: AppColors.grey2),
                     ),
                     const SizedBox(height: 40),
-          
+
                     Text("Пароль", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     AppTextField(
@@ -89,9 +90,9 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                       isPassword: true,
                       enabled: state is! RegisterLoading,
                     ),
-          
+
                     const SizedBox(height: 20),
-          
+
                     Text("Подтвердите пароль", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     AppTextField(
@@ -101,9 +102,9 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                       textInputAction: TextInputAction.done,
                       enabled: state is! RegisterLoading,
                     ),
-          
+
                     const SizedBox(height: 40),
-          
+
                     state is RegisterLoading
                         ? const Center(child: CircularProgressIndicator(color: AppColors.brandColor1))
                         : AppButton(
@@ -111,7 +112,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                             onPressed: () {
                               final pass = _passwordController.text.trim();
                               final confirm = _confirmPasswordController.text.trim();
-          
+
                               if (pass.isEmpty || confirm.isEmpty) {
                                 TopSnackBar.show(context, message: "Заполните все поля");
                               } else if (pass != confirm) {

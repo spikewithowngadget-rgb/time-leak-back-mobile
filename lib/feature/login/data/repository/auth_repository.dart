@@ -3,6 +3,17 @@ import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
 import 'package:time_leak_flutter/feature/register/data/models/register_models.dart';
 
+String _messageFromDioException(DioException e, {String? fallback}) {
+  final data = e.response?.data;
+  if (data is Map) {
+    final err = data['error'] ?? data['message'] ?? data['detail'];
+    if (err != null) return err.toString();
+  }
+  if (data is String && data.isNotEmpty) return data;
+  if (e.message != null && e.message!.isNotEmpty) return e.message!;
+  return fallback ?? 'Ошибка запроса';
+}
+
 class AuthRepository {
   final Dio _dio;
   final AppDatabase _db;
@@ -21,9 +32,7 @@ class AuthRepository {
       // Сохраняем в Drift через созданный нами ранее метод
       await _db.updateTokens(accessToken, refreshToken);
     } on DioException catch (e) {
-      // Извлекаем сообщение об ошибке от сервера, если оно есть
-      final errorMessage = e.response?.data['message'] ?? 'Ошибка авторизации';
-      throw errorMessage;
+      throw _messageFromDioException(e, fallback: 'Ошибка авторизации');
     } catch (e) {
       throw 'Произошла непредвиденная ошибка';
     }
@@ -48,15 +57,19 @@ class AuthRepository {
     required String confirmPassword,
     required String verificationToken,
   }) async {
-    await _dio.post(
-      '/api/v1/auth/register',
-      data: {
-        'phone': phone,
-        'password': password,
-        'confirm_password': confirmPassword,
-        'verification_token': verificationToken,
-      },
-    );
+    try {
+      await _dio.post(
+        '/api/v1/auth/register',
+        data: {
+          'phone': phone,
+          'password': password,
+          'confirm_password': confirmPassword,
+          'verification_token': verificationToken,
+        },
+      );
+    } on DioException catch (e) {
+      throw _messageFromDioException(e);
+    }
   }
 
   Future<OtpRequestResponse> requestPasswordResetOtp(String phone) async {
@@ -94,6 +107,7 @@ class AuthRepository {
   /// Метод для выхода (удаление токенов из БД)
   Future<void> logout() async {
     PinSession.reset();
+    await _db.clearPinHash();
     await _db.deleteTokens();
   }
 }

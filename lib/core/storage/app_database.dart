@@ -93,6 +93,11 @@ class AppDatabase extends _$AppDatabase {
       mode: InsertMode.replace,
     );
   }
+
+  /// Сбрасывает сохранённый PIN (например, при выходе из аккаунта).
+  Future<void> clearPinHash() async {
+    await (delete(securitySettings)..where((t) => t.id.equals(1))).go();
+  }
 }
 
 LazyDatabase _openConnection() {

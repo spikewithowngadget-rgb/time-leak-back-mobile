@@ -59,6 +59,7 @@ class DioClient {
                 return handler.resolve(retryResponse);
               } catch (refreshError) {
                 PinSession.reset();
+                await db.clearPinHash();
                 await db.deleteTokens();
                 sl<AppRouter>().replaceAll([const LoginRoute()]);
                 return handler.next(e);
