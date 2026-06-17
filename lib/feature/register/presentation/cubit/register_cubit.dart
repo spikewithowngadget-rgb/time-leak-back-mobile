@@ -53,7 +53,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  // Шаг 3: Финальная регистрация
+  // Шаг 3: Финальная регистрация + автоматический вход (далее только PIN, как Kaspi).
   Future<void> completeRegistration({
     required String phone,
     required String password,
@@ -68,6 +68,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         confirmPassword: confirmPassword,
         verificationToken: token,
       );
+      await _repository.login(phone: phone, password: password);
       emit(RegisterSuccess());
     } catch (e) {
       emit(RegisterError(e.toString()));

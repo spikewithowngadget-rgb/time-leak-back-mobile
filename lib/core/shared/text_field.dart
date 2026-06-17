@@ -30,12 +30,14 @@ class AppTextField extends StatelessWidget {
       textInputAction: textInputAction,
       enabled: enabled, // 3. Передаем в TextField
       style: AppStyle.style(16, color: AppColors.black),
+      cursorColor: AppColors.brandColor1,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: AppStyle.style(16, color: AppColors.grey),
         filled: true,
         // Опционально: можно менять цвет фона, если поле заблокировано
-        fillColor: (enabled ?? true) ? Colors.white : AppColors.grey1.withOpacity(0.5),
+        fillColor: (enabled ?? true) ? Colors.white : AppColors.grey1.withValues(alpha: 0.5),
+
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

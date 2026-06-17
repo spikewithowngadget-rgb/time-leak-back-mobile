@@ -57,6 +57,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get drawer_logout => 'Log out';
 
   @override
+  String get drawer_logoutConfirmTitle => 'Sign out?';
+
+  @override
+  String get drawer_logoutConfirmBody =>
+      'You will need to sign in with your phone and password again.';
+
+  @override
+  String get drawer_logoutConfirmYes => 'Sign out';
+
+  @override
+  String get drawer_logoutConfirmCancel => 'Cancel';
+
+  @override
   String get drawer_about => '关于应用';
 
   @override
@@ -67,6 +80,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get about_description => 'TimeLeak 帮助你记录重要内容并绑定到指定日期——照片、语音笔记、文档等。';
+
+  @override
+  String get about_reference => 'Reference: Maksa Tleshov';
 
   @override
   String get about_deleteAccount => '删除账号';
@@ -125,6 +141,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendar_reminderNotificationBody => '您有一条笔记';
 
   @override
+  String get calendar_cameraSheetTitle => 'Camera';
+
+  @override
+  String get calendar_cameraPhoto => 'Take photo';
+
+  @override
+  String get calendar_cameraVideo => 'Record video';
+
+  @override
   String get calendar_status_fileSaved => '文件已保存';
 
   @override
@@ -166,10 +191,38 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendar_reminderDialog_title => '提醒';
 
   @override
+  String get calendar_reminderDialog_afterAttachTitle => 'Remind me';
+
+  @override
   String get calendar_reminderDialog_current => '当前：';
 
   @override
   String get calendar_reminderDialog_changeTo => '更改为';
+
+  @override
+  String get calendar_reminderDialog_yearly_title => 'Annually';
+
+  @override
+  String get calendar_reminderDialog_yearly_subtitle => 'In 365 days';
+
+  @override
+  String get calendar_reminderDialog_quarterly_title => 'Quarterly';
+
+  @override
+  String get calendar_reminderDialog_quarterly_subtitle => 'In 3 months';
+
+  @override
+  String get calendar_reminderDialog_monthly_title => 'Monthly';
+
+  @override
+  String get calendar_reminderDialog_monthly_subtitle => 'In 30 days';
+
+  @override
+  String get calendar_reminderDialog_customDays_title => 'Custom';
+
+  @override
+  String get calendar_reminderDialog_customDays_subtitle =>
+      'Enter number of days';
 
   @override
   String get calendar_reminderDialog_everyDay_title => '每天';
@@ -200,6 +253,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get calendar_reminderLabel_notSet => '未设置';
+
+  @override
+  String get calendar_reminderLabel_yearly => 'Annually';
+
+  @override
+  String get calendar_reminderLabel_quarterly => 'Quarterly';
+
+  @override
+  String get calendar_reminderLabel_monthly => 'Monthly';
 
   @override
   String get calendar_reminderLabel_everyDay => '每天';

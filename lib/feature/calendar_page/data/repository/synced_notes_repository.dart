@@ -28,10 +28,13 @@ class SyncedNotesRepository {
   Stream<List<CalendarEntryModel>> watchCalendarsByRange(DateTime start, DateTime end) =>
       _local.watchCalendarsByRange(start, end);
 
+  /// Общее число записей (то же, что сумма красных бейджей по всем дням).
+  Stream<int> watchEntriesCount() => _local.watchEntriesCount();
+
   // --- Запись: локально + синхронизация с API ---
 
   /// Добавить запись: сохраняем локально, затем создаём заметку на бэке и сохраняем backend id.
-  Future<int> putCalendar({
+  Future<({int id, String localPath})> putCalendar({
     required String pickedPath,
     required String type,
     required DateTime date,
@@ -53,7 +56,7 @@ class SyncedNotesRepository {
     } catch (_) {
       // офлайн или ошибка API — запись уже есть локально
     }
-    return result.id;
+    return result;
   }
 
   /// Обновить запись: локально и на бэке (если есть backendNoteId).

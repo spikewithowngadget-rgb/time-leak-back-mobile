@@ -5,6 +5,7 @@
 import FlutterMacOS
 import Foundation
 
+import app_badge_plus
 import audioplayers_darwin
 import file_picker
 import file_selector_macos
@@ -17,6 +18,7 @@ import shared_preferences_foundation
 import sqlite3_flutter_libs
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  AppBadgePlusPlugin.register(with: registry.registrar(forPlugin: "AppBadgePlusPlugin"))
   AudioplayersDarwinPlugin.register(with: registry.registrar(forPlugin: "AudioplayersDarwinPlugin"))
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))

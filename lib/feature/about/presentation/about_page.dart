@@ -164,6 +164,11 @@ class _AboutPageState extends State<AboutPage> {
                       context.l10n.about_description,
                       style: AppStyle.style(16, height: 1.45, color: AppColors.grey2),
                     ),
+                    const SizedBox(height: 16),
+                    Text(
+                      context.l10n.about_reference,
+                      style: AppStyle.style(15, fontWeight: FontWeight.w600, color: AppColors.black),
+                    ),
                     const SizedBox(height: 36),
                     SizedBox(
                       width: double.infinity,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
@@ -25,6 +26,7 @@ class CalendarState {
   final List<DateTime> markedDates;
   final bool hasNotesInPrevMonth;
   final bool hasNotesInNextMonth;
+  final CalendarEntryModel? pendingReminderEntry;
 
   CalendarState({
     required this.selectedDate,
@@ -37,6 +39,7 @@ class CalendarState {
     this.markedDates = const [],
     this.hasNotesInPrevMonth = false,
     this.hasNotesInNextMonth = false,
+    this.pendingReminderEntry,
   });
 
   CalendarState copyWith({
@@ -52,6 +55,8 @@ class CalendarState {
     List<DateTime>? markedDates,
     bool? hasNotesInPrevMonth,
     bool? hasNotesInNextMonth,
+    CalendarEntryModel? pendingReminderEntry,
+    bool clearPendingReminder = false,
   }) {
     return CalendarState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -64,6 +69,7 @@ class CalendarState {
       markedDates: markedDates ?? this.markedDates,
       hasNotesInPrevMonth: hasNotesInPrevMonth ?? this.hasNotesInPrevMonth,
       hasNotesInNextMonth: hasNotesInNextMonth ?? this.hasNotesInNextMonth,
+      pendingReminderEntry: clearPendingReminder ? null : (pendingReminderEntry ?? this.pendingReminderEntry),
     );
   }
 }
@@ -155,10 +161,20 @@ class CalendarCubit extends Cubit<CalendarState> {
     });
   }
 
+  void clearSelectedDate() {
+    _dataSubscription?.cancel();
+    emit(state.copyWith(clickedDate: null, savedData: const [], clearActivePath: true));
+  }
+
   // --- РАБОТА С МЕДИА ---
   Future<void> pickImageFromCamera() async {
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
     if (photo != null) await saveEntry(photo.path, 'image');
+  }
+
+  Future<void> pickVideoFromCamera() async {
+    final XFile? video = await _picker.pickVideo(source: ImageSource.camera);
+    if (video != null) await saveEntry(video.path, 'video');
   }
 
   Future<void> pickImageFromGallery() async {
@@ -178,28 +194,36 @@ class CalendarCubit extends Cubit<CalendarState> {
     final l10n = lookupAppLocalizations(sl<LocaleCubit>().state);
     try {
       final noteTitle = calendarDefaultNoteTitle(l10n, state.clickedDate!);
-      final entryId = await _repo.putCalendar(
+      final result = await _repo.putCalendar(
         pickedPath: pickedPath,
         type: type,
         date: state.clickedDate!,
         noteTitle: noteTitle,
       );
-      // По умолчанию — напоминание «каждый день» (через 24 ч)
-      const defaultReminderMinutes = 24 * 60; // 1440
-      final notificationService = sl<NotificationService>();
-      await notificationService.scheduleFlexibleNotification(
-        id: entryId,
+      final ext = p.extension(pickedPath).replaceFirst('.', '');
+      final name = p.basenameWithoutExtension(pickedPath);
+      final entry = CalendarEntryModel(
+        id: result.id,
+        localPath: result.localPath,
+        name: name,
+        extension: ext,
+        type: type,
+        date: state.clickedDate!,
         title: noteTitle,
-        body: l10n.calendar_reminderNotificationBody,
-        totalMinutes: defaultReminderMinutes,
       );
-      await _repo.updateReminder(entryId, defaultReminderMinutes);
-      emit(state.copyWith(message: l10n.calendar_status_fileSaved));
+      emit(state.copyWith(
+        message: l10n.calendar_status_fileSaved,
+        pendingReminderEntry: entry,
+      ));
       _clearMessage();
     } catch (e) {
       emit(state.copyWith(message: l10n.calendar_status_saveError));
       _clearMessage();
     }
+  }
+
+  void clearPendingReminder() {
+    emit(state.copyWith(clearPendingReminder: true));
   }
 
   // --- ЗАПИСЬ АУДИО ---

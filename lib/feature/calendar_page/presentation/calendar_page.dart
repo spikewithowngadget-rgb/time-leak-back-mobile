@@ -13,6 +13,7 @@ import 'package:time_leak_flutter/core/resources/svg.dart';
 import 'package:time_leak_flutter/core/router/app_router.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
 import 'package:time_leak_flutter/core/shared/button.dart';
+import 'package:time_leak_flutter/core/shared/responsive.dart';
 import 'package:time_leak_flutter/feature/ads/data/model/ad_model.dart';
 import 'package:time_leak_flutter/feature/ads/data/repository/ads_repository.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
@@ -58,34 +59,85 @@ class _CalendarViewState extends State<CalendarView> {
     });
   }
 
+  void _onBackPressed(BuildContext context) {
+    final cubit = context.read<CalendarCubit>();
+    if (cubit.state.clickedDate != null) {
+      cubit.clearSelectedDate();
+      return;
+    }
+    if (cubit.state.selectedDate.month > 1 || cubit.state.selectedDate.year > DateTime.now().year) {
+      cubit.prevMonth();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CalendarCubit, CalendarState>(
-      listenWhen: (prev, curr) => curr.message != null && prev.message != curr.message,
-      listener: (context, state) {
-        TopSnackBar.show(context, message: state.message!, duration: const Duration(seconds: 2));
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _onBackPressed(context);
       },
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        drawer: const _CalendarDrawer(),
-        body: SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const CalendarHeaderSection(),
-                const RecordingStatusIndicator(),
-                // Контент ниже показывается только при выбранной дате
-                BlocSelector<CalendarCubit, CalendarState, bool>(
-                  selector: (state) => state.clickedDate != null,
-                  builder: (context, hasDate) {
-                    if (!hasDate) return const SizedBox.shrink();
-                    return const Column(children: [ActionPanel(), SavedEntriesList()]);
-                  },
-                ),
-                const CalendarAdBlock(),
-                const SizedBox(height: 100),
-              ],
+      child: BlocListener<CalendarCubit, CalendarState>(
+        listenWhen: (prev, curr) =>
+            (curr.message != null && prev.message != curr.message) ||
+            (curr.pendingReminderEntry != null && prev.pendingReminderEntry != curr.pendingReminderEntry),
+        listener: (context, state) {
+          if (state.message != null) {
+            TopSnackBar.show(context, message: state.message!, duration: const Duration(seconds: 2));
+          }
+          final entry = state.pendingReminderEntry;
+          if (entry != null) {
+            ReminderDialog.show(
+              context,
+              entry: entry,
+              afterAttach: true,
+              onSaved: () {
+                if (context.mounted) {
+                  TopSnackBar.show(
+                    context,
+                    message: context.l10n.calendar_status_reminderSaved,
+                    duration: const Duration(seconds: 2),
+                  );
+                }
+              },
+            ).whenComplete(() {
+              if (context.mounted) {
+                context.read<CalendarCubit>().clearPendingReminder();
+              }
+            });
+          }
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.backgroundColor,
+          drawer: const _CalendarDrawer(),
+          body: SafeArea(
+            bottom: false,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxContentWidth = AppResponsive.isTablet(context) ? 720.0 : constraints.maxWidth;
+                return SingleChildScrollView(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: maxContentWidth),
+                      child: Column(
+                        children: [
+                          const CalendarHeaderSection(),
+                          BlocSelector<CalendarCubit, CalendarState, bool>(
+                            selector: (state) => state.clickedDate != null,
+                            builder: (context, hasDate) {
+                              if (!hasDate) return const SizedBox.shrink();
+                              return const Column(children: [ActionPanel(), SavedEntriesList()]);
+                            },
+                          ),
+                          const CalendarAdBlock(),
+                          SizedBox(height: AppResponsive.isCompact(context) ? 72 : 100),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -170,6 +222,7 @@ class _CalendarDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: AppResponsive.drawerWidth(context),
       backgroundColor: AppColors.backgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -281,8 +334,36 @@ class _CalendarDrawer extends StatelessWidget {
               child: AppButton(
                 text: context.l10n.drawer_logout,
                 onPressed: () async {
+                  final l10n = context.l10n;
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      backgroundColor: AppColors.backgroundColor,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      title: Text(
+                        l10n.drawer_logoutConfirmTitle,
+                        style: AppStyle.style(18, fontWeight: FontWeight.w700),
+                      ),
+                      content: Text(l10n.drawer_logoutConfirmBody, style: AppStyle.style(15, height: 1.4)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text(l10n.drawer_logoutConfirmCancel, style: AppStyle.style(15)),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text(
+                            l10n.drawer_logoutConfirmYes,
+                            style: AppStyle.style(15, fontWeight: FontWeight.w700, color: AppColors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed != true || !context.mounted) return;
                   Navigator.of(context).pop();
                   await sl<AuthRepository>().logout();
+                  sl<UserCubit>().clearUser();
                   sl<AppRouter>().replaceAll([const LoginRoute()]);
                 },
               ),
@@ -300,8 +381,11 @@ class CalendarHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hPad = AppResponsive.horizontalPadding(context);
+    final vPad = AppResponsive.isCompact(context) ? 18.0 : 26.0;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 26),
+      padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
       decoration: const BoxDecoration(
         color: AppColors.brandColor,
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(18), bottomRight: Radius.circular(18)),
@@ -313,10 +397,11 @@ class CalendarHeaderSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [const _BrandLogoMark(), const Spacer(), const _AnimatedDrawerMenuButton()],
           ),
-          const SizedBox(height: 34),
+          SizedBox(height: AppResponsive.isCompact(context) ? 20 : 34),
           const YearListSelector(),
-          const SizedBox(height: 23),
+          SizedBox(height: AppResponsive.isCompact(context) ? 14 : 23),
           const MonthNavigationRow(),
+          const RecordingStatusIndicator(),
           const CalendarGrid(),
         ],
       ),
@@ -324,36 +409,88 @@ class CalendarHeaderSection extends StatelessWidget {
   }
 }
 
-class YearListSelector extends StatelessWidget {
+class YearListSelector extends StatefulWidget {
   const YearListSelector({super.key});
 
   @override
+  State<YearListSelector> createState() => _YearListSelectorState();
+}
+
+class _YearListSelectorState extends State<YearListSelector> {
+  static const _yearsAhead = 10;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollYears(int direction) {
+    if (!_scrollController.hasClients) return;
+    final offset = _scrollController.offset + direction * 120;
+    _scrollController.animateTo(
+      offset.clamp(0.0, _scrollController.position.maxScrollExtent),
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final years = List.generate(5, (i) => DateTime.now().year + i);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: BlocSelector<CalendarCubit, CalendarState, int>(
-        selector: (state) => state.selectedDate.year,
-        builder: (context, selectedYear) {
-          return Row(
-            children: years.map((y) {
-              final isSelected = selectedYear == y;
-              return GestureDetector(
-                onTap: () => context.read<CalendarCubit>().selectYear(y),
-                child: Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.brandColor2 : Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text('$y', style: AppStyle.style(16, fontWeight: FontWeight.bold)),
+    final startYear = DateTime.now().year;
+    final years = List.generate(_yearsAhead + 1, (i) => startYear + i);
+
+    return BlocSelector<CalendarCubit, CalendarState, int>(
+      selector: (state) => state.selectedDate.year,
+      builder: (context, selectedYear) {
+        return Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.chevron_left, color: AppColors.black),
+              onPressed: () => _scrollYears(-1),
+              visualDensity: VisualDensity.compact,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: years.map((y) {
+                    final isSelected = selectedYear == y;
+                    return GestureDetector(
+                      onTap: () => context.read<CalendarCubit>().selectYear(y),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.brandColor2 : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.12),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Text('$y', style: AppStyle.style(16, fontWeight: FontWeight.bold)),
+                      ),
+                    );
+                  }).toList(),
                 ),
-              );
-            }).toList(),
-          );
-        },
-      ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.chevron_right, color: AppColors.black),
+              onPressed: () => _scrollYears(1),
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -381,7 +518,18 @@ class MonthNavigationRow extends StatelessWidget {
               showBadge: state.hasNotesInPrevMonth,
               onPressed: () => context.read<CalendarCubit>().prevMonth(),
             ),
-            Text(monthName, style: AppStyle.style(18, fontWeight: FontWeight.bold)),
+            Flexible(
+              child: Text(
+                monthName,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppStyle.style(
+                  AppResponsive.isCompact(context) ? 16 : 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             _NavButtonWithBadge(
               icon: Icons.chevron_right,
               showBadge: state.hasNotesInNextMonth,
@@ -438,7 +586,7 @@ class SavedEntriesList extends StatelessWidget {
         return ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: AppResponsive.horizontalPadding(context)),
           itemCount: state.savedData.length,
           separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
@@ -615,50 +763,96 @@ class EntryActionMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<CalendarCubit>();
     final l10n = context.l10n;
+    final compact = AppResponsive.isCompact(context);
+    final iconSize = compact ? 18.0 : 22.0;
+    final labelSize = compact ? 10.0 : 12.0;
+
+    final itemPad = compact ? 10.0 : 14.0;
+    final items = [
+      _buildItem(AppSvg.repeat, l10n.calendar_action_onRepeat, iconSize, labelSize, itemPad, () {}),
+      _buildItem(
+        AppSvg.trash,
+        l10n.calendar_action_delete,
+        iconSize,
+        labelSize,
+        itemPad,
+        () => cubit.deleteEntry(entry),
+      ),
+      _buildItem(
+        AppSvg.download,
+        l10n.calendar_action_download,
+        iconSize,
+        labelSize,
+        itemPad,
+        () => cubit.downloadEntry(entry),
+      ),
+      _buildItem(
+        AppSvg.calendar,
+        l10n.calendar_action_remind,
+        iconSize,
+        labelSize,
+        itemPad,
+        () => ReminderDialog.show(
+          context,
+          entry: entry,
+          onSaved: () {
+            if (context.mounted) {
+              TopSnackBar.show(
+                context,
+                message: l10n.calendar_status_reminderSaved,
+                duration: const Duration(seconds: 2),
+              );
+            }
+          },
+        ),
+      ),
+    ];
+
     return Container(
       margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: compact ? 6 : 8),
       decoration: BoxDecoration(color: AppColors.brandColor, borderRadius: BorderRadius.circular(10)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildItem(AppSvg.repeat, l10n.calendar_action_onRepeat, () {}),
-          _divider(),
-          _buildItem(AppSvg.trash, l10n.calendar_action_delete, () => cubit.deleteEntry(entry)),
-          _divider(),
-          _buildItem(AppSvg.download, l10n.calendar_action_download, () => cubit.downloadEntry(entry)),
-          _divider(),
-          _buildItem(
-            AppSvg.calendar,
-            l10n.calendar_action_remind,
-            () => ReminderDialog.show(
-              context,
-              entry: entry,
-              onSaved: () {
-                if (context.mounted) {
-                  TopSnackBar.show(
-                    context,
-                    message: l10n.calendar_status_reminderSaved,
-                    duration: const Duration(seconds: 2),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: compact ? 4 : 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            for (var i = 0; i < items.length; i++) ...[if (i > 0) _divider(iconSize), items[i]],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _divider() => Container(height: 44, width: 1, color: AppColors.brandColor6);
+  Widget _divider(double iconSize) =>
+      Container(height: iconSize + 22, width: 1, color: AppColors.brandColor6);
 
-  Widget _buildItem(String svg, String title, VoidCallback onTap) => GestureDetector(
+  Widget _buildItem(
+    String svg,
+    String title,
+    double iconSize,
+    double labelSize,
+    double horizontalPad,
+    VoidCallback onTap,
+  ) => GestureDetector(
     onTap: onTap,
-    child: Column(
-      children: [
-        SvgPicture.asset(svg, height: 22),
-        Text(title, style: AppStyle.style(12)),
-      ],
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPad),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(svg, height: iconSize),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: AppStyle.style(labelSize),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -676,16 +870,33 @@ class RecordingStatusIndicator extends StatelessWidget {
         if (!isRecording) return const SizedBox.shrink();
 
         return Container(
-          margin: const EdgeInsets.all(16),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: AppColors.brandColor, borderRadius: BorderRadius.circular(10)),
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.brandColor2,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
           child: Row(
             children: [
               IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
                 icon: const Icon(Icons.stop_circle_outlined, color: Colors.red),
                 onPressed: () => context.read<CalendarCubit>().stopRecording(),
               ),
-              Text(context.l10n.calendar_recordingStatus(duration)),
+              Expanded(
+                child: Text(
+                  context.l10n.calendar_recordingStatus(duration),
+                  style: AppStyle.style(15, fontWeight: FontWeight.w600, color: AppColors.black),
+                ),
+              ),
             ],
           ),
         );
@@ -706,8 +917,11 @@ class CalendarAdBlock extends StatelessWidget {
         final ad = snapshot.data;
         if (ad == null || !ad.isActive || ad.imageUrl.isEmpty) return const SizedBox.shrink();
 
+        final hPad = AppResponsive.horizontalPadding(context);
+        final adHeight = (AppResponsive.screenWidth(context) * 0.42).clamp(120.0, 180.0);
+
         return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+          padding: EdgeInsets.fromLTRB(hPad, 24, hPad, 0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Material(
@@ -725,7 +939,7 @@ class CalendarAdBlock extends StatelessWidget {
                     if (ad.imageUrl.isNotEmpty)
                       Image.network(
                         ad.imageUrl,
-                        height: 160,
+                        height: adHeight,
                         width: double.infinity,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => const SizedBox(height: 120),

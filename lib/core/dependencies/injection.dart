@@ -10,6 +10,7 @@ import 'package:time_leak_flutter/feature/core/data/repository/notes_repository.
 import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
 import 'package:time_leak_flutter/feature/login/data/repository/auth_repository.dart';
 import 'package:time_leak_flutter/feature/login/presentation/cubit/login_cubit.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 import 'package:time_leak_flutter/feature/register/presentation/cubit/register_cubit.dart';
 import 'package:time_leak_flutter/feature/reset_password/presentation/cubit/reset_password_cubit.dart';
@@ -45,4 +46,5 @@ void setupLocator() {
   sl.registerLazySingleton(() => UserCubit(sl<UserRepository>()));
   sl.registerLazySingleton(() => ResetPasswordCubit(sl<AuthRepository>()));
   sl.registerLazySingleton(() => NotificationService(sl<SyncedNotesRepository>()));
+  sl.registerLazySingleton(() => AppIconBadgeService(sl<SyncedNotesRepository>()));
 }

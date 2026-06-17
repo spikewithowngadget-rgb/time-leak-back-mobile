@@ -6,14 +6,15 @@ import 'package:time_leak_flutter/core/resources/style.dart';
 class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final double? height;
 
-  const AppButton({super.key, required this.text, required this.onPressed});
+  const AppButton({super.key, required this.text, required this.onPressed, this.height});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: height ?? 56,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

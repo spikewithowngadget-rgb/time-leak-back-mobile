@@ -57,6 +57,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get drawer_logout => 'Выйти';
 
   @override
+  String get drawer_logoutConfirmTitle => 'Выйти из приложения?';
+
+  @override
+  String get drawer_logoutConfirmBody =>
+      'Потребуется снова ввести телефон и пароль при следующем входе.';
+
+  @override
+  String get drawer_logoutConfirmYes => 'Выйти';
+
+  @override
+  String get drawer_logoutConfirmCancel => 'Отмена';
+
+  @override
   String get drawer_about => 'О приложении';
 
   @override
@@ -68,6 +81,9 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get about_description =>
       'TimeLeak помогает фиксировать важное и привязывать к нужной дате: фото, голос, документы и другое.';
+
+  @override
+  String get about_reference => 'Референс: Maksa Tleshov';
 
   @override
   String get about_deleteAccount => 'Удалить аккаунт';
@@ -130,6 +146,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calendar_reminderNotificationBody => 'У вас заметка';
 
   @override
+  String get calendar_cameraSheetTitle => 'Камера';
+
+  @override
+  String get calendar_cameraPhoto => 'Сделать фото';
+
+  @override
+  String get calendar_cameraVideo => 'Снять видео';
+
+  @override
   String get calendar_status_fileSaved => 'Файл успешно сохранен';
 
   @override
@@ -172,10 +197,38 @@ class AppLocalizationsRu extends AppLocalizations {
   String get calendar_reminderDialog_title => 'Напоминание';
 
   @override
+  String get calendar_reminderDialog_afterAttachTitle => 'Напоминать';
+
+  @override
   String get calendar_reminderDialog_current => 'Сейчас:';
 
   @override
   String get calendar_reminderDialog_changeTo => 'Изменить на';
+
+  @override
+  String get calendar_reminderDialog_yearly_title => 'Ежегодно';
+
+  @override
+  String get calendar_reminderDialog_yearly_subtitle => 'Через 365 дней';
+
+  @override
+  String get calendar_reminderDialog_quarterly_title => 'Ежеквартально';
+
+  @override
+  String get calendar_reminderDialog_quarterly_subtitle => 'Через 3 месяца';
+
+  @override
+  String get calendar_reminderDialog_monthly_title => 'Ежемесячно';
+
+  @override
+  String get calendar_reminderDialog_monthly_subtitle => 'Через 30 дней';
+
+  @override
+  String get calendar_reminderDialog_customDays_title => 'Мой выбор';
+
+  @override
+  String get calendar_reminderDialog_customDays_subtitle =>
+      'Укажите число дней';
 
   @override
   String get calendar_reminderDialog_everyDay_title => 'Каждый день';
@@ -208,6 +261,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get calendar_reminderLabel_notSet => 'Не задано';
+
+  @override
+  String get calendar_reminderLabel_yearly => 'Ежегодно';
+
+  @override
+  String get calendar_reminderLabel_quarterly => 'Ежеквартально';
+
+  @override
+  String get calendar_reminderLabel_monthly => 'Ежемесячно';
 
   @override
   String get calendar_reminderLabel_everyDay => 'Каждый день';

@@ -57,6 +57,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get drawer_logout => 'Log out';
 
   @override
+  String get drawer_logoutConfirmTitle => 'Sign out?';
+
+  @override
+  String get drawer_logoutConfirmBody =>
+      'You will need to sign in with your phone and password again.';
+
+  @override
+  String get drawer_logoutConfirmYes => 'Sign out';
+
+  @override
+  String get drawer_logoutConfirmCancel => 'Cancel';
+
+  @override
   String get drawer_about => 'ऐप के बारे में';
 
   @override
@@ -68,6 +81,9 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get about_description =>
       'TimeLeak आपको ज़रूरी चीज़ें सहेजने और उन्हें आपकी मनचाही तारीख़ से जोड़ने में मदद करता है — फ़ोटो, वॉइस नोट्स, दस्तावेज़ और बहुत कुछ।';
+
+  @override
+  String get about_reference => 'Reference: Maksa Tleshov';
 
   @override
   String get about_deleteAccount => 'खाता हटाएँ';
@@ -129,6 +145,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get calendar_reminderNotificationBody => 'आपके पास एक नोट है';
 
   @override
+  String get calendar_cameraSheetTitle => 'Camera';
+
+  @override
+  String get calendar_cameraPhoto => 'Take photo';
+
+  @override
+  String get calendar_cameraVideo => 'Record video';
+
+  @override
   String get calendar_status_fileSaved => 'फ़ाइल सहेजी गई';
 
   @override
@@ -170,10 +195,38 @@ class AppLocalizationsHi extends AppLocalizations {
   String get calendar_reminderDialog_title => 'अनुस्मारक';
 
   @override
+  String get calendar_reminderDialog_afterAttachTitle => 'Remind me';
+
+  @override
   String get calendar_reminderDialog_current => 'अभी:';
 
   @override
   String get calendar_reminderDialog_changeTo => 'बदलें';
+
+  @override
+  String get calendar_reminderDialog_yearly_title => 'Annually';
+
+  @override
+  String get calendar_reminderDialog_yearly_subtitle => 'In 365 days';
+
+  @override
+  String get calendar_reminderDialog_quarterly_title => 'Quarterly';
+
+  @override
+  String get calendar_reminderDialog_quarterly_subtitle => 'In 3 months';
+
+  @override
+  String get calendar_reminderDialog_monthly_title => 'Monthly';
+
+  @override
+  String get calendar_reminderDialog_monthly_subtitle => 'In 30 days';
+
+  @override
+  String get calendar_reminderDialog_customDays_title => 'Custom';
+
+  @override
+  String get calendar_reminderDialog_customDays_subtitle =>
+      'Enter number of days';
 
   @override
   String get calendar_reminderDialog_everyDay_title => 'हर दिन';
@@ -205,6 +258,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get calendar_reminderLabel_notSet => 'सेट नहीं';
+
+  @override
+  String get calendar_reminderLabel_yearly => 'Annually';
+
+  @override
+  String get calendar_reminderLabel_quarterly => 'Quarterly';
+
+  @override
+  String get calendar_reminderLabel_monthly => 'Monthly';
 
   @override
   String get calendar_reminderLabel_everyDay => 'हर दिन';

@@ -34,6 +34,11 @@ class CalendarRepository {
     return list.map((e) => CalendarEntryModel.fromEntity(e)).toList();
   }
 
+  /// Поток: общее число записей календаря (для бейджа на иконке приложения).
+  Stream<int> watchEntriesCount() {
+    return _db.select(_db.calendarEntries).watch().map((rows) => rows.length);
+  }
+
   /// Есть ли локальная запись с таким backend_note_id (после синхронизации с бэка).
   Future<bool> hasEntryWithBackendNoteId(String backendNoteId) async {
     final list = await (_db.select(

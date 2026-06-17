@@ -13,4 +13,9 @@ class PinSession {
   static void reset() {
     _calendarUnlocked = false;
   }
+
+  /// Блокировка календаря без сброса сохранённого PIN (неактивность / фон).
+  static void lock() {
+    _calendarUnlocked = false;
+  }
 }

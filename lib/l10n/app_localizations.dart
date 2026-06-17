@@ -210,6 +210,30 @@ abstract class AppLocalizations {
   /// **'Log out'**
   String get drawer_logout;
 
+  /// No description provided for @drawer_logoutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out?'**
+  String get drawer_logoutConfirmTitle;
+
+  /// No description provided for @drawer_logoutConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will need to sign in with your phone and password again.'**
+  String get drawer_logoutConfirmBody;
+
+  /// No description provided for @drawer_logoutConfirmYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get drawer_logoutConfirmYes;
+
+  /// No description provided for @drawer_logoutConfirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get drawer_logoutConfirmCancel;
+
   /// No description provided for @drawer_about.
   ///
   /// In en, this message translates to:
@@ -233,6 +257,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'TimeLeak helps you capture what matters and tie it to the date you need — photos, voice notes, documents, and more.'**
   String get about_description;
+
+  /// No description provided for @about_reference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference: Maksa Tleshov'**
+  String get about_reference;
 
   /// No description provided for @about_deleteAccount.
   ///
@@ -336,6 +366,24 @@ abstract class AppLocalizations {
   /// **'You have a note'**
   String get calendar_reminderNotificationBody;
 
+  /// No description provided for @calendar_cameraSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get calendar_cameraSheetTitle;
+
+  /// No description provided for @calendar_cameraPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get calendar_cameraPhoto;
+
+  /// No description provided for @calendar_cameraVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Record video'**
+  String get calendar_cameraVideo;
+
   /// No description provided for @calendar_status_fileSaved.
   ///
   /// In en, this message translates to:
@@ -414,6 +462,12 @@ abstract class AppLocalizations {
   /// **'Reminder'**
   String get calendar_reminderDialog_title;
 
+  /// No description provided for @calendar_reminderDialog_afterAttachTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me'**
+  String get calendar_reminderDialog_afterAttachTitle;
+
   /// No description provided for @calendar_reminderDialog_current.
   ///
   /// In en, this message translates to:
@@ -425,6 +479,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change to'**
   String get calendar_reminderDialog_changeTo;
+
+  /// No description provided for @calendar_reminderDialog_yearly_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Annually'**
+  String get calendar_reminderDialog_yearly_title;
+
+  /// No description provided for @calendar_reminderDialog_yearly_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In 365 days'**
+  String get calendar_reminderDialog_yearly_subtitle;
+
+  /// No description provided for @calendar_reminderDialog_quarterly_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get calendar_reminderDialog_quarterly_title;
+
+  /// No description provided for @calendar_reminderDialog_quarterly_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In 3 months'**
+  String get calendar_reminderDialog_quarterly_subtitle;
+
+  /// No description provided for @calendar_reminderDialog_monthly_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get calendar_reminderDialog_monthly_title;
+
+  /// No description provided for @calendar_reminderDialog_monthly_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'In 30 days'**
+  String get calendar_reminderDialog_monthly_subtitle;
+
+  /// No description provided for @calendar_reminderDialog_customDays_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get calendar_reminderDialog_customDays_title;
+
+  /// No description provided for @calendar_reminderDialog_customDays_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter number of days'**
+  String get calendar_reminderDialog_customDays_subtitle;
 
   /// No description provided for @calendar_reminderDialog_everyDay_title.
   ///
@@ -485,6 +587,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not set'**
   String get calendar_reminderLabel_notSet;
+
+  /// No description provided for @calendar_reminderLabel_yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Annually'**
+  String get calendar_reminderLabel_yearly;
+
+  /// No description provided for @calendar_reminderLabel_quarterly.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarterly'**
+  String get calendar_reminderLabel_quarterly;
+
+  /// No description provided for @calendar_reminderLabel_monthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get calendar_reminderLabel_monthly;
 
   /// No description provided for @calendar_reminderLabel_everyDay.
   ///

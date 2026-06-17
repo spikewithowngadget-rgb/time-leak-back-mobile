@@ -2,7 +2,7 @@ name: time_leak_flutter
 description: "A new Flutter project with full localization support."
 publish_to: 'none'
 
-version: 1.0.0+3
+version: 1.0.1+5
 
 environment:
   sdk: ^3.9.2
@@ -17,7 +17,7 @@ dependencies:
   intl: ^0.20.2
 
   # Управление состоянием (Cubit)
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
 
   # Внедрение зависимостей (Service Locator)
   get_it: ^7.7.0
@@ -42,6 +42,7 @@ dependencies:
   crypto: ^3.0.6
   shared_preferences: ^2.3.5
   package_info_plus: ^8.3.0
+  app_badge_plus: ^1.2.10
 
   # audio_router: ^1.1.1
 

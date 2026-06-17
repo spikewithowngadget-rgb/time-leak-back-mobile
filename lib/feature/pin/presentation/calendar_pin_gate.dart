@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -23,8 +25,9 @@ class CalendarPinGate extends StatefulWidget {
   State<CalendarPinGate> createState() => _CalendarPinGateState();
 }
 
-class _CalendarPinGateState extends State<CalendarPinGate> {
+class _CalendarPinGateState extends State<CalendarPinGate> with WidgetsBindingObserver {
   static const _pinLen = 4;
+  static const _inactivityLock = Duration(minutes: 1);
   static const _mintBg = Color(0xFFEFFEF0);
   static const _dotEmpty = Color(0xFFE8DDD0);
   static const _titleGrey = Color(0xFF9E9E9E);
@@ -38,11 +41,45 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
   String? _firstPin;
   String? _storedHash;
   bool _biometricAvailable = false;
+  List<BiometricType> _biometrics = const [];
+  Timer? _inactivityTimer;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _bootstrap();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _inactivityTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _lockFromInactivity();
+    }
+  }
+
+  void _lockFromInactivity() {
+    if (!_showChild || _storedHash == null) return;
+    PinSession.lock();
+    setState(() {
+      _showChild = false;
+      _step = _PinStep.unlock;
+      _buffer = '';
+    });
+    _inactivityTimer?.cancel();
+  }
+
+  void _resetInactivityTimer() {
+    _inactivityTimer?.cancel();
+    if (!_showChild) return;
+    _inactivityTimer = Timer(_inactivityLock, _lockFromInactivity);
   }
 
   Future<void> _bootstrap() async {
@@ -51,8 +88,12 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
     _storedHash = hash;
     try {
       _biometricAvailable = await _localAuth.canCheckBiometrics && await _localAuth.isDeviceSupported();
+      if (_biometricAvailable) {
+        _biometrics = await _localAuth.getAvailableBiometrics();
+      }
     } catch (_) {
       _biometricAvailable = false;
+      _biometrics = const [];
     }
     if (!mounted) return;
     if (PinSession.calendarUnlocked) {
@@ -60,6 +101,7 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
         _loading = false;
         _showChild = true;
       });
+      _resetInactivityTimer();
       return;
     }
     setState(() {
@@ -70,6 +112,9 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
         _step = _PinStep.unlock;
       }
     });
+    if (_step == _PinStep.unlock && _biometricAvailable) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _tryBiometricUnlock(silent: true));
+    }
   }
 
   Future<void> _tryBiometricUnlock({bool silent = false}) async {
@@ -87,6 +132,7 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
           _step = null;
           _buffer = '';
         });
+        _resetInactivityTimer();
       }
     } on PlatformException catch (_) {
       if (!silent && mounted) {
@@ -139,6 +185,7 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
               _showChild = true;
               _step = null;
             });
+            _resetInactivityTimer();
           }
         }
         break;
@@ -150,6 +197,7 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
               _showChild = true;
               _step = null;
             });
+            _resetInactivityTimer();
           }
         } else {
           HapticFeedback.mediumImpact();
@@ -181,7 +229,10 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
       );
     }
     if (_showChild) {
-      return widget.child;
+      return Listener(
+        onPointerDown: (_) => _resetInactivityTimer(),
+        child: widget.child,
+      );
     }
     return Scaffold(
       backgroundColor: _mintBg,
@@ -238,6 +289,7 @@ class _CalendarPinGateState extends State<CalendarPinGate> {
             ),
             _Keypad(
               showBiometric: _step == _PinStep.unlock && _biometricAvailable,
+              biometrics: _biometrics,
               onDigit: _onDigit,
               onBackspace: _onBackspace,
               onBiometric: () => _tryBiometricUnlock(silent: false),
@@ -255,46 +307,59 @@ class _Keypad extends StatelessWidget {
     required this.onDigit,
     required this.onBackspace,
     required this.showBiometric,
+    required this.biometrics,
     required this.onBiometric,
   });
 
   static const double _cellHeight = 64;
-  static const double _digitFontSize = 32;
+  static const double _digitFontSize = 28;
   static const double _rowGap = 14;
+  static const BorderRadius _tapRadius = BorderRadius.all(Radius.circular(16));
 
   final void Function(String) onDigit;
   final VoidCallback onBackspace;
   final bool showBiometric;
+  final List<BiometricType> biometrics;
   final VoidCallback onBiometric;
 
-  Widget _digitCell(BuildContext context, String d) {
+  Widget _tapCell({required VoidCallback? onTap, required Widget child}) {
     return Expanded(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => onDigit(d),
+          onTap: onTap,
+          borderRadius: _tapRadius,
+          splashColor: AppColors.brandColor2.withValues(alpha: 0.45),
+          highlightColor: AppColors.brandColor1.withValues(alpha: 0.14),
           splashFactory: InkRipple.splashFactory,
-          child: SizedBox(
-            height: _cellHeight,
-            child: Center(
-              child: Transform.scale(
-                scaleX: 0.90,
-                scaleY: 1.10,
-                child: Text(
-                  d,
-                  style: AppStyle.style(
-                    _digitFontSize,
-                    color: AppColors.black,
-                    fontWeight: FontWeight.w500,
-                    height: 1,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          child: SizedBox(height: _cellHeight, child: Center(child: child)),
         ),
       ),
     );
+  }
+
+  Widget _digitCell(String d) {
+    return _tapCell(
+      onTap: () => onDigit(d),
+      child: Text(
+        d,
+        style: AppStyle.style(
+          _digitFontSize,
+          color: AppColors.black,
+          fontWeight: FontWeight.w600,
+          height: 1,
+        ),
+      ),
+    );
+  }
+
+  IconData _biometricIcon() {
+    if (biometrics.contains(BiometricType.fingerprint) ||
+        biometrics.contains(BiometricType.strong) ||
+        biometrics.contains(BiometricType.weak)) {
+      return Icons.fingerprint_rounded;
+    }
+    return Icons.face_rounded;
   }
 
   @override
@@ -310,36 +375,20 @@ class _Keypad extends StatelessWidget {
           ])
             Padding(
               padding: const EdgeInsets.only(bottom: _rowGap),
-              child: Row(children: [for (final d in row) _digitCell(context, d)]),
+              child: Row(children: [for (final d in row) _digitCell(d)]),
             ),
           Row(
             children: [
-              Expanded(
-                child: showBiometric
-                    ? Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: onBiometric,
-                          child: SizedBox(
-                            height: _cellHeight,
-                            child: Center(child: Icon(Icons.face_rounded, size: 28, color: AppColors.grey2)),
-                          ),
-                        ),
-                      )
-                    : const SizedBox(height: _cellHeight),
-              ),
-              _digitCell(context, '0'),
-              Expanded(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: onBackspace,
-                    child: SizedBox(
-                      height: _cellHeight,
-                      child: Center(child: Icon(Icons.backspace_outlined, size: 24, color: AppColors.grey)),
-                    ),
-                  ),
-                ),
+              showBiometric
+                  ? _tapCell(
+                      onTap: onBiometric,
+                      child: Icon(_biometricIcon(), size: 30, color: AppColors.grey2),
+                    )
+                  : const Expanded(child: SizedBox(height: _cellHeight)),
+              _digitCell('0'),
+              _tapCell(
+                onTap: onBackspace,
+                child: Icon(Icons.backspace_outlined, size: 24, color: AppColors.grey),
               ),
             ],
           ),

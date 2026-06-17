@@ -10,36 +10,46 @@ import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 
+const int yearlyReminderMinutes = 365 * 24 * 60;
+const int quarterlyReminderMinutes = 91 * 24 * 60;
+const int monthlyReminderMinutes = 30 * 24 * 60;
+const int everyDayReminderMinutes = 24 * 60;
+
 /// Форматирует текущее значение напоминания для отображения.
 String formatReminderLabel(BuildContext context, int? minutes) {
   final l10n = context.l10n;
   if (minutes == null || minutes <= 0) return l10n.calendar_reminderLabel_notSet;
-  if (minutes == 24 * 60) return l10n.calendar_reminderLabel_everyDay;
+  if (minutes == everyDayReminderMinutes) return l10n.calendar_reminderLabel_everyDay;
+  if (minutes == yearlyReminderMinutes) return l10n.calendar_reminderLabel_yearly;
+  if (minutes == quarterlyReminderMinutes) return l10n.calendar_reminderLabel_quarterly;
+  if (minutes == monthlyReminderMinutes) return l10n.calendar_reminderLabel_monthly;
   if (minutes >= 24 * 60) return l10n.calendar_reminderLabel_inDays(minutes ~/ (24 * 60));
   if (minutes >= 60) return l10n.calendar_reminderLabel_inHours(minutes ~/ 60);
   return l10n.calendar_reminderLabel_inMinutes(minutes);
 }
 
-const int _everyDayMinutes = 24 * 60; // 1440
-
 class ReminderDialog extends StatefulWidget {
   final CalendarEntryModel entry;
   final VoidCallback? onSaved;
+  final bool afterAttach;
 
   const ReminderDialog({
     super.key,
     required this.entry,
     this.onSaved,
+    this.afterAttach = false,
   });
 
   static Future<void> show(
     BuildContext context, {
     required CalendarEntryModel entry,
     VoidCallback? onSaved,
+    bool afterAttach = false,
   }) {
     return showDialog<void>(
       context: context,
-      builder: (context) => ReminderDialog(entry: entry, onSaved: onSaved),
+      barrierDismissible: afterAttach,
+      builder: (context) => ReminderDialog(entry: entry, onSaved: onSaved, afterAttach: afterAttach),
     );
   }
 
@@ -48,48 +58,46 @@ class ReminderDialog extends StatefulWidget {
 }
 
 class _ReminderDialogState extends State<ReminderDialog> {
-  late String _selectedOption; // 'every_day' | 'custom'
-  late String _customUnit; // 'days' | 'hours' | 'minutes'
-  final TextEditingController _customController = TextEditingController();
+  late String _selectedOption; // yearly | quarterly | monthly | custom
+  final TextEditingController _customDaysController = TextEditingController();
   bool _saving = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedOption = 'every_day';
-    _customUnit = 'hours';
+    _selectedOption = 'monthly';
     final current = widget.entry.reminderMinutes;
-    if (current != null && current != _everyDayMinutes) {
-      _selectedOption = 'custom';
-      if (current >= 24 * 60) {
-        _customUnit = 'days';
-        _customController.text = '${current ~/ (24 * 60)}';
-      } else if (current >= 60) {
-        _customUnit = 'hours';
-        _customController.text = '${current ~/ 60}';
-      } else {
-        _customUnit = 'minutes';
-        _customController.text = '$current';
+    if (current != null) {
+      if (current == yearlyReminderMinutes) {
+        _selectedOption = 'yearly';
+      } else if (current == quarterlyReminderMinutes) {
+        _selectedOption = 'quarterly';
+      } else if (current == monthlyReminderMinutes) {
+        _selectedOption = 'monthly';
+      } else if (current >= 24 * 60) {
+        _selectedOption = 'custom';
+        _customDaysController.text = '${current ~/ (24 * 60)}';
       }
     }
   }
 
   @override
   void dispose() {
-    _customController.dispose();
+    _customDaysController.dispose();
     super.dispose();
   }
 
   int _computeTotalMinutes() {
-    if (_selectedOption == 'every_day') return _everyDayMinutes;
-    final val = int.tryParse(_customController.text) ?? 0;
-    switch (_customUnit) {
-      case 'days':
-        return val * 24 * 60;
-      case 'hours':
-        return val * 60;
+    switch (_selectedOption) {
+      case 'yearly':
+        return yearlyReminderMinutes;
+      case 'quarterly':
+        return quarterlyReminderMinutes;
+      case 'monthly':
+        return monthlyReminderMinutes;
       default:
-        return val;
+        final days = int.tryParse(_customDaysController.text) ?? 0;
+        return days * 24 * 60;
     }
   }
 
@@ -139,6 +147,7 @@ class _ReminderDialogState extends State<ReminderDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final currentLabel = formatReminderLabel(context, widget.entry.reminderMinutes);
+    final title = widget.afterAttach ? l10n.calendar_reminderDialog_afterAttachTitle : l10n.calendar_reminderDialog_title;
 
     return Dialog(
       backgroundColor: AppColors.backgroundColor,
@@ -157,9 +166,11 @@ class _ReminderDialogState extends State<ReminderDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  l10n.calendar_reminderDialog_title,
-                  style: AppStyle.style(22, fontWeight: FontWeight.w700, color: AppColors.black),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: AppStyle.style(22, fontWeight: FontWeight.w700, color: AppColors.black),
+                  ),
                 ),
                 IconButton(
                   onPressed: _saving ? null : () => Navigator.of(context).pop(),
@@ -168,83 +179,78 @@ class _ReminderDialogState extends State<ReminderDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: AppColors.brandColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.schedule, size: 20, color: AppColors.black.withOpacity(0.7)),
-                  const SizedBox(width: 10),
-                  Text(
-                    '${l10n.calendar_reminderDialog_current} ',
-                    style: AppStyle.style(14, color: AppColors.grey2),
-                  ),
-                  Expanded(
-                    child: Text(
-                      currentLabel,
-                      style: AppStyle.style(14, fontWeight: FontWeight.w600, color: AppColors.black),
+            if (!widget.afterAttach) ...[
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.brandColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.schedule, size: 20, color: AppColors.black.withValues(alpha: 0.7)),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${l10n.calendar_reminderDialog_current} ',
+                      style: AppStyle.style(14, color: AppColors.grey2),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Text(
+                        currentLabel,
+                        style: AppStyle.style(14, fontWeight: FontWeight.w600, color: AppColors.black),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              l10n.calendar_reminderDialog_changeTo,
-              style: AppStyle.style(14, color: AppColors.grey2),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 24),
+              Text(
+                l10n.calendar_reminderDialog_changeTo,
+                style: AppStyle.style(14, color: AppColors.grey2),
+              ),
+              const SizedBox(height: 12),
+            ] else
+              const SizedBox(height: 8),
             _OptionTile(
-              title: l10n.calendar_reminderDialog_everyDay_title,
-              subtitle: l10n.calendar_reminderDialog_everyDay_subtitle,
-              isSelected: _selectedOption == 'every_day',
-              onTap: () => setState(() => _selectedOption = 'every_day'),
+              title: l10n.calendar_reminderDialog_yearly_title,
+              subtitle: l10n.calendar_reminderDialog_yearly_subtitle,
+              isSelected: _selectedOption == 'yearly',
+              onTap: () => setState(() => _selectedOption = 'yearly'),
             ),
             const SizedBox(height: 10),
             _OptionTile(
-              title: l10n.calendar_reminderDialog_custom_title,
-              subtitle: l10n.calendar_reminderDialog_custom_subtitle,
+              title: l10n.calendar_reminderDialog_quarterly_title,
+              subtitle: l10n.calendar_reminderDialog_quarterly_subtitle,
+              isSelected: _selectedOption == 'quarterly',
+              onTap: () => setState(() => _selectedOption = 'quarterly'),
+            ),
+            const SizedBox(height: 10),
+            _OptionTile(
+              title: l10n.calendar_reminderDialog_monthly_title,
+              subtitle: l10n.calendar_reminderDialog_monthly_subtitle,
+              isSelected: _selectedOption == 'monthly',
+              onTap: () => setState(() => _selectedOption = 'monthly'),
+            ),
+            const SizedBox(height: 10),
+            _OptionTile(
+              title: l10n.calendar_reminderDialog_customDays_title,
+              subtitle: l10n.calendar_reminderDialog_customDays_subtitle,
               isSelected: _selectedOption == 'custom',
               onTap: () => setState(() => _selectedOption = 'custom'),
             ),
             if (_selectedOption == 'custom') ...[
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  _UnitChip(
-                  label: l10n.calendar_reminderDialog_unit_days,
-                  selected: _customUnit == 'days',
-                  onTap: () => setState(() => _customUnit = 'days'),
-                ),
-                  const SizedBox(width: 8),
-                  _UnitChip(
-                    label: l10n.calendar_reminderDialog_unit_hours,
-                    selected: _customUnit == 'hours',
-                    onTap: () => setState(() => _customUnit = 'hours'),
-                  ),
-                  const SizedBox(width: 8),
-                  _UnitChip(
-                    label: l10n.calendar_reminderDialog_unit_minutes,
-                    selected: _customUnit == 'minutes',
-                    onTap: () => setState(() => _customUnit = 'minutes'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
               TextField(
-                controller: _customController,
+                controller: _customDaysController,
                 keyboardType: TextInputType.number,
-                style: const TextStyle(color: AppColors.black),
+                style: AppStyle.style(16, color: AppColors.black),
                 decoration: InputDecoration(
-                  hintText: _hintForUnit(_customUnit),
-                  hintStyle: const TextStyle(color: AppColors.grey2, fontSize: 14),
+                  hintText: l10n.calendar_reminderDialog_hint_days,
+                  hintStyle: AppStyle.style(14, color: AppColors.grey2),
                   filled: true,
                   fillColor: Colors.grey.shade100,
-                  suffixText: _suffixForUnit(_customUnit),
+                  suffixText: l10n.calendar_reminderDialog_suffix_days,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -279,30 +285,6 @@ class _ReminderDialogState extends State<ReminderDialog> {
       ),
     );
   }
-
-  String _hintForUnit(String unit) {
-    final l10n = context.l10n;
-    switch (unit) {
-      case 'days':
-        return l10n.calendar_reminderDialog_hint_days;
-      case 'hours':
-        return l10n.calendar_reminderDialog_hint_hours;
-      default:
-        return l10n.calendar_reminderDialog_hint_minutes;
-    }
-  }
-
-  String _suffixForUnit(String unit) {
-    final l10n = context.l10n;
-    switch (unit) {
-      case 'days':
-        return l10n.calendar_reminderDialog_suffix_days;
-      case 'hours':
-        return l10n.calendar_reminderDialog_suffix_hours;
-      default:
-        return l10n.calendar_reminderDialog_suffix_minutes;
-    }
-  }
 }
 
 class _OptionTile extends StatelessWidget {
@@ -328,7 +310,7 @@ class _OptionTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.brandColor2.withOpacity(0.3) : AppColors.brandColor,
+            color: isSelected ? AppColors.brandColor2.withValues(alpha: 0.3) : AppColors.brandColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected ? AppColors.buttonColor : Colors.transparent,
@@ -359,39 +341,6 @@ class _OptionTile extends StatelessWidget {
                 size: 24,
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _UnitChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _UnitChip({required this.label, required this.selected, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.buttonColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: selected ? AppColors.buttonColor : AppColors.grey,
-          ),
-        ),
-        child: Text(
-          label,
-          style: AppStyle.style(
-            14,
-            color: AppColors.black,
-            fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ),

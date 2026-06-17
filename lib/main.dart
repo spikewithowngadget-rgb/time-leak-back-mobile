@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/core/router/app_router.dart';
 import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 import 'package:time_leak_flutter/l10n/app_localizations.dart';
 
@@ -11,6 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
   await sl<NotificationService>().init();
+  await sl<AppIconBadgeService>().start();
   runApp(const MyApp());
 }
 
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
         builder: (context, locale) {
           return MaterialApp.router(
             title: 'TimeLeak',
+            theme: ThemeData(fontFamily: 'Arial'),
             routerConfig: appRouter.config(),
             debugShowCheckedModeBanner: false,
             locale: locale,
