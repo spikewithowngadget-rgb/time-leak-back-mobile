@@ -7,6 +7,58 @@
   "login_passwordLabel": "Password",
   "login_forgotPassword": "Forgot password?",
   "login_signIn": "Sign in",
+  "login_noAccount": "No account? ",
+  "login_registerLink": "Sign up",
+
+  "register_title": "Registration",
+  "register_phoneSubtitle": "Enter your phone number to receive a verification code",
+  "register_phoneLabel": "Phone number",
+  "register_getCode": "Get code",
+  "register_errorEnterPhone": "Enter your phone number",
+  "register_verifyTitle": "Verification",
+  "register_verifySubtitle": "We sent a code to {phone}",
+  "@register_verifySubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "register_smsCodeLabel": "SMS code",
+  "register_resendCode": "Resend code",
+  "register_confirm": "Confirm",
+  "register_errorEnterFullCode": "Enter the full code",
+  "register_passwordTitle": "Create a password",
+  "register_passwordSubtitle": "Use at least 8 characters for a strong password",
+  "register_confirmPasswordLabel": "Confirm password",
+  "register_complete": "Complete registration",
+  "register_success": "Registration successful!",
+  "register_errorFillAllFields": "Fill in all fields",
+  "register_errorPasswordsMismatch": "Passwords do not match",
+  "register_errorPasswordTooShort": "Password is too short",
+
+  "reset_title": "Password recovery",
+  "reset_subtitle": "Enter your phone number to receive an access code",
+  "reset_sendCode": "Send code",
+  "reset_verifyTitle": "Verification code",
+  "reset_verifySubtitle": "We sent it to\n{phone}",
+  "@reset_verifySubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "reset_resendCode": "Send again",
+  "reset_continue": "Continue",
+  "reset_newPasswordTitle": "New password",
+  "reset_newPasswordSubtitle": "Create a new password for your account",
+  "reset_passwordHint": "Password",
+  "reset_confirmPasswordHint": "Repeat password",
+  "reset_updatePassword": "Update password",
+  "reset_success": "Password changed successfully!",
+  "reset_errorFillAllFields": "Fill in all fields",
+  "reset_errorPasswordsMismatch": "Passwords do not match",
 
   "pin_screenTitle": "Authorization",
   "pin_accessCode": "Access code",
@@ -59,6 +111,7 @@
   "calendar_cameraSheetTitle": "Camera",
   "calendar_cameraPhoto": "Take photo",
   "calendar_cameraVideo": "Record video",
+  "calendar_selectDayFirst": "Select a day on the calendar first",
 
   "calendar_status_fileSaved": "File saved",
   "calendar_status_saveError": "Save failed",

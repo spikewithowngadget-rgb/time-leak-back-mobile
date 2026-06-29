@@ -7,14 +7,10 @@ import 'package:time_leak_flutter/core/resources/style.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
   final String filePath;
-  final VoidCallback onMoreTap;
-  final bool isMenuOpen; // Добавляем флаг состояния меню
 
   const AudioPlayerWidget({
     super.key,
     required this.filePath,
-    required this.onMoreTap,
-    this.isMenuOpen = false, // По умолчанию закрыто
   });
 
   @override
@@ -117,11 +113,6 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
           ),
           const SizedBox(width: 12),
           Text(_formatDuration(_duration - _position), style: AppStyle.style(16, color: AppColors.black)),
-          // Меняем иконку в зависимости от переданного состояния
-          IconButton(
-            icon: Icon(widget.isMenuOpen ? Icons.close : Icons.more_vert, color: AppColors.black),
-            onPressed: widget.onMoreTap,
-          ),
         ],
       ),
     );

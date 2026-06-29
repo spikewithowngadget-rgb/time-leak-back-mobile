@@ -27,6 +27,122 @@ class AppLocalizationsRu extends AppLocalizations {
   String get login_signIn => 'Войти';
 
   @override
+  String get login_noAccount => 'Нет аккаунта? ';
+
+  @override
+  String get login_registerLink => 'Зарегистрироваться';
+
+  @override
+  String get register_title => 'Регистрация';
+
+  @override
+  String get register_phoneSubtitle =>
+      'Введите ваш номер телефона для получения кода подтверждения';
+
+  @override
+  String get register_phoneLabel => 'Номер телефона';
+
+  @override
+  String get register_getCode => 'Получить код';
+
+  @override
+  String get register_errorEnterPhone => 'Введите номер телефона';
+
+  @override
+  String get register_verifyTitle => 'Подтверждение';
+
+  @override
+  String register_verifySubtitle(String phone) {
+    return 'Мы отправили код на номер $phone';
+  }
+
+  @override
+  String get register_smsCodeLabel => 'Код из СМС';
+
+  @override
+  String get register_resendCode => 'Отправить код повторно';
+
+  @override
+  String get register_confirm => 'Подтвердить';
+
+  @override
+  String get register_errorEnterFullCode => 'Введите полный код';
+
+  @override
+  String get register_passwordTitle => 'Придумайте пароль';
+
+  @override
+  String get register_passwordSubtitle =>
+      'Пароль должен быть надежным и содержать не менее 8 символов';
+
+  @override
+  String get register_confirmPasswordLabel => 'Подтвердите пароль';
+
+  @override
+  String get register_complete => 'Завершить регистрацию';
+
+  @override
+  String get register_success => 'Регистрация прошла успешно!';
+
+  @override
+  String get register_errorFillAllFields => 'Заполните все поля';
+
+  @override
+  String get register_errorPasswordsMismatch => 'Пароли не совпадают';
+
+  @override
+  String get register_errorPasswordTooShort => 'Пароль слишком короткий';
+
+  @override
+  String get reset_title => 'Восстановление';
+
+  @override
+  String get reset_subtitle =>
+      'Введите номер телефона, чтобы получить код доступа';
+
+  @override
+  String get reset_sendCode => 'Отправить код';
+
+  @override
+  String get reset_verifyTitle => 'Код подтверждения';
+
+  @override
+  String reset_verifySubtitle(String phone) {
+    return 'Мы отправили его на номер\n$phone';
+  }
+
+  @override
+  String get reset_resendCode => 'Отправить еще раз';
+
+  @override
+  String get reset_continue => 'Продолжить';
+
+  @override
+  String get reset_newPasswordTitle => 'Новый пароль';
+
+  @override
+  String get reset_newPasswordSubtitle =>
+      'Создайте новый пароль для доступа к вашему аккаунту';
+
+  @override
+  String get reset_passwordHint => 'Пароль';
+
+  @override
+  String get reset_confirmPasswordHint => 'Повторите пароль';
+
+  @override
+  String get reset_updatePassword => 'Обновить пароль';
+
+  @override
+  String get reset_success => 'Пароль успешно изменен!';
+
+  @override
+  String get reset_errorFillAllFields => 'Заполните все поля';
+
+  @override
+  String get reset_errorPasswordsMismatch => 'Пароли не совпадают';
+
+  @override
   String get pin_screenTitle => 'Авторизация';
 
   @override
@@ -153,6 +269,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get calendar_cameraVideo => 'Снять видео';
+
+  @override
+  String get calendar_selectDayFirst => 'Сначала выберите день в календаре';
 
   @override
   String get calendar_status_fileSaved => 'Файл успешно сохранен';

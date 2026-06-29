@@ -1,15 +1,16 @@
 import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
+import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/calendar_day_badge.dart';
 import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 import 'package:time_leak_flutter/l10n/app_localizations.dart';
@@ -19,62 +20,71 @@ class CalendarState {
   final DateTime selectedDate;
   final DateTime? clickedDate;
   final List<CalendarEntryModel> savedData;
-  final String? activeEntryPath;
   final bool isRecording;
   final String recordDuration;
   final String? message;
   final List<DateTime> markedDates;
+  final List<CalendarEntryModel> monthEntries;
+  final Set<int> yearsWithNotes;
+  final Map<int, Color> yearBadgeColors;
   final bool hasNotesInPrevMonth;
   final bool hasNotesInNextMonth;
-  final CalendarEntryModel? pendingReminderEntry;
+  final CalendarEntryModel? entryPendingReminder;
 
   CalendarState({
     required this.selectedDate,
     this.clickedDate,
     this.savedData = const [],
-    this.activeEntryPath,
     this.isRecording = false,
     this.recordDuration = "00:00",
     this.message,
     this.markedDates = const [],
+    this.monthEntries = const [],
+    this.yearsWithNotes = const {},
+    this.yearBadgeColors = const {},
     this.hasNotesInPrevMonth = false,
     this.hasNotesInNextMonth = false,
-    this.pendingReminderEntry,
+    this.entryPendingReminder,
   });
 
   CalendarState copyWith({
     DateTime? selectedDate,
     DateTime? clickedDate,
     List<CalendarEntryModel>? savedData,
-    String? activeEntryPath,
     bool? isRecording,
     String? recordDuration,
     String? message,
-    bool clearActivePath = false,
     bool clearMessage = false,
     List<DateTime>? markedDates,
+    List<CalendarEntryModel>? monthEntries,
+    Set<int>? yearsWithNotes,
+    Map<int, Color>? yearBadgeColors,
     bool? hasNotesInPrevMonth,
     bool? hasNotesInNextMonth,
-    CalendarEntryModel? pendingReminderEntry,
+    CalendarEntryModel? entryPendingReminder,
     bool clearPendingReminder = false,
   }) {
     return CalendarState(
       selectedDate: selectedDate ?? this.selectedDate,
       clickedDate: clickedDate ?? this.clickedDate,
       savedData: savedData ?? this.savedData,
-      activeEntryPath: clearActivePath ? null : (activeEntryPath ?? this.activeEntryPath),
       isRecording: isRecording ?? this.isRecording,
       recordDuration: recordDuration ?? this.recordDuration,
       message: clearMessage ? null : (message ?? this.message),
       markedDates: markedDates ?? this.markedDates,
+      monthEntries: monthEntries ?? this.monthEntries,
+      yearsWithNotes: yearsWithNotes ?? this.yearsWithNotes,
+      yearBadgeColors: yearBadgeColors ?? this.yearBadgeColors,
       hasNotesInPrevMonth: hasNotesInPrevMonth ?? this.hasNotesInPrevMonth,
       hasNotesInNextMonth: hasNotesInNextMonth ?? this.hasNotesInNextMonth,
-      pendingReminderEntry: clearPendingReminder ? null : (pendingReminderEntry ?? this.pendingReminderEntry),
+      entryPendingReminder: clearPendingReminder ? null : (entryPendingReminder ?? this.entryPendingReminder),
     );
   }
 }
 
 class CalendarCubit extends Cubit<CalendarState> {
+  static const yearsAhead = 10;
+
   final _repo = sl<SyncedNotesRepository>();
 
   final ImagePicker _picker = ImagePicker();
@@ -82,12 +92,14 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   StreamSubscription? _dataSubscription;
   StreamSubscription? _markedDatesSubscription;
+  StreamSubscription? _yearsSubscription;
   Timer? _recordTimer;
   int _recordSeconds = 0;
 
   CalendarCubit()
     : super(CalendarState(selectedDate: DateTime(DateTime.now().year, DateTime.now().month, 1))) {
     loadMarkedDates();
+    _watchYearsWithNotes();
   }
 
   /// Синхронизация с бэком: подтянуть заметки в локальную БД (после переустановки/логина).
@@ -99,6 +111,20 @@ class CalendarCubit extends Cubit<CalendarState> {
   }
 
   // --- ЛОГИКА ИНДИКАТОРОВ (КРАСНЫЕ ТОЧКИ) ---
+  static DateTime get _today {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
+
+  static bool _isPastDay(DateTime date) {
+    final day = DateTime(date.year, date.month, date.day);
+    return day.isBefore(_today);
+  }
+
+  static List<CalendarEntryModel> _futureEntries(Iterable<CalendarEntryModel> entries) {
+    return entries.where((e) => !_isPastDay(e.date)).toList();
+  }
+
   void loadMarkedDates() {
     final startOfMonth = DateTime(state.selectedDate.year, state.selectedDate.month, 1);
     final endOfMonth = DateTime(state.selectedDate.year, state.selectedDate.month + 1, 0, 23, 59, 59);
@@ -106,10 +132,29 @@ class CalendarCubit extends Cubit<CalendarState> {
     _markedDatesSubscription?.cancel();
     _markedDatesSubscription = _repo.watchCalendarsByRange(startOfMonth, endOfMonth).listen((entries) {
       final dates = entries.map((e) => DateTime(e.date.year, e.date.month, e.date.day)).toList();
-      emit(state.copyWith(markedDates: dates));
+      emit(state.copyWith(markedDates: dates, monthEntries: entries));
     });
 
     _loadAdjacentMonthsHints();
+  }
+
+  void _watchYearsWithNotes() {
+    final startYear = DateTime.now().year;
+    final start = DateTime(startYear, 1, 1);
+    final end = DateTime(startYear + yearsAhead, 12, 31, 23, 59, 59);
+
+    _yearsSubscription?.cancel();
+    _yearsSubscription = _repo.watchCalendarsByRange(start, end).listen((entries) {
+      final futureEntries = _futureEntries(entries);
+      final byYear = <int, List<CalendarEntryModel>>{};
+      for (final entry in futureEntries) {
+        byYear.putIfAbsent(entry.date.year, () => []).add(entry);
+      }
+      final colors = <int, Color>{for (final year in byYear.keys) year: calendarDayBadgeColor(byYear[year]!)};
+      if (!isClosed) {
+        emit(state.copyWith(yearsWithNotes: byYear.keys.toSet(), yearBadgeColors: colors));
+      }
+    });
   }
 
   void _loadAdjacentMonthsHints() async {
@@ -117,18 +162,16 @@ class CalendarCubit extends Cubit<CalendarState> {
     final startOfCurrentMonth = DateTime(current.year, current.month, 1);
     final endOfPrevMonth = startOfCurrentMonth.subtract(const Duration(microseconds: 1));
     final startOfNextMonth = DateTime(current.year, current.month + 1, 1);
-
-    final pastStart = DateTime(2000, 1, 1);
     final futureEnd = DateTime(2100, 12, 31, 23, 59, 59);
 
     try {
-      final pastList = await _repo.getCalendarsByRange(pastStart, endOfPrevMonth);
+      final prevList = await _repo.getCalendarsByRange(DateTime(current.year, current.month - 1, 1), endOfPrevMonth);
       final futureList = await _repo.getCalendarsByRange(startOfNextMonth, futureEnd);
       if (!isClosed && state.selectedDate == current) {
         emit(
           state.copyWith(
-            hasNotesInPrevMonth: pastList.isNotEmpty,
-            hasNotesInNextMonth: futureList.isNotEmpty,
+            hasNotesInPrevMonth: _futureEntries(prevList).isNotEmpty,
+            hasNotesInNextMonth: _futureEntries(futureList).isNotEmpty,
           ),
         );
       }
@@ -153,7 +196,7 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   void clickDate(DateTime date) {
     final cleanDate = DateTime(date.year, date.month, date.day);
-    emit(state.copyWith(clickedDate: cleanDate));
+    emit(state.copyWith(clickedDate: cleanDate, clearPendingReminder: true));
 
     _dataSubscription?.cancel();
     _dataSubscription = _repo.watchCalendarsByDate(cleanDate).listen((models) {
@@ -161,9 +204,17 @@ class CalendarCubit extends Cubit<CalendarState> {
     });
   }
 
+  void clearPendingReminder() {
+    emit(state.copyWith(clearPendingReminder: true));
+  }
+
   void clearSelectedDate() {
     _dataSubscription?.cancel();
-    emit(state.copyWith(clickedDate: null, savedData: const [], clearActivePath: true));
+    emit(state.copyWith(
+      clickedDate: null,
+      savedData: const [],
+      clearPendingReminder: true,
+    ));
   }
 
   // --- РАБОТА С МЕДИА ---
@@ -200,30 +251,26 @@ class CalendarCubit extends Cubit<CalendarState> {
         date: state.clickedDate!,
         noteTitle: noteTitle,
       );
-      final ext = p.extension(pickedPath).replaceFirst('.', '');
-      final name = p.basenameWithoutExtension(pickedPath);
-      final entry = CalendarEntryModel(
+      final fileName = result.localPath.split('/').last;
+      final dotIndex = fileName.lastIndexOf('.');
+      final savedEntry = CalendarEntryModel(
         id: result.id,
         localPath: result.localPath,
-        name: name,
-        extension: ext,
+        name: dotIndex > 0 ? fileName.substring(0, dotIndex) : fileName,
+        extension: dotIndex > 0 ? fileName.substring(dotIndex + 1) : '',
         type: type,
         date: state.clickedDate!,
         title: noteTitle,
       );
       emit(state.copyWith(
         message: l10n.calendar_status_fileSaved,
-        pendingReminderEntry: entry,
+        entryPendingReminder: savedEntry,
       ));
       _clearMessage();
     } catch (e) {
       emit(state.copyWith(message: l10n.calendar_status_saveError));
       _clearMessage();
     }
-  }
-
-  void clearPendingReminder() {
-    emit(state.copyWith(clearPendingReminder: true));
   }
 
   // --- ЗАПИСЬ АУДИО ---
@@ -257,7 +304,7 @@ class CalendarCubit extends Cubit<CalendarState> {
     try {
       await sl<NotificationService>().cancelNotification(model.id);
       await _repo.deleteCalendar(model);
-      emit(state.copyWith(clearActivePath: true, message: l10n.calendar_status_fileDeleted));
+      emit(state.copyWith(message: l10n.calendar_status_fileDeleted));
       _clearMessage();
     } catch (e) {
       emit(state.copyWith(message: l10n.calendar_status_deleteError));
@@ -269,25 +316,12 @@ class CalendarCubit extends Cubit<CalendarState> {
     final l10n = lookupAppLocalizations(sl<LocaleCubit>().state);
     try {
       await _repo.downloadCalendar(model);
-      emit(state.copyWith(clearActivePath: true, message: l10n.calendar_status_fileExportedToDownloads));
+      emit(state.copyWith(message: l10n.calendar_status_fileExportedToDownloads));
       _clearMessage();
     } catch (e) {
       emit(state.copyWith(message: l10n.calendar_status_exportError));
       _clearMessage();
     }
-  }
-
-  void toggleEntryMenu(String path) {
-    state.activeEntryPath == path
-        ? emit(state.copyWith(clearActivePath: true))
-        : emit(state.copyWith(activeEntryPath: path));
-  }
-
-  /// Обновить заголовок заметки.
-  Future<void> updateEntryTitle(CalendarEntryModel entry, String title) async {
-    try {
-      await _repo.updateCalendar(entry, title: title.trim().isEmpty ? null : title.trim());
-    } catch (_) {}
   }
 
   void _clearMessage() {
@@ -303,6 +337,7 @@ class CalendarCubit extends Cubit<CalendarState> {
   Future<void> close() {
     _dataSubscription?.cancel();
     _markedDatesSubscription?.cancel();
+    _yearsSubscription?.cancel();
     _recordTimer?.cancel();
     _audioRecorder.dispose();
     return super.close();

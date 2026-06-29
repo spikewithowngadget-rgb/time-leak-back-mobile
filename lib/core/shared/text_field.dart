@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 
@@ -9,7 +10,7 @@ class AppTextField extends StatelessWidget {
   final bool isPassword;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
-  final bool? enabled; // 1. Добавляем поле
+  final bool? enabled;
 
   const AppTextField({
     super.key,
@@ -18,38 +19,38 @@ class AppTextField extends StatelessWidget {
     this.isPassword = false,
     this.keyboardType,
     this.textInputAction,
-    this.enabled, // 2. Добавляем в конструктор
+    this.enabled,
   });
 
   @override
   Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(context.widthByContext(12));
+    final border = OutlineInputBorder(
+      borderRadius: radius,
+      borderSide: const BorderSide(color: AppColors.grey1),
+    );
+
     return TextField(
       controller: controller,
       obscureText: isPassword,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
-      enabled: enabled, // 3. Передаем в TextField
-      style: AppStyle.style(16, color: AppColors.black),
+      enabled: enabled,
+      style: AppStyle.style(context.widthByContext(16), color: AppColors.black),
       cursorColor: AppColors.brandColor1,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: AppStyle.style(16, color: AppColors.grey),
+        hintStyle: AppStyle.style(context.widthByContext(16), color: AppColors.grey),
         filled: true,
-        // Опционально: можно менять цвет фона, если поле заблокировано
         fillColor: (enabled ?? true) ? Colors.white : AppColors.grey1.withValues(alpha: 0.5),
-
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey1),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: context.widthByContext(16),
+          vertical: context.heightByContext(18),
         ),
-        disabledBorder: OutlineInputBorder(
-          // Добавим стиль для заблокированного состояния
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey1),
-        ),
+        enabledBorder: border,
+        disabledBorder: border,
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: radius,
           borderSide: const BorderSide(color: AppColors.brandColor1, width: 2),
         ),
       ),

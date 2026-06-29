@@ -6,14 +6,17 @@ import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
-import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
+import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/reminder_day_wheel.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
+import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
 
 const int yearlyReminderMinutes = 365 * 24 * 60;
 const int quarterlyReminderMinutes = 91 * 24 * 60;
 const int monthlyReminderMinutes = 30 * 24 * 60;
 const int everyDayReminderMinutes = 24 * 60;
+
+int reminderMinutesFromDays(int days) => days * 24 * 60;
 
 /// Форматирует текущее значение напоминания для отображения.
 String formatReminderLabel(BuildContext context, int? minutes) {
@@ -29,16 +32,22 @@ String formatReminderLabel(BuildContext context, int? minutes) {
 }
 
 class ReminderDialog extends StatefulWidget {
-  final CalendarEntryModel entry;
+  final CalendarEntryModel? entry;
+  final DateTime? date;
+  final int? initialMinutes;
   final VoidCallback? onSaved;
+  final ValueChanged<int>? onMinutesSelected;
   final bool afterAttach;
 
   const ReminderDialog({
     super.key,
-    required this.entry,
+    this.entry,
+    this.date,
+    this.initialMinutes,
     this.onSaved,
+    this.onMinutesSelected,
     this.afterAttach = false,
-  });
+  }) : assert(entry != null || date != null, 'Either entry or date must be provided');
 
   static Future<void> show(
     BuildContext context, {
@@ -53,75 +62,98 @@ class ReminderDialog extends StatefulWidget {
     );
   }
 
+  static Future<void> showForDate(
+    BuildContext context, {
+    required DateTime date,
+    int? initialMinutes,
+    required ValueChanged<int> onMinutesSelected,
+  }) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ReminderDialog(
+        date: date,
+        initialMinutes: initialMinutes,
+        onMinutesSelected: onMinutesSelected,
+        afterAttach: true,
+      ),
+    );
+  }
+
   @override
   State<ReminderDialog> createState() => _ReminderDialogState();
 }
 
 class _ReminderDialogState extends State<ReminderDialog> {
-  late String _selectedOption; // yearly | quarterly | monthly | custom
-  final TextEditingController _customDaysController = TextEditingController();
   bool _saving = false;
+  late int _selectedDays;
+  late final TextEditingController _daysController;
+  bool _syncingFromWheel = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedOption = 'monthly';
-    final current = widget.entry.reminderMinutes;
-    if (current != null) {
-      if (current == yearlyReminderMinutes) {
-        _selectedOption = 'yearly';
-      } else if (current == quarterlyReminderMinutes) {
-        _selectedOption = 'quarterly';
-      } else if (current == monthlyReminderMinutes) {
-        _selectedOption = 'monthly';
-      } else if (current >= 24 * 60) {
-        _selectedOption = 'custom';
-        _customDaysController.text = '${current ~/ (24 * 60)}';
-      }
+    final current = widget.entry?.reminderMinutes ?? widget.initialMinutes;
+    if (current != null && current >= 24 * 60) {
+      _selectedDays = current ~/ (24 * 60);
+    } else {
+      _selectedDays = 1;
     }
+    _daysController = TextEditingController(text: '$_selectedDays');
   }
 
   @override
   void dispose() {
-    _customDaysController.dispose();
+    _daysController.dispose();
     super.dispose();
   }
 
-  int _computeTotalMinutes() {
-    switch (_selectedOption) {
-      case 'yearly':
-        return yearlyReminderMinutes;
-      case 'quarterly':
-        return quarterlyReminderMinutes;
-      case 'monthly':
-        return monthlyReminderMinutes;
-      default:
-        final days = int.tryParse(_customDaysController.text) ?? 0;
-        return days * 24 * 60;
-    }
+  void _onWheelChanged(int days) {
+    if (_syncingFromWheel) return;
+    _syncingFromWheel = true;
+    setState(() => _selectedDays = days);
+    _daysController.text = '$days';
+    _daysController.selection = TextSelection.collapsed(offset: _daysController.text.length);
+    _syncingFromWheel = false;
   }
 
-  Future<void> _save() async {
-    final totalMinutes = _computeTotalMinutes();
-    if (_selectedOption == 'custom' && totalMinutes <= 0) return;
+  void _onCustomDaysChanged(String value) {
+    if (_syncingFromWheel) return;
+    final days = int.tryParse(value.trim());
+    if (days == null || days <= 0) return;
+    setState(() => _selectedDays = days);
+  }
 
-    setState(() => _saving = true);
+  Future<void> _applyMinutes(int totalMinutes) async {
+    if (totalMinutes <= 0 || _saving) return;
+
+    if (widget.entry == null) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      widget.onMinutesSelected?.call(totalMinutes);
+      return;
+    }
+
+    setState(() {
+      _saving = true;
+    });
+
     try {
       final notificationService = sl<NotificationService>();
       final repo = sl<SyncedNotesRepository>();
-
+      final entry = widget.entry!;
       final l10n = context.l10n;
-      final notificationTitle = widget.entry.title?.trim().isNotEmpty == true
-          ? widget.entry.title!
-          : calendarDefaultNoteTitle(l10n, widget.entry.date);
+      final notificationTitle = entry.title?.trim().isNotEmpty == true
+          ? entry.title!
+          : calendarDefaultNoteTitle(l10n, entry.date);
 
       await notificationService.scheduleFlexibleNotification(
-        id: widget.entry.id,
+        id: entry.id,
         title: notificationTitle,
         body: l10n.calendar_reminderNotificationBody,
         totalMinutes: totalMinutes,
       );
-      await repo.updateReminder(widget.entry.id, totalMinutes);
+      await repo.updateReminder(entry.id, totalMinutes);
 
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -143,21 +175,28 @@ class _ReminderDialogState extends State<ReminderDialog> {
     }
   }
 
+  void _onConfirm() {
+    _applyMinutes(reminderMinutesFromDays(_selectedDays));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final currentLabel = formatReminderLabel(context, widget.entry.reminderMinutes);
-    final title = widget.afterAttach ? l10n.calendar_reminderDialog_afterAttachTitle : l10n.calendar_reminderDialog_title;
+    final isDateMode = widget.entry == null;
+    final currentLabel = formatReminderLabel(context, widget.entry?.reminderMinutes ?? widget.initialMinutes);
+    final title = isDateMode || widget.afterAttach
+        ? l10n.calendar_reminderDialog_afterAttachTitle
+        : l10n.calendar_reminderDialog_title;
 
     return Dialog(
       backgroundColor: AppColors.backgroundColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(context.widthByContext(20))),
       child: SingleChildScrollView(
         padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 24,
-          bottom: 24 + MediaQuery.of(context).viewInsets.bottom,
+          left: context.widthByContext(20),
+          right: context.widthByContext(20),
+          top: context.heightByContext(20),
+          bottom: context.heightByContext(20) + context.bottomInset,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -169,179 +208,103 @@ class _ReminderDialogState extends State<ReminderDialog> {
                 Expanded(
                   child: Text(
                     title,
-                    style: AppStyle.style(22, fontWeight: FontWeight.w700, color: AppColors.black),
+                    style: AppStyle.style(
+                      context.widthByContext(20),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.black,
+                    ),
                   ),
                 ),
                 IconButton(
                   onPressed: _saving ? null : () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.close, color: AppColors.grey2),
                   style: IconButton.styleFrom(backgroundColor: Colors.transparent),
+                  visualDensity: VisualDensity.compact,
                 ),
               ],
             ),
-            if (!widget.afterAttach) ...[
-              const SizedBox(height: 8),
+            if (!widget.afterAttach && !isDateMode) ...[
+              const SizedBox(height: 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppColors.brandColor,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.schedule, size: 20, color: AppColors.black.withValues(alpha: 0.7)),
-                    const SizedBox(width: 10),
+                    Icon(Icons.schedule, size: 18, color: AppColors.black.withValues(alpha: 0.7)),
+                    const SizedBox(width: 8),
                     Text(
                       '${l10n.calendar_reminderDialog_current} ',
-                      style: AppStyle.style(14, color: AppColors.grey2),
+                      style: AppStyle.style(13, color: AppColors.grey2),
                     ),
                     Expanded(
                       child: Text(
                         currentLabel,
-                        style: AppStyle.style(14, fontWeight: FontWeight.w600, color: AppColors.black),
+                        style: AppStyle.style(13, fontWeight: FontWeight.w600, color: AppColors.black),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              Text(
-                l10n.calendar_reminderDialog_changeTo,
-                style: AppStyle.style(14, color: AppColors.grey2),
+              const SizedBox(height: 14),
+            ] else
+              const SizedBox(height: 4),
+            if (_saving)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.buttonColor),
+                  ),
+                ),
+              )
+            else ...[
+              ReminderDayWheel(
+                selectedDays: _selectedDays.clamp(reminderMinDays, reminderMaxDays),
+                onChanged: _onWheelChanged,
               ),
               const SizedBox(height: 12),
-            ] else
-              const SizedBox(height: 8),
-            _OptionTile(
-              title: l10n.calendar_reminderDialog_yearly_title,
-              subtitle: l10n.calendar_reminderDialog_yearly_subtitle,
-              isSelected: _selectedOption == 'yearly',
-              onTap: () => setState(() => _selectedOption = 'yearly'),
-            ),
-            const SizedBox(height: 10),
-            _OptionTile(
-              title: l10n.calendar_reminderDialog_quarterly_title,
-              subtitle: l10n.calendar_reminderDialog_quarterly_subtitle,
-              isSelected: _selectedOption == 'quarterly',
-              onTap: () => setState(() => _selectedOption = 'quarterly'),
-            ),
-            const SizedBox(height: 10),
-            _OptionTile(
-              title: l10n.calendar_reminderDialog_monthly_title,
-              subtitle: l10n.calendar_reminderDialog_monthly_subtitle,
-              isSelected: _selectedOption == 'monthly',
-              onTap: () => setState(() => _selectedOption = 'monthly'),
-            ),
-            const SizedBox(height: 10),
-            _OptionTile(
-              title: l10n.calendar_reminderDialog_customDays_title,
-              subtitle: l10n.calendar_reminderDialog_customDays_subtitle,
-              isSelected: _selectedOption == 'custom',
-              onTap: () => setState(() => _selectedOption = 'custom'),
-            ),
-            if (_selectedOption == 'custom') ...[
-              const SizedBox(height: 16),
               TextField(
-                controller: _customDaysController,
+                controller: _daysController,
                 keyboardType: TextInputType.number,
-                style: AppStyle.style(16, color: AppColors.black),
+                onChanged: _onCustomDaysChanged,
+                style: AppStyle.style(15, color: AppColors.black),
                 decoration: InputDecoration(
+                  isDense: true,
                   hintText: l10n.calendar_reminderDialog_hint_days,
-                  hintStyle: AppStyle.style(14, color: AppColors.grey2),
+                  hintStyle: AppStyle.style(13, color: AppColors.grey2),
                   filled: true,
                   fillColor: Colors.grey.shade100,
                   suffixText: l10n.calendar_reminderDialog_suffix_days,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
-            ],
-            const SizedBox(height: 28),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _saving ? null : _save,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.buttonColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  elevation: 0,
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _onConfirm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.buttonColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    l10n.calendar_reminderDialog_save,
+                    style: AppStyle.style(15, fontWeight: FontWeight.bold, color: AppColors.black),
+                  ),
                 ),
-                child: _saving
-                    ? const SizedBox(
-                        height: 24,
-                        width: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.black),
-                      )
-                    : Text(
-                        l10n.calendar_reminderDialog_save,
-                        style: AppStyle.style(16, fontWeight: FontWeight.bold, color: AppColors.black),
-                      ),
               ),
-            ),
+            ],
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _OptionTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _OptionTile({
-    required this.title,
-    required this.subtitle,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.brandColor2.withValues(alpha: 0.3) : AppColors.brandColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected ? AppColors.buttonColor : Colors.transparent,
-              width: 2,
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppStyle.style(16, fontWeight: FontWeight.w600, color: AppColors.black),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: AppStyle.style(12, color: AppColors.grey2),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-                color: isSelected ? AppColors.buttonColor : AppColors.grey1,
-                size: 24,
-              ),
-            ],
-          ),
         ),
       ),
     );

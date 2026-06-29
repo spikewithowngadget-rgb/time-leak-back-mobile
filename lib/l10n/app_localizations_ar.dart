@@ -27,6 +27,122 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login_signIn => 'Sign in';
 
   @override
+  String get login_noAccount => 'No account? ';
+
+  @override
+  String get login_registerLink => 'Sign up';
+
+  @override
+  String get register_title => 'Registration';
+
+  @override
+  String get register_phoneSubtitle =>
+      'Enter your phone number to receive a verification code';
+
+  @override
+  String get register_phoneLabel => 'Phone number';
+
+  @override
+  String get register_getCode => 'Get code';
+
+  @override
+  String get register_errorEnterPhone => 'Enter your phone number';
+
+  @override
+  String get register_verifyTitle => 'Verification';
+
+  @override
+  String register_verifySubtitle(String phone) {
+    return 'We sent a code to $phone';
+  }
+
+  @override
+  String get register_smsCodeLabel => 'SMS code';
+
+  @override
+  String get register_resendCode => 'Resend code';
+
+  @override
+  String get register_confirm => 'Confirm';
+
+  @override
+  String get register_errorEnterFullCode => 'Enter the full code';
+
+  @override
+  String get register_passwordTitle => 'Create a password';
+
+  @override
+  String get register_passwordSubtitle =>
+      'Use at least 8 characters for a strong password';
+
+  @override
+  String get register_confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get register_complete => 'Complete registration';
+
+  @override
+  String get register_success => 'Registration successful!';
+
+  @override
+  String get register_errorFillAllFields => 'Fill in all fields';
+
+  @override
+  String get register_errorPasswordsMismatch => 'Passwords do not match';
+
+  @override
+  String get register_errorPasswordTooShort => 'Password is too short';
+
+  @override
+  String get reset_title => 'Password recovery';
+
+  @override
+  String get reset_subtitle =>
+      'Enter your phone number to receive an access code';
+
+  @override
+  String get reset_sendCode => 'Send code';
+
+  @override
+  String get reset_verifyTitle => 'Verification code';
+
+  @override
+  String reset_verifySubtitle(String phone) {
+    return 'We sent it to\n$phone';
+  }
+
+  @override
+  String get reset_resendCode => 'Send again';
+
+  @override
+  String get reset_continue => 'Continue';
+
+  @override
+  String get reset_newPasswordTitle => 'New password';
+
+  @override
+  String get reset_newPasswordSubtitle =>
+      'Create a new password for your account';
+
+  @override
+  String get reset_passwordHint => 'Password';
+
+  @override
+  String get reset_confirmPasswordHint => 'Repeat password';
+
+  @override
+  String get reset_updatePassword => 'Update password';
+
+  @override
+  String get reset_success => 'Password changed successfully!';
+
+  @override
+  String get reset_errorFillAllFields => 'Fill in all fields';
+
+  @override
+  String get reset_errorPasswordsMismatch => 'Passwords do not match';
+
+  @override
   String get pin_screenTitle => 'Authorization';
 
   @override
@@ -152,6 +268,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get calendar_cameraVideo => 'Record video';
+
+  @override
+  String get calendar_selectDayFirst => 'Select a day on the calendar first';
 
   @override
   String get calendar_status_fileSaved => 'تم حفظ الملف';

@@ -8,6 +8,7 @@ import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.da
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 import 'package:time_leak_flutter/l10n/app_localizations.dart';
 
+// 4)сразу ввод цифр готовые чипы сделать
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();

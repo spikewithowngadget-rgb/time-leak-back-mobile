@@ -2,12 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
 import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/shared/button.dart';
-import 'package:time_leak_flutter/core/shared/responsive.dart';
+import 'package:time_leak_flutter/core/shared/responsive.dart' show AuthPageHeader, AuthPageLayout;
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/register/presentation/cubit/register_cubit.dart';
@@ -55,15 +56,15 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final btnHeight = AppResponsive.buttonHeight(context);
-    final fieldGap = AppResponsive.isCompact(context) ? 16.0 : 20.0;
+    final l10n = context.l10n;
+    final labelStyle = AppStyle.style(context.widthByContext(14), fontWeight: FontWeight.w600);
 
     return BlocConsumer<RegisterCubit, RegisterState>(
       bloc: _registerCubit,
       listener: (context, state) {
         if (state is RegisterSuccess) {
           PinSession.reset();
-          TopSnackBar.show(context, message: "Регистрация прошла успешно!");
+          TopSnackBar.show(context, message: l10n.register_success);
           context.router.replaceAll([const CalendarRoute()]);
         } else if (state is RegisterError) {
           TopSnackBar.show(context, message: state.message);
@@ -75,22 +76,22 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           child: AuthPageLayout(
             appBar: _appBar(context),
             children: [
-              const AuthPageHeader(
-                title: "Придумайте пароль",
-                subtitle: "Пароль должен быть надежным и содержать не менее 8 символов",
+              AuthPageHeader(
+                title: l10n.register_passwordTitle,
+                subtitle: l10n.register_passwordSubtitle,
               ),
-              SizedBox(height: AppResponsive.sectionSpacing(context)),
-              Text("Пароль", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
+              SizedBox(height: context.heightByContext(40)),
+              Text(l10n.login_passwordLabel, style: labelStyle),
+              SizedBox(height: context.heightByContext(8)),
               AppTextField(
                 hintText: "••••••••",
                 controller: _passwordController,
                 isPassword: true,
                 enabled: state is! RegisterLoading,
               ),
-              SizedBox(height: fieldGap),
-              Text("Подтвердите пароль", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
+              SizedBox(height: context.heightByContext(20)),
+              Text(l10n.register_confirmPasswordLabel, style: labelStyle),
+              SizedBox(height: context.heightByContext(8)),
               AppTextField(
                 hintText: "••••••••",
                 controller: _confirmPasswordController,
@@ -102,18 +103,17 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             bottom: state is RegisterLoading
                 ? const Center(child: CircularProgressIndicator(color: AppColors.brandColor1))
                 : AppButton(
-                    height: btnHeight,
-                    text: "Завершить регистрацию",
+                    text: l10n.register_complete,
                     onPressed: () {
                       final pass = _passwordController.text.trim();
                       final confirm = _confirmPasswordController.text.trim();
 
                       if (pass.isEmpty || confirm.isEmpty) {
-                        TopSnackBar.show(context, message: "Заполните все поля");
+                        TopSnackBar.show(context, message: l10n.register_errorFillAllFields);
                       } else if (pass != confirm) {
-                        TopSnackBar.show(context, message: "Пароли не совпадают");
+                        TopSnackBar.show(context, message: l10n.register_errorPasswordsMismatch);
                       } else if (pass.length < 8) {
-                        TopSnackBar.show(context, message: "Пароль слишком короткий");
+                        TopSnackBar.show(context, message: l10n.register_errorPasswordTooShort);
                       } else {
                         _registerCubit.completeRegistration(
                           phone: widget.phone,

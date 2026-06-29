@@ -9,55 +9,56 @@ abstract final class AppResponsive {
   static const double compactWidth = 360;
   static const double tabletWidth = 600;
 
-  static double screenWidth(BuildContext context) => MediaQuery.sizeOf(context).width;
+  static double screenWidth(BuildContext context) => context.screenWidth;
 
-  static double screenHeight(BuildContext context) => MediaQuery.sizeOf(context).height;
+  static double screenHeight(BuildContext context) => context.screenHeight;
 
   static bool isCompact(BuildContext context) => screenWidth(context) < compactWidth;
 
   static bool isTablet(BuildContext context) => screenWidth(context) >= tabletWidth;
 
   static double horizontalPadding(BuildContext context) {
-    final w = screenWidth(context);
-    if (w >= tabletWidth) return 32;
-    if (w < compactWidth) return 16;
-    return 24;
+    if (isTablet(context)) return context.widthByContext(32);
+    if (isCompact(context)) return context.widthByContext(16);
+    return context.widthByContext(24);
   }
 
   static double titleFontSize(BuildContext context, {double base = 32}) {
-    if (isCompact(context)) return base * 0.82;
-    if (isTablet(context)) return base * 1.05;
-    return base;
+    var size = context.widthByContext(base);
+    if (isCompact(context)) size *= 0.82;
+    if (isTablet(context)) size *= 1.05;
+    return size;
   }
 
   static double subtitleFontSize(BuildContext context, {double base = 16}) {
-    if (isCompact(context)) return base * 0.94;
-    return base;
+    var size = context.widthByContext(base);
+    if (isCompact(context)) size *= 0.94;
+    return size;
   }
 
   static double sectionSpacing(BuildContext context, {double base = 40}) {
-    if (isCompact(context)) return base * 0.7;
-    return base;
+    var size = context.heightByContext(base);
+    if (isCompact(context)) size *= 0.7;
+    return size;
   }
 
-  static double buttonHeight(BuildContext context) {
-    if (isCompact(context)) return 50;
-    return 56;
-  }
+  static double buttonHeight(BuildContext context) => context.heightByContext(isCompact(context) ? 50 : 56);
 
   static double calendarDayFontSize(BuildContext context, {required bool selected}) {
     final cellWidth = screenWidth(context) / 7;
-    if (selected) return (cellWidth * 0.48).clamp(18.0, 24.0);
-    return (cellWidth * 0.38).clamp(14.0, 18.0);
+    if (selected) {
+      return (cellWidth * 0.48).clamp(context.widthByContext(18), context.widthByContext(24));
+    }
+    return (cellWidth * 0.38).clamp(context.widthByContext(14), context.widthByContext(18));
   }
 
   static double calendarBadgeFontSize(BuildContext context) {
     final cellWidth = screenWidth(context) / 7;
-    return (cellWidth * 0.2).clamp(8.0, 10.0);
+    return (cellWidth * 0.28).clamp(context.widthByContext(11), context.widthByContext(13));
   }
 
   static double drawerWidth(BuildContext context) {
-    return (screenWidth(context) * 0.85).clamp(280.0, 320.0);
+    return (screenWidth(context) * 0.85).clamp(context.widthByContext(280), context.widthByContext(320));
   }
 }
 
@@ -102,13 +103,12 @@ class AuthPageLayout extends StatelessWidget {
                   ),
                   child: IntrinsicHeight(
                     child: Column(
-                      crossAxisAlignment: centerTitle ? CrossAxisAlignment.center : CrossAxisAlignment.stretch,
+                      crossAxisAlignment: centerTitle
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.stretch,
                       children: [
                         ...children,
-                        if (bottom != null) ...[
-                          const Spacer(),
-                          bottom!,
-                        ],
+                        if (bottom != null) ...[const Spacer(), bottom!],
                       ],
                     ),
                   ),
@@ -157,11 +157,7 @@ class AuthPageHeader extends StatelessWidget {
           Text(
             subtitle!,
             textAlign: align,
-            style: AppStyle.style(
-              context.widthByContext(16),
-              color: AppColors.grey2,
-              height: 1.45,
-            ),
+            style: AppStyle.style(context.widthByContext(16), color: AppColors.grey2, height: 1.45),
           ),
         ],
       ],

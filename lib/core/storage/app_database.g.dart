@@ -84,6 +84,17 @@ class $CalendarEntriesTable extends CalendarEntries
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _reminderAtMeta = const VerificationMeta(
+    'reminderAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> reminderAt = GeneratedColumn<DateTime>(
+    'reminder_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -113,6 +124,7 @@ class $CalendarEntriesTable extends CalendarEntries
     type,
     date,
     reminderMinutes,
+    reminderAt,
     title,
     backendNoteId,
   ];
@@ -183,6 +195,12 @@ class $CalendarEntriesTable extends CalendarEntries
         ),
       );
     }
+    if (data.containsKey('reminder_at')) {
+      context.handle(
+        _reminderAtMeta,
+        reminderAt.isAcceptableOrUnknown(data['reminder_at']!, _reminderAtMeta),
+      );
+    }
     if (data.containsKey('title')) {
       context.handle(
         _titleMeta,
@@ -235,6 +253,10 @@ class $CalendarEntriesTable extends CalendarEntries
         DriftSqlType.int,
         data['${effectivePrefix}reminder_minutes'],
       ),
+      reminderAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}reminder_at'],
+      ),
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -260,6 +282,9 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
   final String type;
   final DateTime date;
   final int? reminderMinutes;
+
+  /// Когда должно сработать напоминание (для цвета бейджа на календаре).
+  final DateTime? reminderAt;
   final String? title;
 
   /// Id заметки на бэкенде (для синхронизации с API).
@@ -272,6 +297,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
     required this.type,
     required this.date,
     this.reminderMinutes,
+    this.reminderAt,
     this.title,
     this.backendNoteId,
   });
@@ -286,6 +312,9 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
     map['date'] = Variable<DateTime>(date);
     if (!nullToAbsent || reminderMinutes != null) {
       map['reminder_minutes'] = Variable<int>(reminderMinutes);
+    }
+    if (!nullToAbsent || reminderAt != null) {
+      map['reminder_at'] = Variable<DateTime>(reminderAt);
     }
     if (!nullToAbsent || title != null) {
       map['title'] = Variable<String>(title);
@@ -307,6 +336,9 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
       reminderMinutes: reminderMinutes == null && nullToAbsent
           ? const Value.absent()
           : Value(reminderMinutes),
+      reminderAt: reminderAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reminderAt),
       title: title == null && nullToAbsent
           ? const Value.absent()
           : Value(title),
@@ -329,6 +361,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
       type: serializer.fromJson<String>(json['type']),
       date: serializer.fromJson<DateTime>(json['date']),
       reminderMinutes: serializer.fromJson<int?>(json['reminderMinutes']),
+      reminderAt: serializer.fromJson<DateTime?>(json['reminderAt']),
       title: serializer.fromJson<String?>(json['title']),
       backendNoteId: serializer.fromJson<String?>(json['backendNoteId']),
     );
@@ -344,6 +377,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
       'type': serializer.toJson<String>(type),
       'date': serializer.toJson<DateTime>(date),
       'reminderMinutes': serializer.toJson<int?>(reminderMinutes),
+      'reminderAt': serializer.toJson<DateTime?>(reminderAt),
       'title': serializer.toJson<String?>(title),
       'backendNoteId': serializer.toJson<String?>(backendNoteId),
     };
@@ -357,6 +391,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
     String? type,
     DateTime? date,
     Value<int?> reminderMinutes = const Value.absent(),
+    Value<DateTime?> reminderAt = const Value.absent(),
     Value<String?> title = const Value.absent(),
     Value<String?> backendNoteId = const Value.absent(),
   }) => CalendarEntry(
@@ -369,6 +404,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
     reminderMinutes: reminderMinutes.present
         ? reminderMinutes.value
         : this.reminderMinutes,
+    reminderAt: reminderAt.present ? reminderAt.value : this.reminderAt,
     title: title.present ? title.value : this.title,
     backendNoteId: backendNoteId.present
         ? backendNoteId.value
@@ -387,6 +423,9 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
       reminderMinutes: data.reminderMinutes.present
           ? data.reminderMinutes.value
           : this.reminderMinutes,
+      reminderAt: data.reminderAt.present
+          ? data.reminderAt.value
+          : this.reminderAt,
       title: data.title.present ? data.title.value : this.title,
       backendNoteId: data.backendNoteId.present
           ? data.backendNoteId.value
@@ -404,6 +443,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
           ..write('type: $type, ')
           ..write('date: $date, ')
           ..write('reminderMinutes: $reminderMinutes, ')
+          ..write('reminderAt: $reminderAt, ')
           ..write('title: $title, ')
           ..write('backendNoteId: $backendNoteId')
           ..write(')'))
@@ -419,6 +459,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
     type,
     date,
     reminderMinutes,
+    reminderAt,
     title,
     backendNoteId,
   );
@@ -433,6 +474,7 @@ class CalendarEntry extends DataClass implements Insertable<CalendarEntry> {
           other.type == this.type &&
           other.date == this.date &&
           other.reminderMinutes == this.reminderMinutes &&
+          other.reminderAt == this.reminderAt &&
           other.title == this.title &&
           other.backendNoteId == this.backendNoteId);
 }
@@ -445,6 +487,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
   final Value<String> type;
   final Value<DateTime> date;
   final Value<int?> reminderMinutes;
+  final Value<DateTime?> reminderAt;
   final Value<String?> title;
   final Value<String?> backendNoteId;
   const CalendarEntriesCompanion({
@@ -455,6 +498,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
     this.type = const Value.absent(),
     this.date = const Value.absent(),
     this.reminderMinutes = const Value.absent(),
+    this.reminderAt = const Value.absent(),
     this.title = const Value.absent(),
     this.backendNoteId = const Value.absent(),
   });
@@ -466,6 +510,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
     required String type,
     required DateTime date,
     this.reminderMinutes = const Value.absent(),
+    this.reminderAt = const Value.absent(),
     this.title = const Value.absent(),
     this.backendNoteId = const Value.absent(),
   }) : localPath = Value(localPath),
@@ -481,6 +526,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
     Expression<String>? type,
     Expression<DateTime>? date,
     Expression<int>? reminderMinutes,
+    Expression<DateTime>? reminderAt,
     Expression<String>? title,
     Expression<String>? backendNoteId,
   }) {
@@ -492,6 +538,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
       if (type != null) 'type': type,
       if (date != null) 'date': date,
       if (reminderMinutes != null) 'reminder_minutes': reminderMinutes,
+      if (reminderAt != null) 'reminder_at': reminderAt,
       if (title != null) 'title': title,
       if (backendNoteId != null) 'backend_note_id': backendNoteId,
     });
@@ -505,6 +552,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
     Value<String>? type,
     Value<DateTime>? date,
     Value<int?>? reminderMinutes,
+    Value<DateTime?>? reminderAt,
     Value<String?>? title,
     Value<String?>? backendNoteId,
   }) {
@@ -516,6 +564,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
       type: type ?? this.type,
       date: date ?? this.date,
       reminderMinutes: reminderMinutes ?? this.reminderMinutes,
+      reminderAt: reminderAt ?? this.reminderAt,
       title: title ?? this.title,
       backendNoteId: backendNoteId ?? this.backendNoteId,
     );
@@ -545,6 +594,9 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
     if (reminderMinutes.present) {
       map['reminder_minutes'] = Variable<int>(reminderMinutes.value);
     }
+    if (reminderAt.present) {
+      map['reminder_at'] = Variable<DateTime>(reminderAt.value);
+    }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
@@ -564,6 +616,7 @@ class CalendarEntriesCompanion extends UpdateCompanion<CalendarEntry> {
           ..write('type: $type, ')
           ..write('date: $date, ')
           ..write('reminderMinutes: $reminderMinutes, ')
+          ..write('reminderAt: $reminderAt, ')
           ..write('title: $title, ')
           ..write('backendNoteId: $backendNoteId')
           ..write(')'))
@@ -1031,6 +1084,7 @@ typedef $$CalendarEntriesTableCreateCompanionBuilder =
       required String type,
       required DateTime date,
       Value<int?> reminderMinutes,
+      Value<DateTime?> reminderAt,
       Value<String?> title,
       Value<String?> backendNoteId,
     });
@@ -1043,6 +1097,7 @@ typedef $$CalendarEntriesTableUpdateCompanionBuilder =
       Value<String> type,
       Value<DateTime> date,
       Value<int?> reminderMinutes,
+      Value<DateTime?> reminderAt,
       Value<String?> title,
       Value<String?> backendNoteId,
     });
@@ -1088,6 +1143,11 @@ class $$CalendarEntriesTableFilterComposer
 
   ColumnFilters<int> get reminderMinutes => $composableBuilder(
     column: $table.reminderMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get reminderAt => $composableBuilder(
+    column: $table.reminderAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1146,6 +1206,11 @@ class $$CalendarEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get reminderAt => $composableBuilder(
+    column: $table.reminderAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get title => $composableBuilder(
     column: $table.title,
     builder: (column) => ColumnOrderings(column),
@@ -1188,6 +1253,11 @@ class $$CalendarEntriesTableAnnotationComposer
 
   GeneratedColumn<int> get reminderMinutes => $composableBuilder(
     column: $table.reminderMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get reminderAt => $composableBuilder(
+    column: $table.reminderAt,
     builder: (column) => column,
   );
 
@@ -1240,6 +1310,7 @@ class $$CalendarEntriesTableTableManager
                 Value<String> type = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<int?> reminderMinutes = const Value.absent(),
+                Value<DateTime?> reminderAt = const Value.absent(),
                 Value<String?> title = const Value.absent(),
                 Value<String?> backendNoteId = const Value.absent(),
               }) => CalendarEntriesCompanion(
@@ -1250,6 +1321,7 @@ class $$CalendarEntriesTableTableManager
                 type: type,
                 date: date,
                 reminderMinutes: reminderMinutes,
+                reminderAt: reminderAt,
                 title: title,
                 backendNoteId: backendNoteId,
               ),
@@ -1262,6 +1334,7 @@ class $$CalendarEntriesTableTableManager
                 required String type,
                 required DateTime date,
                 Value<int?> reminderMinutes = const Value.absent(),
+                Value<DateTime?> reminderAt = const Value.absent(),
                 Value<String?> title = const Value.absent(),
                 Value<String?> backendNoteId = const Value.absent(),
               }) => CalendarEntriesCompanion.insert(
@@ -1272,6 +1345,7 @@ class $$CalendarEntriesTableTableManager
                 type: type,
                 date: date,
                 reminderMinutes: reminderMinutes,
+                reminderAt: reminderAt,
                 title: title,
                 backendNoteId: backendNoteId,
               ),

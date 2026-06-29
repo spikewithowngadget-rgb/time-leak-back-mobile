@@ -22,7 +22,7 @@ class CalendarRepository {
     final endOfDay = startOfDay.add(const Duration(days: 1)).subtract(const Duration(microseconds: 1));
     final list = await (_db.select(
       _db.calendarEntries,
-    )..where((t) => t.date.isBetweenValues(startOfDay, endOfDay))).get();
+    )..where((t) => t.date.isBetweenValues(startOfDay, endOfDay))..orderBy([(t) => OrderingTerm.desc(t.id)])).get();
     return list.map((e) => CalendarEntryModel.fromEntity(e)).toList();
   }
 
@@ -81,7 +81,8 @@ class CalendarRepository {
   Stream<List<CalendarEntryModel>> watchCalendarsByDate(DateTime date) {
     return _baseRepo
         .watchByDate(date)
-        .map((entities) => entities.map((e) => CalendarEntryModel.fromEntity(e)).toList());
+        .map((entities) => entities.map((e) => CalendarEntryModel.fromEntity(e)).toList()
+          ..sort((a, b) => b.id.compareTo(a.id)));
   }
 
   /// Поток записей в диапазоне (для точек в календаре).
@@ -149,10 +150,16 @@ class CalendarRepository {
     );
   }
 
-  /// Обновить только минуты напоминания для записи.
+  /// Обновить напоминание для записи.
   Future<void> updateReminder(int entryId, int? minutes) async {
+    final reminderAt = minutes != null && minutes > 0
+        ? DateTime.now().add(Duration(minutes: minutes))
+        : null;
     await (_db.update(_db.calendarEntries)..where((t) => t.id.equals(entryId))).write(
-      CalendarEntriesCompanion(reminderMinutes: minutes != null ? Value(minutes) : const Value.absent()),
+      CalendarEntriesCompanion(
+        reminderMinutes: minutes != null ? Value(minutes) : const Value(null),
+        reminderAt: reminderAt != null ? Value(reminderAt) : const Value(null),
+      ),
     );
   }
 

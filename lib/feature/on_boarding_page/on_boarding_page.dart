@@ -65,14 +65,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 8),
-                  const _LogoBlock(orange: _orange),
-                  const SizedBox(height: 8),
+                  SizedBox(height: context.heightByContext(8)),
+                  _LogoBlock(orange: _orange),
+                  SizedBox(height: context.heightByContext(8)),
                   _LanguageRow(
                     current: currentLang,
                     onSelect: (lang) => context.read<LocaleCubit>().changeLanguage(lang),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: context.heightByContext(16)),
                   Expanded(
                     flex: 5,
                     child: PageView(
@@ -84,54 +84,66 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: context.heightByContext(12)),
                   _PagePills(page: _page, orange: _orange),
-                  const SizedBox(height: 12),
+                  SizedBox(height: context.heightByContext(12)),
                   Expanded(
                     flex: 4,
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 22),
+                      padding: EdgeInsets.symmetric(horizontal: context.widthByContext(22)),
                       child: _OnboardingCopy(pageIndex: _page),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+                    padding: EdgeInsets.fromLTRB(
+                      context.widthByContext(20),
+                      context.heightByContext(8),
+                      context.widthByContext(20),
+                      context.heightByContext(12),
+                    ),
                     child: Column(
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          height: 52,
+                          height: context.heightByContext(52),
                           child: ElevatedButton(
                             onPressed: _onPrimary,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _orange,
                               foregroundColor: Colors.white,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(context.widthByContext(14)),
+                              ),
                             ),
                             child: Text(
                               l10n.onboarding_next,
-                              style: AppStyle.style(17, fontWeight: FontWeight.w700, color: Colors.white),
+                              style: AppStyle.style(
+                                context.widthByContext(17),
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-
+                        SizedBox(height: context.heightByContext(12)),
                         SizedBox(
                           width: double.infinity,
-                          height: 52,
+                          height: context.heightByContext(52),
                           child: TextButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
                               foregroundColor: Colors.white,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(context.widthByContext(14)),
+                              ),
                             ),
                             onPressed: _finishOnboarding,
                             child: Text(
                               l10n.onboarding_skip,
                               style: AppStyle.style(
-                                15,
+                                context.widthByContext(15),
                                 color: AppColors.brandColor1,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -158,20 +170,25 @@ class _LogoBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = context.widthByContext(88);
     return Center(
       child: Container(
-        width: 88,
-        height: 88,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: orange,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(context.widthByContext(22)),
           boxShadow: [
-            BoxShadow(color: orange.withValues(alpha: 0.35), blurRadius: 18, offset: const Offset(0, 8)),
+            BoxShadow(
+              color: orange.withValues(alpha: 0.35),
+              blurRadius: context.widthByContext(18),
+              offset: Offset(0, context.heightByContext(8)),
+            ),
           ],
         ),
         clipBehavior: Clip.antiAlias,
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(context.widthByContext(14)),
           child: Image.asset(AppPng.brandLogo, fit: BoxFit.contain),
         ),
       ),
@@ -191,28 +208,31 @@ class _LanguageRow extends StatelessWidget {
     final langs = AppLanguage.values;
 
     return SizedBox(
-      height: 36,
+      height: context.heightByContext(36),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.symmetric(horizontal: context.widthByContext(12)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             for (var i = 0; i < langs.length; i++) ...[
-              if (i > 0) Text(' · ', style: AppStyle.style(15, color: AppColors.grey1)),
+              if (i > 0) Text(' · ', style: AppStyle.style(context.widthByContext(15), color: AppColors.grey1)),
               TextButton(
                 onPressed: () => onSelect(langs[i]),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.widthByContext(6),
+                    vertical: context.heightByContext(4),
+                  ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Text(
                   langs[i].chipCode,
                   style: AppStyle.style(
-                    15,
+                    context.widthByContext(15),
                     fontWeight: FontWeight.w600,
                     color: current == langs[i] ? AppColors.black : AppColors.grey,
                   ),
@@ -235,9 +255,9 @@ class _OnbImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: context.widthByContext(16)),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(context.widthByContext(24)),
         child: AspectRatio(
           aspectRatio: 1.15,
           child: Image.asset(
@@ -262,18 +282,18 @@ class _PagePills extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _pill(active: page == 0, orange: orange),
-        const SizedBox(width: 10),
-        _pill(active: page == 1, orange: orange),
+        _pill(context, active: page == 0, orange: orange),
+        SizedBox(width: context.widthByContext(10)),
+        _pill(context, active: page == 1, orange: orange),
       ],
     );
   }
 
-  Widget _pill({required bool active, required Color orange}) {
+  Widget _pill(BuildContext context, {required bool active, required Color orange}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
-      width: active ? 36 : 28,
-      height: 5,
+      width: active ? context.widthByContext(36) : context.widthByContext(28),
+      height: context.heightByContext(5),
       decoration: BoxDecoration(
         color: active ? orange : AppColors.grey1.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(999),
@@ -290,43 +310,37 @@ class _OnboardingCopy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final titleStyle = AppStyle.style(context.widthByContext(22), fontWeight: FontWeight.w700, color: AppColors.black);
+    final bodyStyle = AppStyle.style(context.widthByContext(15), height: 1.45, color: AppColors.black);
+    final conclusionStyle = AppStyle.style(
+      context.widthByContext(16),
+      fontWeight: FontWeight.w800,
+      color: AppColors.black,
+      height: 1.35,
+    );
+
     if (pageIndex == 0) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.onboarding_title,
-            style: AppStyle.style(22, fontWeight: FontWeight.w700, color: AppColors.black),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            l10n.onboarding_page1_bullets,
-            style: AppStyle.style(15, height: 1.45, color: AppColors.black),
-          ),
-          const SizedBox(height: 14),
-          Text(l10n.onboarding_page1_question, style: AppStyle.style(15, color: AppColors.black)),
-          const SizedBox(height: 12),
-          Text(
-            l10n.onboarding_page1_conclusion,
-            style: AppStyle.style(16, fontWeight: FontWeight.w800, color: AppColors.black, height: 1.35),
-          ),
+          Text(l10n.onboarding_title, style: titleStyle),
+          SizedBox(height: context.heightByContext(12)),
+          Text(l10n.onboarding_page1_bullets, style: bodyStyle),
+          SizedBox(height: context.heightByContext(14)),
+          Text(l10n.onboarding_page1_question, style: bodyStyle),
+          SizedBox(height: context.heightByContext(12)),
+          Text(l10n.onboarding_page1_conclusion, style: conclusionStyle),
         ],
       );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.onboarding_title,
-          style: AppStyle.style(22, fontWeight: FontWeight.w700, color: AppColors.black),
-        ),
-        const SizedBox(height: 12),
-        Text(l10n.onboarding_page2_bullet, style: AppStyle.style(15, height: 1.45, color: AppColors.black)),
-        const SizedBox(height: 16),
-        Text(
-          l10n.onboarding_page2_conclusion,
-          style: AppStyle.style(16, fontWeight: FontWeight.w800, color: AppColors.black, height: 1.35),
-        ),
+        Text(l10n.onboarding_title, style: titleStyle),
+        SizedBox(height: context.heightByContext(12)),
+        Text(l10n.onboarding_page2_bullet, style: bodyStyle),
+        SizedBox(height: context.heightByContext(16)),
+        Text(l10n.onboarding_page2_conclusion, style: conclusionStyle),
       ],
     );
   }

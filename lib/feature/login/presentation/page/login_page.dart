@@ -141,10 +141,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                      text: "Нет аккаунта? ",
+                      text: context.l10n.login_noAccount,
                       style: hintStyle,
                       children: [
-                        TextSpan(text: "Зарегистрироваться", style: registerLinkStyle),
+                        TextSpan(text: context.l10n.login_registerLink, style: registerLinkStyle),
                       ],
                     ),
                   ),

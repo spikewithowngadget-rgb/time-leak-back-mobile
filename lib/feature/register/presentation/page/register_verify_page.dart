@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
 import 'package:time_leak_flutter/core/shared/button.dart';
-import 'package:time_leak_flutter/core/shared/responsive.dart';
+import 'package:time_leak_flutter/core/shared/responsive.dart' show AuthPageHeader, AuthPageLayout;
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/register/presentation/cubit/register_cubit.dart';
@@ -52,7 +53,9 @@ class _RegisterVerifyPageState extends State<RegisterVerifyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final btnHeight = AppResponsive.buttonHeight(context);
+    final l10n = context.l10n;
+    final labelStyle = AppStyle.style(context.widthByContext(14), fontWeight: FontWeight.w600);
+    final linkStyle = AppStyle.style(context.widthByContext(14), color: AppColors.brandColor1, fontWeight: FontWeight.w600);
 
     return BlocConsumer<RegisterCubit, RegisterState>(
       bloc: _registerCubit,
@@ -70,12 +73,12 @@ class _RegisterVerifyPageState extends State<RegisterVerifyPage> {
             appBar: _appBar(context),
             children: [
               AuthPageHeader(
-                title: "Подтверждение",
-                subtitle: "Мы отправили код на номер ${widget.phone}",
+                title: l10n.register_verifyTitle,
+                subtitle: l10n.register_verifySubtitle(widget.phone),
               ),
-              SizedBox(height: AppResponsive.sectionSpacing(context)),
-              Text("Код из СМС", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
+              SizedBox(height: context.heightByContext(40)),
+              Text(l10n.register_smsCodeLabel, style: labelStyle),
+              SizedBox(height: context.heightByContext(8)),
               AppTextField(
                 hintText: "0000",
                 controller: _codeController,
@@ -83,27 +86,23 @@ class _RegisterVerifyPageState extends State<RegisterVerifyPage> {
                 textInputAction: TextInputAction.done,
                 enabled: state is! RegisterLoading,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: context.heightByContext(16)),
               Center(
                 child: TextButton(
                   onPressed: state is RegisterLoading ? null : () => _registerCubit.sendOtp(widget.phone),
-                  child: Text(
-                    "Отправить код повторно",
-                    style: AppStyle.style(14, color: AppColors.brandColor1, fontWeight: FontWeight.w600),
-                  ),
+                  child: Text(l10n.register_resendCode, style: linkStyle),
                 ),
               ),
             ],
             bottom: state is RegisterLoading
                 ? const Center(child: CircularProgressIndicator(color: AppColors.brandColor1))
                 : AppButton(
-                    height: btnHeight,
-                    text: "Подтвердить",
+                    text: l10n.register_confirm,
                     onPressed: () {
                       if (_codeController.text.length >= 4) {
                         _registerCubit.verifyCode(widget.requestId, _codeController.text.trim());
                       } else {
-                        TopSnackBar.show(context, message: "Введите полный код");
+                        TopSnackBar.show(context, message: l10n.register_errorEnterFullCode);
                       }
                     },
                   ),

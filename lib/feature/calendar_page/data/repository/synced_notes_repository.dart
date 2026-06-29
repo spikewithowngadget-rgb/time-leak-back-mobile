@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_entry_model.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/calendar_repository.dart';
@@ -16,14 +18,12 @@ class SyncedNotesRepository {
 
   // --- Чтение: только локальный источник ---
 
-  Future<List<CalendarEntryModel>> getCalendarsByDate(DateTime date) =>
-      _local.getCalendarsByDate(date);
+  Future<List<CalendarEntryModel>> getCalendarsByDate(DateTime date) => _local.getCalendarsByDate(date);
 
   Future<List<CalendarEntryModel>> getCalendarsByRange(DateTime start, DateTime end) =>
       _local.getCalendarsByRange(start, end);
 
-  Stream<List<CalendarEntryModel>> watchCalendarsByDate(DateTime date) =>
-      _local.watchCalendarsByDate(date);
+  Stream<List<CalendarEntryModel>> watchCalendarsByDate(DateTime date) => _local.watchCalendarsByDate(date);
 
   Stream<List<CalendarEntryModel>> watchCalendarsByRange(DateTime start, DateTime end) =>
       _local.watchCalendarsByRange(start, end);
@@ -40,22 +40,19 @@ class SyncedNotesRepository {
     required DateTime date,
     required String noteTitle,
   }) async {
-    final result = await _local.putCalendar(
-      pickedPath: pickedPath,
-      type: type,
-      date: date,
-      title: noteTitle,
-    );
-    try {
-      final noteType = noteTitle;
-      final note = await _api.createNote(
-        noteType: noteType,
-        filePaths: [result.localPath],
-      );
-      await _local.setBackendNoteId(result.id, note.id);
-    } catch (_) {
-      // офлайн или ошибка API — запись уже есть локально
-    }
+    final result = await _local.putCalendar(pickedPath: pickedPath, type: type, date: date, title: noteTitle);
+
+    // Важно для UX: не ждём ответ бэка, чтобы сразу показать диалог напоминания.
+    // Локальная запись уже сохранена, а синхронизацию выполняем в фоне.
+    unawaited(() async {
+      try {
+        final note = await _api.createNote(noteType: noteTitle, filePaths: [result.localPath]);
+        await _local.setBackendNoteId(result.id, note.id);
+      } catch (_) {
+        // офлайн или ошибка API — запись уже есть локально
+      }
+    }());
+
     return result;
   }
 
@@ -79,7 +76,8 @@ class SyncedNotesRepository {
       try {
         await _api.updateNote(
           id: backendId,
-          noteType: title ??
+          noteType:
+              title ??
               model.title ??
               calendarDefaultNoteTitle(lookupAppLocalizations(sl<LocaleCubit>().state), model.date),
         );
@@ -88,8 +86,7 @@ class SyncedNotesRepository {
   }
 
   /// Обновить только напоминание (только локально).
-  Future<void> updateReminder(int entryId, int? minutes) =>
-      _local.updateReminder(entryId, minutes);
+  Future<void> updateReminder(int entryId, int? minutes) => _local.updateReminder(entryId, minutes);
 
   /// Привязать локальную запись к id бэка (внутренний метод).
   Future<void> setBackendNoteId(int entryId, String backendNoteId) =>
@@ -107,8 +104,7 @@ class SyncedNotesRepository {
   }
 
   /// Скачать файл в папку «Загрузки».
-  Future<void> downloadCalendar(CalendarEntryModel model) =>
-      _local.downloadCalendar(model);
+  Future<void> downloadCalendar(CalendarEntryModel model) => _local.downloadCalendar(model);
 
   /// Синхронизация с бэком: загрузить заметки с API и сохранить в локальную БД (для пользователя после переустановки/логина).
   Future<void> syncFromBackend() async {

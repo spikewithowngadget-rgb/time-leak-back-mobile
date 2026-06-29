@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
 import 'package:time_leak_flutter/core/shared/button.dart';
-import 'package:time_leak_flutter/core/shared/responsive.dart';
+import 'package:time_leak_flutter/core/shared/responsive.dart' show AuthPageHeader, AuthPageLayout;
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/register/presentation/cubit/register_cubit.dart';
@@ -49,7 +50,8 @@ class _RegisterPhonePageState extends State<RegisterPhonePage> {
 
   @override
   Widget build(BuildContext context) {
-    final btnHeight = AppResponsive.buttonHeight(context);
+    final l10n = context.l10n;
+    final labelStyle = AppStyle.style(context.widthByContext(14), fontWeight: FontWeight.w600);
 
     return BlocConsumer<RegisterCubit, RegisterState>(
       bloc: _registerCubit,
@@ -66,13 +68,13 @@ class _RegisterPhonePageState extends State<RegisterPhonePage> {
         return AuthPageLayout(
           appBar: _appBar(context),
           children: [
-            const AuthPageHeader(
-              title: "Регистрация",
-              subtitle: "Введите ваш номер телефона для получения кода подтверждения",
+            AuthPageHeader(
+              title: l10n.register_title,
+              subtitle: l10n.register_phoneSubtitle,
             ),
-            SizedBox(height: AppResponsive.sectionSpacing(context)),
-            Text("Номер телефона", style: AppStyle.style(14, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
+            SizedBox(height: context.heightByContext(40)),
+            Text(l10n.register_phoneLabel, style: labelStyle),
+            SizedBox(height: context.heightByContext(8)),
             AppTextField(
               hintText: "+7 701 555 66 77",
               controller: _phoneController,
@@ -83,13 +85,12 @@ class _RegisterPhonePageState extends State<RegisterPhonePage> {
           bottom: state is RegisterLoading
               ? const Center(child: CircularProgressIndicator(color: AppColors.brandColor1))
               : AppButton(
-                  height: btnHeight,
-                  text: "Получить код",
+                  text: l10n.register_getCode,
                   onPressed: () {
                     if (_phoneController.text.isNotEmpty) {
                       _registerCubit.sendOtp(_phoneController.text.trim());
                     } else {
-                      TopSnackBar.show(context, message: "Введите номер телефона");
+                      TopSnackBar.show(context, message: l10n.register_errorEnterPhone);
                     }
                   },
                 ),

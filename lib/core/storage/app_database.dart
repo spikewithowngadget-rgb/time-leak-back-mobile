@@ -15,6 +15,8 @@ class CalendarEntries extends Table {
   TextColumn get type => text()();
   DateTimeColumn get date => dateTime()();
   IntColumn get reminderMinutes => integer().nullable()();
+  /// Когда должно сработать напоминание (для цвета бейджа на календаре).
+  DateTimeColumn get reminderAt => dateTime().nullable()();
   TextColumn get title => text().nullable()();
   /// Id заметки на бэкенде (для синхронизации с API).
   TextColumn get backendNoteId => text().nullable()();
@@ -42,7 +44,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
@@ -64,6 +66,9 @@ class AppDatabase extends _$AppDatabase {
         }
         if (from < 8) {
           await m.createTable(securitySettings);
+        }
+        if (from < 9) {
+          await m.addColumn(calendarEntries, calendarEntries.reminderAt);
         }
       },
     );

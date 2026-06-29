@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
+import 'package:time_leak_flutter/core/extension/l10n_ext.dart';
 import 'package:time_leak_flutter/core/resources/colors.dart';
 import 'package:time_leak_flutter/core/resources/style.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
 import 'package:time_leak_flutter/core/shared/button.dart';
-import 'package:time_leak_flutter/core/shared/responsive.dart';
+import 'package:time_leak_flutter/core/shared/responsive.dart' show AuthPageHeader, AuthPageLayout;
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/reset_password/presentation/cubit/reset_password_cubit.dart';
@@ -34,7 +35,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       elevation: 0,
       scrolledUnderElevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.black, size: 20),
+        icon: Icon(Icons.arrow_back_ios_new, color: AppColors.black, size: context.widthByContext(20)),
         onPressed: () => context.router.back(),
       ),
     );
@@ -42,7 +43,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final btnHeight = AppResponsive.buttonHeight(context);
+    final l10n = context.l10n;
+    final labelStyle = AppStyle.style(
+      context.widthByContext(13),
+      color: AppColors.black,
+      fontWeight: FontWeight.w600,
+    );
 
     return BlocProvider(
       create: (context) => sl<ResetPasswordCubit>(),
@@ -62,22 +68,31 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             child: AuthPageLayout(
               appBar: _appBar(context),
               centerTitle: true,
+              bottom: state is ResetLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(color: AppColors.brandColor1, strokeWidth: 2),
+                    )
+                  : AppButton(
+                      text: l10n.reset_sendCode,
+                      onPressed: () {
+                        if (_phoneController.text.isNotEmpty) {
+                          context.read<ResetPasswordCubit>().sendResetOtp(_phoneController.text.trim());
+                        }
+                      },
+                    ),
               children: [
                 AuthPageHeader(
                   center: true,
                   titleSize: 24,
-                  title: "Восстановление",
-                  subtitle: "Введите номер телефона, чтобы получить код доступа",
+                  title: l10n.reset_title,
+                  subtitle: l10n.reset_subtitle,
                 ),
-                SizedBox(height: AppResponsive.sectionSpacing(context, base: 50)),
+                SizedBox(height: context.heightByContext(50)),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Телефон",
-                    style: AppStyle.style(13, color: AppColors.black, fontWeight: FontWeight.w600),
-                  ),
+                  child: Text(l10n.login_phoneLabel, style: labelStyle),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: context.heightByContext(8)),
                 AppTextField(
                   controller: _phoneController,
                   hintText: "+7 777 000 00 00",
@@ -85,19 +100,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   enabled: state is! ResetLoading,
                 ),
               ],
-              bottom: state is ResetLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: AppColors.brandColor1, strokeWidth: 2),
-                    )
-                  : AppButton(
-                      height: btnHeight,
-                      text: "Отправить код",
-                      onPressed: () {
-                        if (_phoneController.text.isNotEmpty) {
-                          context.read<ResetPasswordCubit>().sendResetOtp(_phoneController.text.trim());
-                        }
-                      },
-                    ),
             ),
           );
         },

@@ -27,6 +27,122 @@ class AppLocalizationsZh extends AppLocalizations {
   String get login_signIn => 'Sign in';
 
   @override
+  String get login_noAccount => 'No account? ';
+
+  @override
+  String get login_registerLink => 'Sign up';
+
+  @override
+  String get register_title => 'Registration';
+
+  @override
+  String get register_phoneSubtitle =>
+      'Enter your phone number to receive a verification code';
+
+  @override
+  String get register_phoneLabel => 'Phone number';
+
+  @override
+  String get register_getCode => 'Get code';
+
+  @override
+  String get register_errorEnterPhone => 'Enter your phone number';
+
+  @override
+  String get register_verifyTitle => 'Verification';
+
+  @override
+  String register_verifySubtitle(String phone) {
+    return 'We sent a code to $phone';
+  }
+
+  @override
+  String get register_smsCodeLabel => 'SMS code';
+
+  @override
+  String get register_resendCode => 'Resend code';
+
+  @override
+  String get register_confirm => 'Confirm';
+
+  @override
+  String get register_errorEnterFullCode => 'Enter the full code';
+
+  @override
+  String get register_passwordTitle => 'Create a password';
+
+  @override
+  String get register_passwordSubtitle =>
+      'Use at least 8 characters for a strong password';
+
+  @override
+  String get register_confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get register_complete => 'Complete registration';
+
+  @override
+  String get register_success => 'Registration successful!';
+
+  @override
+  String get register_errorFillAllFields => 'Fill in all fields';
+
+  @override
+  String get register_errorPasswordsMismatch => 'Passwords do not match';
+
+  @override
+  String get register_errorPasswordTooShort => 'Password is too short';
+
+  @override
+  String get reset_title => 'Password recovery';
+
+  @override
+  String get reset_subtitle =>
+      'Enter your phone number to receive an access code';
+
+  @override
+  String get reset_sendCode => 'Send code';
+
+  @override
+  String get reset_verifyTitle => 'Verification code';
+
+  @override
+  String reset_verifySubtitle(String phone) {
+    return 'We sent it to\n$phone';
+  }
+
+  @override
+  String get reset_resendCode => 'Send again';
+
+  @override
+  String get reset_continue => 'Continue';
+
+  @override
+  String get reset_newPasswordTitle => 'New password';
+
+  @override
+  String get reset_newPasswordSubtitle =>
+      'Create a new password for your account';
+
+  @override
+  String get reset_passwordHint => 'Password';
+
+  @override
+  String get reset_confirmPasswordHint => 'Repeat password';
+
+  @override
+  String get reset_updatePassword => 'Update password';
+
+  @override
+  String get reset_success => 'Password changed successfully!';
+
+  @override
+  String get reset_errorFillAllFields => 'Fill in all fields';
+
+  @override
+  String get reset_errorPasswordsMismatch => 'Passwords do not match';
+
+  @override
   String get pin_screenTitle => 'Authorization';
 
   @override
@@ -57,17 +173,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get drawer_logout => 'Log out';
 
   @override
-  String get drawer_logoutConfirmTitle => 'Sign out?';
+  String get drawer_logoutConfirmTitle => '退出登录？';
 
   @override
-  String get drawer_logoutConfirmBody =>
-      'You will need to sign in with your phone and password again.';
+  String get drawer_logoutConfirmBody => '你需要重新使用手机号和密码登录。';
 
   @override
-  String get drawer_logoutConfirmYes => 'Sign out';
+  String get drawer_logoutConfirmYes => '退出';
 
   @override
-  String get drawer_logoutConfirmCancel => 'Cancel';
+  String get drawer_logoutConfirmCancel => '取消';
 
   @override
   String get drawer_about => '关于应用';
@@ -82,7 +197,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get about_description => 'TimeLeak 帮助你记录重要内容并绑定到指定日期——照片、语音笔记、文档等。';
 
   @override
-  String get about_reference => 'Reference: Maksa Tleshov';
+  String get about_reference => '参考：Maksa Tleshov';
 
   @override
   String get about_deleteAccount => '删除账号';
@@ -141,13 +256,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendar_reminderNotificationBody => '您有一条笔记';
 
   @override
-  String get calendar_cameraSheetTitle => 'Camera';
+  String get calendar_cameraSheetTitle => '相机';
 
   @override
-  String get calendar_cameraPhoto => 'Take photo';
+  String get calendar_cameraPhoto => '拍照';
 
   @override
-  String get calendar_cameraVideo => 'Record video';
+  String get calendar_cameraVideo => '录像';
+
+  @override
+  String get calendar_selectDayFirst => '请先在日历中选择日期';
 
   @override
   String get calendar_status_fileSaved => '文件已保存';
@@ -191,7 +309,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendar_reminderDialog_title => '提醒';
 
   @override
-  String get calendar_reminderDialog_afterAttachTitle => 'Remind me';
+  String get calendar_reminderDialog_afterAttachTitle => '提醒我';
 
   @override
   String get calendar_reminderDialog_current => '当前：';
@@ -200,29 +318,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendar_reminderDialog_changeTo => '更改为';
 
   @override
-  String get calendar_reminderDialog_yearly_title => 'Annually';
+  String get calendar_reminderDialog_yearly_title => '每年';
 
   @override
-  String get calendar_reminderDialog_yearly_subtitle => 'In 365 days';
+  String get calendar_reminderDialog_yearly_subtitle => '365 天后';
 
   @override
-  String get calendar_reminderDialog_quarterly_title => 'Quarterly';
+  String get calendar_reminderDialog_quarterly_title => '每季度';
 
   @override
-  String get calendar_reminderDialog_quarterly_subtitle => 'In 3 months';
+  String get calendar_reminderDialog_quarterly_subtitle => '3 个月后';
 
   @override
-  String get calendar_reminderDialog_monthly_title => 'Monthly';
+  String get calendar_reminderDialog_monthly_title => '每月';
 
   @override
-  String get calendar_reminderDialog_monthly_subtitle => 'In 30 days';
+  String get calendar_reminderDialog_monthly_subtitle => '30 天后';
 
   @override
-  String get calendar_reminderDialog_customDays_title => 'Custom';
+  String get calendar_reminderDialog_customDays_title => '自定义';
 
   @override
-  String get calendar_reminderDialog_customDays_subtitle =>
-      'Enter number of days';
+  String get calendar_reminderDialog_customDays_subtitle => '输入天数';
 
   @override
   String get calendar_reminderDialog_everyDay_title => '每天';
@@ -255,13 +372,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calendar_reminderLabel_notSet => '未设置';
 
   @override
-  String get calendar_reminderLabel_yearly => 'Annually';
+  String get calendar_reminderLabel_yearly => '每年';
 
   @override
-  String get calendar_reminderLabel_quarterly => 'Quarterly';
+  String get calendar_reminderLabel_quarterly => '每季度';
 
   @override
-  String get calendar_reminderLabel_monthly => 'Monthly';
+  String get calendar_reminderLabel_monthly => '每月';
 
   @override
   String get calendar_reminderLabel_everyDay => '每天';

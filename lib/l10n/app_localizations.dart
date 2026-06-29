@@ -150,6 +150,222 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get login_signIn;
 
+  /// No description provided for @login_noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'No account? '**
+  String get login_noAccount;
+
+  /// No description provided for @login_registerLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get login_registerLink;
+
+  /// No description provided for @register_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration'**
+  String get register_title;
+
+  /// No description provided for @register_phoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number to receive a verification code'**
+  String get register_phoneSubtitle;
+
+  /// No description provided for @register_phoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number'**
+  String get register_phoneLabel;
+
+  /// No description provided for @register_getCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Get code'**
+  String get register_getCode;
+
+  /// No description provided for @register_errorEnterPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number'**
+  String get register_errorEnterPhone;
+
+  /// No description provided for @register_verifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification'**
+  String get register_verifyTitle;
+
+  /// No description provided for @register_verifySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a code to {phone}'**
+  String register_verifySubtitle(String phone);
+
+  /// No description provided for @register_smsCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS code'**
+  String get register_smsCodeLabel;
+
+  /// No description provided for @register_resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get register_resendCode;
+
+  /// No description provided for @register_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get register_confirm;
+
+  /// No description provided for @register_errorEnterFullCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the full code'**
+  String get register_errorEnterFullCode;
+
+  /// No description provided for @register_passwordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a password'**
+  String get register_passwordTitle;
+
+  /// No description provided for @register_passwordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 8 characters for a strong password'**
+  String get register_passwordSubtitle;
+
+  /// No description provided for @register_confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get register_confirmPasswordLabel;
+
+  /// No description provided for @register_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete registration'**
+  String get register_complete;
+
+  /// No description provided for @register_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration successful!'**
+  String get register_success;
+
+  /// No description provided for @register_errorFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in all fields'**
+  String get register_errorFillAllFields;
+
+  /// No description provided for @register_errorPasswordsMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get register_errorPasswordsMismatch;
+
+  /// No description provided for @register_errorPasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too short'**
+  String get register_errorPasswordTooShort;
+
+  /// No description provided for @reset_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Password recovery'**
+  String get reset_title;
+
+  /// No description provided for @reset_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your phone number to receive an access code'**
+  String get reset_subtitle;
+
+  /// No description provided for @reset_sendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send code'**
+  String get reset_sendCode;
+
+  /// No description provided for @reset_verifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code'**
+  String get reset_verifyTitle;
+
+  /// No description provided for @reset_verifySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent it to\n{phone}'**
+  String reset_verifySubtitle(String phone);
+
+  /// No description provided for @reset_resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again'**
+  String get reset_resendCode;
+
+  /// No description provided for @reset_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get reset_continue;
+
+  /// No description provided for @reset_newPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get reset_newPasswordTitle;
+
+  /// No description provided for @reset_newPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new password for your account'**
+  String get reset_newPasswordSubtitle;
+
+  /// No description provided for @reset_passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get reset_passwordHint;
+
+  /// No description provided for @reset_confirmPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat password'**
+  String get reset_confirmPasswordHint;
+
+  /// No description provided for @reset_updatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get reset_updatePassword;
+
+  /// No description provided for @reset_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed successfully!'**
+  String get reset_success;
+
+  /// No description provided for @reset_errorFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in all fields'**
+  String get reset_errorFillAllFields;
+
+  /// No description provided for @reset_errorPasswordsMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get reset_errorPasswordsMismatch;
+
   /// No description provided for @pin_screenTitle.
   ///
   /// In en, this message translates to:
@@ -383,6 +599,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Record video'**
   String get calendar_cameraVideo;
+
+  /// No description provided for @calendar_selectDayFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a day on the calendar first'**
+  String get calendar_selectDayFirst;
 
   /// No description provided for @calendar_status_fileSaved.
   ///

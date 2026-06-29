@@ -27,6 +27,122 @@ class AppLocalizationsPt extends AppLocalizations {
   String get login_signIn => 'Sign in';
 
   @override
+  String get login_noAccount => 'No account? ';
+
+  @override
+  String get login_registerLink => 'Sign up';
+
+  @override
+  String get register_title => 'Registration';
+
+  @override
+  String get register_phoneSubtitle =>
+      'Enter your phone number to receive a verification code';
+
+  @override
+  String get register_phoneLabel => 'Phone number';
+
+  @override
+  String get register_getCode => 'Get code';
+
+  @override
+  String get register_errorEnterPhone => 'Enter your phone number';
+
+  @override
+  String get register_verifyTitle => 'Verification';
+
+  @override
+  String register_verifySubtitle(String phone) {
+    return 'We sent a code to $phone';
+  }
+
+  @override
+  String get register_smsCodeLabel => 'SMS code';
+
+  @override
+  String get register_resendCode => 'Resend code';
+
+  @override
+  String get register_confirm => 'Confirm';
+
+  @override
+  String get register_errorEnterFullCode => 'Enter the full code';
+
+  @override
+  String get register_passwordTitle => 'Create a password';
+
+  @override
+  String get register_passwordSubtitle =>
+      'Use at least 8 characters for a strong password';
+
+  @override
+  String get register_confirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get register_complete => 'Complete registration';
+
+  @override
+  String get register_success => 'Registration successful!';
+
+  @override
+  String get register_errorFillAllFields => 'Fill in all fields';
+
+  @override
+  String get register_errorPasswordsMismatch => 'Passwords do not match';
+
+  @override
+  String get register_errorPasswordTooShort => 'Password is too short';
+
+  @override
+  String get reset_title => 'Password recovery';
+
+  @override
+  String get reset_subtitle =>
+      'Enter your phone number to receive an access code';
+
+  @override
+  String get reset_sendCode => 'Send code';
+
+  @override
+  String get reset_verifyTitle => 'Verification code';
+
+  @override
+  String reset_verifySubtitle(String phone) {
+    return 'We sent it to\n$phone';
+  }
+
+  @override
+  String get reset_resendCode => 'Send again';
+
+  @override
+  String get reset_continue => 'Continue';
+
+  @override
+  String get reset_newPasswordTitle => 'New password';
+
+  @override
+  String get reset_newPasswordSubtitle =>
+      'Create a new password for your account';
+
+  @override
+  String get reset_passwordHint => 'Password';
+
+  @override
+  String get reset_confirmPasswordHint => 'Repeat password';
+
+  @override
+  String get reset_updatePassword => 'Update password';
+
+  @override
+  String get reset_success => 'Password changed successfully!';
+
+  @override
+  String get reset_errorFillAllFields => 'Fill in all fields';
+
+  @override
+  String get reset_errorPasswordsMismatch => 'Passwords do not match';
+
+  @override
   String get pin_screenTitle => 'Authorization';
 
   @override
@@ -57,17 +173,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get drawer_logout => 'Log out';
 
   @override
-  String get drawer_logoutConfirmTitle => 'Sign out?';
+  String get drawer_logoutConfirmTitle => 'Sair?';
 
   @override
   String get drawer_logoutConfirmBody =>
-      'You will need to sign in with your phone and password again.';
+      'Será necessário entrar novamente com telefone e senha.';
 
   @override
-  String get drawer_logoutConfirmYes => 'Sign out';
+  String get drawer_logoutConfirmYes => 'Sair';
 
   @override
-  String get drawer_logoutConfirmCancel => 'Cancel';
+  String get drawer_logoutConfirmCancel => 'Cancelar';
 
   @override
   String get drawer_about => 'Sobre o app';
@@ -83,7 +199,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'O TimeLeak ajuda você a guardar o que importa e vincular à data que precisa — fotos, notas de voz, documentos e muito mais.';
 
   @override
-  String get about_reference => 'Reference: Maksa Tleshov';
+  String get about_reference => 'Referência: Maksa Tleshov';
 
   @override
   String get about_deleteAccount => 'Excluir conta';
@@ -145,13 +261,17 @@ class AppLocalizationsPt extends AppLocalizations {
   String get calendar_reminderNotificationBody => 'Você tem uma nota';
 
   @override
-  String get calendar_cameraSheetTitle => 'Camera';
+  String get calendar_cameraSheetTitle => 'Câmera';
 
   @override
-  String get calendar_cameraPhoto => 'Take photo';
+  String get calendar_cameraPhoto => 'Tirar foto';
 
   @override
-  String get calendar_cameraVideo => 'Record video';
+  String get calendar_cameraVideo => 'Gravar vídeo';
+
+  @override
+  String get calendar_selectDayFirst =>
+      'Selecione primeiro um dia no calendário';
 
   @override
   String get calendar_status_fileSaved => 'Arquivo salvo';
@@ -195,7 +315,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get calendar_reminderDialog_title => 'Lembrete';
 
   @override
-  String get calendar_reminderDialog_afterAttachTitle => 'Remind me';
+  String get calendar_reminderDialog_afterAttachTitle => 'Lembre-me';
 
   @override
   String get calendar_reminderDialog_current => 'Agora:';
@@ -204,29 +324,29 @@ class AppLocalizationsPt extends AppLocalizations {
   String get calendar_reminderDialog_changeTo => 'Mudar para';
 
   @override
-  String get calendar_reminderDialog_yearly_title => 'Annually';
+  String get calendar_reminderDialog_yearly_title => 'Anualmente';
 
   @override
-  String get calendar_reminderDialog_yearly_subtitle => 'In 365 days';
+  String get calendar_reminderDialog_yearly_subtitle => 'Em 365 dias';
 
   @override
-  String get calendar_reminderDialog_quarterly_title => 'Quarterly';
+  String get calendar_reminderDialog_quarterly_title => 'Trimestralmente';
 
   @override
-  String get calendar_reminderDialog_quarterly_subtitle => 'In 3 months';
+  String get calendar_reminderDialog_quarterly_subtitle => 'Em 3 meses';
 
   @override
-  String get calendar_reminderDialog_monthly_title => 'Monthly';
+  String get calendar_reminderDialog_monthly_title => 'Mensalmente';
 
   @override
-  String get calendar_reminderDialog_monthly_subtitle => 'In 30 days';
+  String get calendar_reminderDialog_monthly_subtitle => 'Em 30 dias';
 
   @override
-  String get calendar_reminderDialog_customDays_title => 'Custom';
+  String get calendar_reminderDialog_customDays_title => 'Personalizado';
 
   @override
   String get calendar_reminderDialog_customDays_subtitle =>
-      'Enter number of days';
+      'Informe o número de dias';
 
   @override
   String get calendar_reminderDialog_everyDay_title => 'Todos os dias';
@@ -261,13 +381,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get calendar_reminderLabel_notSet => 'Não definido';
 
   @override
-  String get calendar_reminderLabel_yearly => 'Annually';
+  String get calendar_reminderLabel_yearly => 'Anualmente';
 
   @override
-  String get calendar_reminderLabel_quarterly => 'Quarterly';
+  String get calendar_reminderLabel_quarterly => 'Trimestralmente';
 
   @override
-  String get calendar_reminderLabel_monthly => 'Monthly';
+  String get calendar_reminderLabel_monthly => 'Mensalmente';
 
   @override
   String get calendar_reminderLabel_everyDay => 'Todos os dias';

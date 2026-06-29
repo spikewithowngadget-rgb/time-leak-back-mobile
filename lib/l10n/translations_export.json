@@ -1,0 +1,2299 @@
+{
+  "meta": {
+    "template_locale": "en",
+    "supported_locales": [
+      "en",
+      "ar",
+      "de",
+      "es",
+      "fr",
+      "hi",
+      "it",
+      "pt",
+      "ru",
+      "zh"
+    ],
+    "total_keys": 129,
+    "keys_needing_translation": 21,
+    "generated_at": "2026-06-24T04:27:54.100247+00:00"
+  },
+  "missing_summary": {
+    "ar": 21,
+    "de": 21,
+    "es": 21,
+    "fr": 21,
+    "hi": 21,
+    "it": 21,
+    "pt": 21,
+    "zh": 21
+  },
+  "strings": {
+    "login_welcomeBack": {
+      "source": "Welcome Back",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Welcome Back",
+        "de": "Welcome Back",
+        "es": "Welcome Back",
+        "fr": "Welcome Back",
+        "hi": "Welcome Back",
+        "it": "Welcome Back",
+        "pt": "Welcome Back",
+        "ru": "Добро пожаловать",
+        "zh": "Welcome Back"
+      }
+    },
+    "login_subtitle": {
+      "source": "Sign in to your TimeLeak account",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Sign in to your TimeLeak account",
+        "de": "Sign in to your TimeLeak account",
+        "es": "Sign in to your TimeLeak account",
+        "fr": "Sign in to your TimeLeak account",
+        "hi": "Sign in to your TimeLeak account",
+        "it": "Sign in to your TimeLeak account",
+        "pt": "Sign in to your TimeLeak account",
+        "ru": "Войдите в свой аккаунт TimeLeak",
+        "zh": "Sign in to your TimeLeak account"
+      }
+    },
+    "login_phoneLabel": {
+      "source": "Phone",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Phone",
+        "de": "Phone",
+        "es": "Phone",
+        "fr": "Phone",
+        "hi": "Phone",
+        "it": "Phone",
+        "pt": "Phone",
+        "ru": "Телефон",
+        "zh": "Phone"
+      }
+    },
+    "login_passwordLabel": {
+      "source": "Password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Password",
+        "de": "Password",
+        "es": "Password",
+        "fr": "Password",
+        "hi": "Password",
+        "it": "Password",
+        "pt": "Password",
+        "ru": "Пароль",
+        "zh": "Password"
+      }
+    },
+    "login_forgotPassword": {
+      "source": "Forgot password?",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Forgot password?",
+        "de": "Forgot password?",
+        "es": "Forgot password?",
+        "fr": "Forgot password?",
+        "hi": "Forgot password?",
+        "it": "Forgot password?",
+        "pt": "Forgot password?",
+        "ru": "Забыли пароль?",
+        "zh": "Forgot password?"
+      }
+    },
+    "login_signIn": {
+      "source": "Sign in",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Sign in",
+        "de": "Sign in",
+        "es": "Sign in",
+        "fr": "Sign in",
+        "hi": "Sign in",
+        "it": "Sign in",
+        "pt": "Sign in",
+        "ru": "Войти",
+        "zh": "Sign in"
+      }
+    },
+    "login_noAccount": {
+      "source": "No account? ",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "No account? ",
+        "de": "No account? ",
+        "es": "No account? ",
+        "fr": "No account? ",
+        "hi": "No account? ",
+        "it": "No account? ",
+        "pt": "No account? ",
+        "ru": "Нет аккаунта? ",
+        "zh": "No account? "
+      }
+    },
+    "login_registerLink": {
+      "source": "Sign up",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Sign up",
+        "de": "Sign up",
+        "es": "Sign up",
+        "fr": "Sign up",
+        "hi": "Sign up",
+        "it": "Sign up",
+        "pt": "Sign up",
+        "ru": "Зарегистрироваться",
+        "zh": "Sign up"
+      }
+    },
+    "register_title": {
+      "source": "Registration",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Registration",
+        "de": "Registration",
+        "es": "Registration",
+        "fr": "Registration",
+        "hi": "Registration",
+        "it": "Registration",
+        "pt": "Registration",
+        "ru": "Регистрация",
+        "zh": "Registration"
+      }
+    },
+    "register_phoneSubtitle": {
+      "source": "Enter your phone number to receive a verification code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Enter your phone number to receive a verification code",
+        "de": "Enter your phone number to receive a verification code",
+        "es": "Enter your phone number to receive a verification code",
+        "fr": "Enter your phone number to receive a verification code",
+        "hi": "Enter your phone number to receive a verification code",
+        "it": "Enter your phone number to receive a verification code",
+        "pt": "Enter your phone number to receive a verification code",
+        "ru": "Введите ваш номер телефона для получения кода подтверждения",
+        "zh": "Enter your phone number to receive a verification code"
+      }
+    },
+    "register_phoneLabel": {
+      "source": "Phone number",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Phone number",
+        "de": "Phone number",
+        "es": "Phone number",
+        "fr": "Phone number",
+        "hi": "Phone number",
+        "it": "Phone number",
+        "pt": "Phone number",
+        "ru": "Номер телефона",
+        "zh": "Phone number"
+      }
+    },
+    "register_getCode": {
+      "source": "Get code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Get code",
+        "de": "Get code",
+        "es": "Get code",
+        "fr": "Get code",
+        "hi": "Get code",
+        "it": "Get code",
+        "pt": "Get code",
+        "ru": "Получить код",
+        "zh": "Get code"
+      }
+    },
+    "register_errorEnterPhone": {
+      "source": "Enter your phone number",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Enter your phone number",
+        "de": "Enter your phone number",
+        "es": "Enter your phone number",
+        "fr": "Enter your phone number",
+        "hi": "Enter your phone number",
+        "it": "Enter your phone number",
+        "pt": "Enter your phone number",
+        "ru": "Введите номер телефона",
+        "zh": "Enter your phone number"
+      }
+    },
+    "register_verifyTitle": {
+      "source": "Verification",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Verification",
+        "de": "Verification",
+        "es": "Verification",
+        "fr": "Verification",
+        "hi": "Verification",
+        "it": "Verification",
+        "pt": "Verification",
+        "ru": "Подтверждение",
+        "zh": "Verification"
+      }
+    },
+    "register_verifySubtitle": {
+      "source": "We sent a code to {phone}",
+      "placeholders": [
+        "phone"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "We sent a code to {phone}",
+        "de": "We sent a code to {phone}",
+        "es": "We sent a code to {phone}",
+        "fr": "We sent a code to {phone}",
+        "hi": "We sent a code to {phone}",
+        "it": "We sent a code to {phone}",
+        "pt": "We sent a code to {phone}",
+        "ru": "Мы отправили код на номер {phone}",
+        "zh": "We sent a code to {phone}"
+      }
+    },
+    "register_smsCodeLabel": {
+      "source": "SMS code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "SMS code",
+        "de": "SMS code",
+        "es": "SMS code",
+        "fr": "SMS code",
+        "hi": "SMS code",
+        "it": "SMS code",
+        "pt": "SMS code",
+        "ru": "Код из СМС",
+        "zh": "SMS code"
+      }
+    },
+    "register_resendCode": {
+      "source": "Resend code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Resend code",
+        "de": "Resend code",
+        "es": "Resend code",
+        "fr": "Resend code",
+        "hi": "Resend code",
+        "it": "Resend code",
+        "pt": "Resend code",
+        "ru": "Отправить код повторно",
+        "zh": "Resend code"
+      }
+    },
+    "register_confirm": {
+      "source": "Confirm",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Confirm",
+        "de": "Confirm",
+        "es": "Confirm",
+        "fr": "Confirm",
+        "hi": "Confirm",
+        "it": "Confirm",
+        "pt": "Confirm",
+        "ru": "Подтвердить",
+        "zh": "Confirm"
+      }
+    },
+    "register_errorEnterFullCode": {
+      "source": "Enter the full code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Enter the full code",
+        "de": "Enter the full code",
+        "es": "Enter the full code",
+        "fr": "Enter the full code",
+        "hi": "Enter the full code",
+        "it": "Enter the full code",
+        "pt": "Enter the full code",
+        "ru": "Введите полный код",
+        "zh": "Enter the full code"
+      }
+    },
+    "register_passwordTitle": {
+      "source": "Create a password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Create a password",
+        "de": "Create a password",
+        "es": "Create a password",
+        "fr": "Create a password",
+        "hi": "Create a password",
+        "it": "Create a password",
+        "pt": "Create a password",
+        "ru": "Придумайте пароль",
+        "zh": "Create a password"
+      }
+    },
+    "register_passwordSubtitle": {
+      "source": "Use at least 8 characters for a strong password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Use at least 8 characters for a strong password",
+        "de": "Use at least 8 characters for a strong password",
+        "es": "Use at least 8 characters for a strong password",
+        "fr": "Use at least 8 characters for a strong password",
+        "hi": "Use at least 8 characters for a strong password",
+        "it": "Use at least 8 characters for a strong password",
+        "pt": "Use at least 8 characters for a strong password",
+        "ru": "Пароль должен быть надежным и содержать не менее 8 символов",
+        "zh": "Use at least 8 characters for a strong password"
+      }
+    },
+    "register_confirmPasswordLabel": {
+      "source": "Confirm password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Confirm password",
+        "de": "Confirm password",
+        "es": "Confirm password",
+        "fr": "Confirm password",
+        "hi": "Confirm password",
+        "it": "Confirm password",
+        "pt": "Confirm password",
+        "ru": "Подтвердите пароль",
+        "zh": "Confirm password"
+      }
+    },
+    "register_complete": {
+      "source": "Complete registration",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Complete registration",
+        "de": "Complete registration",
+        "es": "Complete registration",
+        "fr": "Complete registration",
+        "hi": "Complete registration",
+        "it": "Complete registration",
+        "pt": "Complete registration",
+        "ru": "Завершить регистрацию",
+        "zh": "Complete registration"
+      }
+    },
+    "register_success": {
+      "source": "Registration successful!",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Registration successful!",
+        "de": "Registration successful!",
+        "es": "Registration successful!",
+        "fr": "Registration successful!",
+        "hi": "Registration successful!",
+        "it": "Registration successful!",
+        "pt": "Registration successful!",
+        "ru": "Регистрация прошла успешно!",
+        "zh": "Registration successful!"
+      }
+    },
+    "register_errorFillAllFields": {
+      "source": "Fill in all fields",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Fill in all fields",
+        "de": "Fill in all fields",
+        "es": "Fill in all fields",
+        "fr": "Fill in all fields",
+        "hi": "Fill in all fields",
+        "it": "Fill in all fields",
+        "pt": "Fill in all fields",
+        "ru": "Заполните все поля",
+        "zh": "Fill in all fields"
+      }
+    },
+    "register_errorPasswordsMismatch": {
+      "source": "Passwords do not match",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Passwords do not match",
+        "de": "Passwords do not match",
+        "es": "Passwords do not match",
+        "fr": "Passwords do not match",
+        "hi": "Passwords do not match",
+        "it": "Passwords do not match",
+        "pt": "Passwords do not match",
+        "ru": "Пароли не совпадают",
+        "zh": "Passwords do not match"
+      }
+    },
+    "register_errorPasswordTooShort": {
+      "source": "Password is too short",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Password is too short",
+        "de": "Password is too short",
+        "es": "Password is too short",
+        "fr": "Password is too short",
+        "hi": "Password is too short",
+        "it": "Password is too short",
+        "pt": "Password is too short",
+        "ru": "Пароль слишком короткий",
+        "zh": "Password is too short"
+      }
+    },
+    "reset_title": {
+      "source": "Password recovery",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Password recovery",
+        "de": "Password recovery",
+        "es": "Password recovery",
+        "fr": "Password recovery",
+        "hi": "Password recovery",
+        "it": "Password recovery",
+        "pt": "Password recovery",
+        "ru": "Восстановление",
+        "zh": "Password recovery"
+      }
+    },
+    "reset_subtitle": {
+      "source": "Enter your phone number to receive an access code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Enter your phone number to receive an access code",
+        "de": "Enter your phone number to receive an access code",
+        "es": "Enter your phone number to receive an access code",
+        "fr": "Enter your phone number to receive an access code",
+        "hi": "Enter your phone number to receive an access code",
+        "it": "Enter your phone number to receive an access code",
+        "pt": "Enter your phone number to receive an access code",
+        "ru": "Введите номер телефона, чтобы получить код доступа",
+        "zh": "Enter your phone number to receive an access code"
+      }
+    },
+    "reset_sendCode": {
+      "source": "Send code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Send code",
+        "de": "Send code",
+        "es": "Send code",
+        "fr": "Send code",
+        "hi": "Send code",
+        "it": "Send code",
+        "pt": "Send code",
+        "ru": "Отправить код",
+        "zh": "Send code"
+      }
+    },
+    "reset_verifyTitle": {
+      "source": "Verification code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Verification code",
+        "de": "Verification code",
+        "es": "Verification code",
+        "fr": "Verification code",
+        "hi": "Verification code",
+        "it": "Verification code",
+        "pt": "Verification code",
+        "ru": "Код подтверждения",
+        "zh": "Verification code"
+      }
+    },
+    "reset_verifySubtitle": {
+      "source": "We sent it to\n{phone}",
+      "placeholders": [
+        "phone"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "We sent it to\n{phone}",
+        "de": "We sent it to\n{phone}",
+        "es": "We sent it to\n{phone}",
+        "fr": "We sent it to\n{phone}",
+        "hi": "We sent it to\n{phone}",
+        "it": "We sent it to\n{phone}",
+        "pt": "We sent it to\n{phone}",
+        "ru": "Мы отправили его на номер\n{phone}",
+        "zh": "We sent it to\n{phone}"
+      }
+    },
+    "reset_resendCode": {
+      "source": "Send again",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Send again",
+        "de": "Send again",
+        "es": "Send again",
+        "fr": "Send again",
+        "hi": "Send again",
+        "it": "Send again",
+        "pt": "Send again",
+        "ru": "Отправить еще раз",
+        "zh": "Send again"
+      }
+    },
+    "reset_continue": {
+      "source": "Continue",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Continue",
+        "de": "Continue",
+        "es": "Continue",
+        "fr": "Continue",
+        "hi": "Continue",
+        "it": "Continue",
+        "pt": "Continue",
+        "ru": "Продолжить",
+        "zh": "Continue"
+      }
+    },
+    "reset_newPasswordTitle": {
+      "source": "New password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "New password",
+        "de": "New password",
+        "es": "New password",
+        "fr": "New password",
+        "hi": "New password",
+        "it": "New password",
+        "pt": "New password",
+        "ru": "Новый пароль",
+        "zh": "New password"
+      }
+    },
+    "reset_newPasswordSubtitle": {
+      "source": "Create a new password for your account",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Create a new password for your account",
+        "de": "Create a new password for your account",
+        "es": "Create a new password for your account",
+        "fr": "Create a new password for your account",
+        "hi": "Create a new password for your account",
+        "it": "Create a new password for your account",
+        "pt": "Create a new password for your account",
+        "ru": "Создайте новый пароль для доступа к вашему аккаунту",
+        "zh": "Create a new password for your account"
+      }
+    },
+    "reset_passwordHint": {
+      "source": "Password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Password",
+        "de": "Password",
+        "es": "Password",
+        "fr": "Password",
+        "hi": "Password",
+        "it": "Password",
+        "pt": "Password",
+        "ru": "Пароль",
+        "zh": "Password"
+      }
+    },
+    "reset_confirmPasswordHint": {
+      "source": "Repeat password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Repeat password",
+        "de": "Repeat password",
+        "es": "Repeat password",
+        "fr": "Repeat password",
+        "hi": "Repeat password",
+        "it": "Repeat password",
+        "pt": "Repeat password",
+        "ru": "Повторите пароль",
+        "zh": "Repeat password"
+      }
+    },
+    "reset_updatePassword": {
+      "source": "Update password",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Update password",
+        "de": "Update password",
+        "es": "Update password",
+        "fr": "Update password",
+        "hi": "Update password",
+        "it": "Update password",
+        "pt": "Update password",
+        "ru": "Обновить пароль",
+        "zh": "Update password"
+      }
+    },
+    "reset_success": {
+      "source": "Password changed successfully!",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Password changed successfully!",
+        "de": "Password changed successfully!",
+        "es": "Password changed successfully!",
+        "fr": "Password changed successfully!",
+        "hi": "Password changed successfully!",
+        "it": "Password changed successfully!",
+        "pt": "Password changed successfully!",
+        "ru": "Пароль успешно изменен!",
+        "zh": "Password changed successfully!"
+      }
+    },
+    "reset_errorFillAllFields": {
+      "source": "Fill in all fields",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Fill in all fields",
+        "de": "Fill in all fields",
+        "es": "Fill in all fields",
+        "fr": "Fill in all fields",
+        "hi": "Fill in all fields",
+        "it": "Fill in all fields",
+        "pt": "Fill in all fields",
+        "ru": "Заполните все поля",
+        "zh": "Fill in all fields"
+      }
+    },
+    "reset_errorPasswordsMismatch": {
+      "source": "Passwords do not match",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Passwords do not match",
+        "de": "Passwords do not match",
+        "es": "Passwords do not match",
+        "fr": "Passwords do not match",
+        "hi": "Passwords do not match",
+        "it": "Passwords do not match",
+        "pt": "Passwords do not match",
+        "ru": "Пароли не совпадают",
+        "zh": "Passwords do not match"
+      }
+    },
+    "pin_screenTitle": {
+      "source": "Authorization",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Authorization",
+        "de": "Authorization",
+        "es": "Authorization",
+        "fr": "Authorization",
+        "hi": "Authorization",
+        "it": "Authorization",
+        "pt": "Authorization",
+        "ru": "Авторизация",
+        "zh": "Authorization"
+      }
+    },
+    "pin_accessCode": {
+      "source": "Access code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Access code",
+        "de": "Access code",
+        "es": "Access code",
+        "fr": "Access code",
+        "hi": "Access code",
+        "it": "Access code",
+        "pt": "Access code",
+        "ru": "Код доступа",
+        "zh": "Access code"
+      }
+    },
+    "pin_createCode": {
+      "source": "Create access code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Create access code",
+        "de": "Create access code",
+        "es": "Create access code",
+        "fr": "Create access code",
+        "hi": "Create access code",
+        "it": "Create access code",
+        "pt": "Create access code",
+        "ru": "Придумайте код доступа",
+        "zh": "Create access code"
+      }
+    },
+    "pin_confirmCode": {
+      "source": "Confirm code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Confirm code",
+        "de": "Confirm code",
+        "es": "Confirm code",
+        "fr": "Confirm code",
+        "hi": "Confirm code",
+        "it": "Confirm code",
+        "pt": "Confirm code",
+        "ru": "Повторите код",
+        "zh": "Confirm code"
+      }
+    },
+    "pin_wrongCode": {
+      "source": "Wrong code",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Wrong code",
+        "de": "Wrong code",
+        "es": "Wrong code",
+        "fr": "Wrong code",
+        "hi": "Wrong code",
+        "it": "Wrong code",
+        "pt": "Wrong code",
+        "ru": "Неверный код",
+        "zh": "Wrong code"
+      }
+    },
+    "pin_codesDoNotMatch": {
+      "source": "Codes do not match",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Codes do not match",
+        "de": "Codes do not match",
+        "es": "Codes do not match",
+        "fr": "Codes do not match",
+        "hi": "Codes do not match",
+        "it": "Codes do not match",
+        "pt": "Codes do not match",
+        "ru": "Коды не совпадают",
+        "zh": "Codes do not match"
+      }
+    },
+    "pin_biometricReason": {
+      "source": "Unlock the app",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Unlock the app",
+        "de": "Unlock the app",
+        "es": "Unlock the app",
+        "fr": "Unlock the app",
+        "hi": "Unlock the app",
+        "it": "Unlock the app",
+        "pt": "Unlock the app",
+        "ru": "Разблокируйте приложение",
+        "zh": "Unlock the app"
+      }
+    },
+    "drawer_settings": {
+      "source": "Settings",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Settings",
+        "de": "Settings",
+        "es": "Settings",
+        "fr": "Settings",
+        "hi": "Settings",
+        "it": "Settings",
+        "pt": "Settings",
+        "ru": "Настройки",
+        "zh": "Settings"
+      }
+    },
+    "drawer_language": {
+      "source": "Language",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Language",
+        "de": "Language",
+        "es": "Language",
+        "fr": "Language",
+        "hi": "Language",
+        "it": "Language",
+        "pt": "Language",
+        "ru": "Язык",
+        "zh": "Language"
+      }
+    },
+    "drawer_logout": {
+      "source": "Log out",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "Log out",
+        "de": "Log out",
+        "es": "Log out",
+        "fr": "Log out",
+        "hi": "Log out",
+        "it": "Log out",
+        "pt": "Log out",
+        "ru": "Выйти",
+        "zh": "Log out"
+      }
+    },
+    "drawer_logoutConfirmTitle": {
+      "source": "Sign out?",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Выйти из приложения?",
+        "zh": ""
+      }
+    },
+    "drawer_logoutConfirmBody": {
+      "source": "You will need to sign in with your phone and password again.",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Потребуется снова ввести телефон и пароль при следующем входе.",
+        "zh": ""
+      }
+    },
+    "drawer_logoutConfirmYes": {
+      "source": "Sign out",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Выйти",
+        "zh": ""
+      }
+    },
+    "drawer_logoutConfirmCancel": {
+      "source": "Cancel",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Отмена",
+        "zh": ""
+      }
+    },
+    "drawer_about": {
+      "source": "About the app",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "حول التطبيق",
+        "de": "Über die App",
+        "es": "Acerca de la app",
+        "fr": "À propos de l’app",
+        "hi": "ऐप के बारे में",
+        "it": "Info sull’app",
+        "pt": "Sobre o app",
+        "ru": "О приложении",
+        "zh": "关于应用"
+      }
+    },
+    "about_title": {
+      "source": "About",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "حول التطبيق",
+        "de": "Über die App",
+        "es": "Acerca de",
+        "fr": "À propos",
+        "hi": "ऐप के बारे में",
+        "it": "Informazioni",
+        "pt": "Sobre",
+        "ru": "О приложении",
+        "zh": "关于应用"
+      }
+    },
+    "about_versionLabel": {
+      "source": "Version",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "الإصدار",
+        "de": "Version",
+        "es": "Version",
+        "fr": "Version",
+        "hi": "संस्करण",
+        "it": "Version",
+        "pt": "Version",
+        "ru": "Версия",
+        "zh": "版本"
+      }
+    },
+    "about_description": {
+      "source": "TimeLeak helps you capture what matters and tie it to the date you need — photos, voice notes, documents, and more.",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "يساعدك TimeLeak على حفظ ما يهمك وربطه بالتاريخ الذي تحتاجه — صور، ملاحظات صوتية، مستندات، وأكثر.",
+        "de": "TimeLeak hilft dir, Wichtiges festzuhalten und an das gewünschte Datum zu binden – Fotos, Sprachnotizen, Dokumente und mehr.",
+        "es": "TimeLeak te ayuda a guardar lo importante y vincularlo a la fecha que necesitas — fotos, notas de voz, documentos y más.",
+        "fr": "TimeLeak vous aide à capturer l’essentiel et à l’associer à la date voulue — photos, notes vocales, documents, et plus encore.",
+        "hi": "TimeLeak आपको ज़रूरी चीज़ें सहेजने और उन्हें आपकी मनचाही तारीख़ से जोड़ने में मदद करता है — फ़ोटो, वॉइस नोट्स, दस्तावेज़ और बहुत कुछ।",
+        "it": "TimeLeak ti aiuta a salvare ciò che conta e collegarlo alla data che ti serve — foto, note vocali, documenti e altro.",
+        "pt": "O TimeLeak ajuda você a guardar o que importa e vincular à data que precisa — fotos, notas de voz, documentos e muito mais.",
+        "ru": "TimeLeak помогает фиксировать важное и привязывать к нужной дате: фото, голос, документы и другое.",
+        "zh": "TimeLeak 帮助你记录重要内容并绑定到指定日期——照片、语音笔记、文档等。"
+      }
+    },
+    "about_reference": {
+      "source": "Reference: Maksa Tleshov",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Референс: Maksa Tleshov",
+        "zh": ""
+      }
+    },
+    "about_deleteAccount": {
+      "source": "Delete account",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "حذف الحساب",
+        "de": "Konto löschen",
+        "es": "Eliminar cuenta",
+        "fr": "Supprimer le compte",
+        "hi": "खाता हटाएँ",
+        "it": "Elimina account",
+        "pt": "Excluir conta",
+        "ru": "Удалить аккаунт",
+        "zh": "删除账号"
+      }
+    },
+    "about_deleteDialogTitle": {
+      "source": "Deactivate account?",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "إلغاء تفعيل الحساب؟",
+        "de": "Konto deaktivieren?",
+        "es": "¿Desactivar cuenta?",
+        "fr": "Désactiver le compte ?",
+        "hi": "खाता निष्क्रिय करें?",
+        "it": "Disattivare l’account?",
+        "pt": "Desativar conta?",
+        "ru": "Деактивировать аккаунт?",
+        "zh": "停用账号？"
+      }
+    },
+    "about_deleteDialogBody": {
+      "source": "Your account will be deactivated. You will not be able to sign in again.",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "سيتم إلغاء تفعيل حسابك. لن تتمكن من تسجيل الدخول مرة أخرى.",
+        "de": "Dein Konto wird deaktiviert. Danach kannst du dich nicht mehr anmelden.",
+        "es": "Tu cuenta se desactivará. No podrás volver a iniciar sesión.",
+        "fr": "Votre compte sera désactivé. Vous ne pourrez plus vous connecter.",
+        "hi": "आपका खाता निष्क्रिय कर दिया जाएगा। आप फिर से साइन इन नहीं कर पाएँगे।",
+        "it": "Il tuo account verrà disattivato. Non potrai più accedere.",
+        "pt": "Sua conta será desativada. Você não poderá entrar novamente.",
+        "ru": "Аккаунт будет деактивирован. Войти снова будет нельзя.",
+        "zh": "你的账号将被停用，之后将无法再次登录。"
+      }
+    },
+    "about_deleteDialogConfirm": {
+      "source": "Deactivate",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "إلغاء التفعيل",
+        "de": "Deaktivieren",
+        "es": "Desactivar",
+        "fr": "Désactiver",
+        "hi": "निष्क्रिय करें",
+        "it": "Disattiva",
+        "pt": "Desativar",
+        "ru": "Деактивировать",
+        "zh": "停用"
+      }
+    },
+    "about_deleteDialogCancel": {
+      "source": "Cancel",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "إلغاء",
+        "de": "Abbrechen",
+        "es": "Cancelar",
+        "fr": "Annuler",
+        "hi": "रद्द करें",
+        "it": "Annulla",
+        "pt": "Cancelar",
+        "ru": "Отмена",
+        "zh": "取消"
+      }
+    },
+    "about_deleteErrorNoProfile": {
+      "source": "Could not load your profile. Please try again.",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تعذر تحميل ملفك الشخصي. حاول مرة أخرى.",
+        "de": "Profil konnte nicht geladen werden. Bitte versuche es erneut.",
+        "es": "No se pudo cargar tu perfil. Inténtalo de nuevo.",
+        "fr": "Impossible de charger votre profil. Veuillez réessayer.",
+        "hi": "आपका प्रोफ़ाइल लोड नहीं हो सका। कृपया फिर से प्रयास करें।",
+        "it": "Impossibile caricare il profilo. Riprova.",
+        "pt": "Não foi possível carregar seu perfil. Tente novamente.",
+        "ru": "Не удалось загрузить профиль. Попробуйте позже.",
+        "zh": "无法加载你的资料。请重试。"
+      }
+    },
+    "about_deleteErrorForbidden": {
+      "source": "Could not deactivate: access denied. The server must allow this action for logged-in users—contact support or your backend team.",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تعذر إلغاء التفعيل: تم رفض الوصول. يجب أن يسمح الخادم بهذه العملية للمستخدمين المسجلين—تواصل مع الدعم أو فريق الباك-إند.",
+        "de": "Deaktivierung fehlgeschlagen: Zugriff verweigert. Der Server muss diese Aktion für angemeldete Nutzer erlauben – wende dich an den Support oder euer Backend-Team.",
+        "es": "No se pudo desactivar: acceso denegado. El servidor debe permitir esta acción para usuarios con sesión iniciada—contacta con soporte o con tu equipo backend.",
+        "fr": "Impossible de désactiver : accès refusé. Le serveur doit autoriser cette action pour les utilisateurs connectés — contactez le support ou votre équipe backend.",
+        "hi": "निष्क्रिय नहीं किया जा सका: अनुमति नहीं है। सर्वर को लॉग-इन उपयोगकर्ताओं के लिए यह कार्रवाई अनुमति देनी होगी—सपोर्ट या अपनी बैकएंड टीम से संपर्क करें।",
+        "it": "Impossibile disattivare: accesso negato. Il server deve consentire questa azione per gli utenti autenticati—contatta l’assistenza o il tuo team backend.",
+        "pt": "Não foi possível desativar: acesso negado. O servidor precisa permitir esta ação para usuários autenticados—fale com o suporte ou com sua equipe de backend.",
+        "ru": "Не удалось деактивировать: доступ запрещён (403). На сервере нужно разрешить этот запрос для пользовательского JWT или выдать отдельный эндпоинт — обратитесь к команде бэкенда.",
+        "zh": "无法停用：访问被拒绝。服务器必须允许已登录用户执行此操作——请联系支持或后端团队。"
+      }
+    },
+    "onboarding_title": {
+      "source": "Forgot?",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "نسيت؟",
+        "de": "Vergessen?",
+        "es": "¿Olvidaste?",
+        "fr": "Oublié ?",
+        "hi": "भूल गए?",
+        "it": "Dimenticato?",
+        "pt": "Esqueceu?",
+        "ru": "Забыли",
+        "zh": "忘了吗？"
+      }
+    },
+    "onboarding_page1_bullets": {
+      "source": "• driver's license expired => fine, retake, impound lot\n• wedding anniversary => trouble at home",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "• انتهاء رخصة القيادة => غرامة، إعادة امتحان، ساحبة\n• ذكرى الزواج => مشاكل في البيت",
+        "de": "• abgelaufener Führerschein => Bußgeld, Nachprüfung, Abschleppplatz\n• Hochzeitstag => Ärger zu Hause",
+        "es": "• carnet caducado => multa, examen, depósito\n• aniversario de boda => problema en casa",
+        "fr": "• permis expiré => amende, repasser, fourrière\n• anniversaire de mariage => problème à la maison",
+        "hi": "• ड्राइविंग लाइसेंस खत्म => जुर्माना, पुनः परीक्षा, वाहन जब्त\n• शादी की सालगिरह => घर पर समस्या",
+        "it": "• patente scaduta => multa, riesame, rimozione\n• anniversario di matrimonio => problemi a casa",
+        "pt": "• carta caducada => multa, repetição, reboque\n• aniversário de casamento => problema em casa",
+        "ru": "• истекли вод. права => штраф, пересдача, штрафстоянка\n• годовщина свадьбы => жена обидится",
+        "zh": "• 驾照过期 => 罚款、重考、扣车场\n• 结婚纪念日 => 家里不高兴"
+      }
+    },
+    "onboarding_page1_question": {
+      "source": "How do you remind yourself?",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "كيف تذكّر نفسك؟",
+        "de": "Wie erinnern Sie sich?",
+        "es": "¿Cómo te lo recuerdas?",
+        "fr": "Comment vous le rappeler ?",
+        "hi": "खुद को कैसे याद दिलाएँ?",
+        "it": "Come te lo ricordi?",
+        "pt": "Como se lembra?",
+        "ru": "Как напомнить себе про это?",
+        "zh": "怎么提醒自己？"
+      }
+    },
+    "onboarding_page1_conclusion": {
+      "source": "The TimeLeak mobile app will do it for you!",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تطبيق TimeLeak سيتولى ذلك!",
+        "de": "Die TimeLeak-App macht das für Sie!",
+        "es": "¡La app TimeLeak lo hace por ti!",
+        "fr": "L'application TimeLeak s'en charge pour vous !",
+        "hi": "TimeLeak ऐप यह आपके लिए करेगा!",
+        "it": "L'app TimeLeak lo fa per te!",
+        "pt": "A app TimeLeak faz isso por si!",
+        "ru": "Мобильное приложение TimeLeak сделает это!",
+        "zh": "TimeLeak 移动应用来帮你！"
+      }
+    },
+    "onboarding_page2_bullet": {
+      "source": "• tax filing => fines for the accountant and the company",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "• إقرار ضريبي => غرامات على المحاسب والمؤسسة",
+        "de": "• Steuererklärung => Bußgelder für Buchhalter und Unternehmen",
+        "es": "• declaración de impuestos => multas al gestor y a la empresa",
+        "fr": "• déclaration fiscale => amendes pour le comptable et l'entreprise",
+        "hi": "• टैक्स रिपोर्ट => लेखाकार और संगठन पर जुर्माना",
+        "it": "• dichiarazione dei redditi => multe per commercialista e azienda",
+        "pt": "• declaração fiscal => multas para o contabilista e a empresa",
+        "ru": "• отчет в налоговую => штраф на бухгалтера и организацию",
+        "zh": "• 报税 => 对会计和公司的罚款"
+      }
+    },
+    "onboarding_page2_conclusion": {
+      "source": "In TimeLeak, just take a photo, video, or voice note, or pick a document — then tap the date you need!",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "في TimeLeak التقط صورة أو فيديو أو رسالة صوتية أو اختر مستندًا — ثم انقر التاريخ المطلوب!",
+        "de": "In TimeLeak einfach Foto, Video, Sprachnachricht aufnehmen oder ein Dokument wählen — dann das passende Datum antippen!",
+        "es": "En TimeLeak haz una foto, video, nota de voz o elige un documento — ¡y toca la fecha que necesitas!",
+        "fr": "Dans TimeLeak, prenez une photo, une vidéo, un vocal ou choisissez un document — puis touchez la date souhaitée !",
+        "hi": "TimeLeak में फोटो, वीडियो, वॉइस या दस्तावेज़ चुनें — फिर सही तारीख पर टैप करें!",
+        "it": "In TimeLeak scatta foto, video, nota vocale o scegli un documento — poi tocca la data che ti serve!",
+        "pt": "No TimeLeak tire foto, vídeo, nota de voz ou escolha um documento — depois toque na data certa!",
+        "ru": "В Таймлик просто сделав фото или видео или аудиосообщение или выбрав документ кликните по нужной дате!",
+        "zh": "在 TimeLeak 中拍照、录像、语音或选择文件，然后点击对应日期即可！"
+      }
+    },
+    "onboarding_next": {
+      "source": "Next",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "التالي",
+        "de": "Weiter",
+        "es": "Siguiente",
+        "fr": "Suivant",
+        "hi": "आगे",
+        "it": "Avanti",
+        "pt": "Seguinte",
+        "ru": "Далее",
+        "zh": "下一步"
+      }
+    },
+    "onboarding_skip": {
+      "source": "Skip",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تخطي",
+        "de": "Überspringen",
+        "es": "Omitir",
+        "fr": "Passer",
+        "hi": "छोड़ें",
+        "it": "Salta",
+        "pt": "Saltar",
+        "ru": "Пропустить",
+        "zh": "跳过"
+      }
+    },
+    "calendar_defaultNoteTitle": {
+      "source": "Reminder from TimeLeak: {date} — you have a note",
+      "placeholders": [
+        "date"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "تذكير من TimeLeak: {date} — لديك ملاحظة",
+        "de": "Erinnerung von TimeLeak: {date} — Sie haben eine Notiz",
+        "es": "Recordatorio de TimeLeak: {date} — tienes una nota",
+        "fr": "Rappel de TimeLeak : {date} — vous avez une note",
+        "hi": "TimeLeak अनुस्मारक: {date} — आपके पास एक नोट है",
+        "it": "Promemoria da TimeLeak: {date} — hai una nota",
+        "pt": "Lembrete do TimeLeak: {date} — você tem uma nota",
+        "ru": "Напоминание от TimeLeak: {date} у вас заметка",
+        "zh": "TimeLeak 提醒：{date}，您有一条笔记"
+      }
+    },
+    "calendar_reminderNotificationBody": {
+      "source": "You have a note",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "لديك ملاحظة",
+        "de": "Sie haben eine Notiz",
+        "es": "Tienes una nota",
+        "fr": "Vous avez une note",
+        "hi": "आपके पास एक नोट है",
+        "it": "Hai una nota",
+        "pt": "Você tem uma nota",
+        "ru": "У вас заметка",
+        "zh": "您有一条笔记"
+      }
+    },
+    "calendar_cameraSheetTitle": {
+      "source": "Camera",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Камера",
+        "zh": ""
+      }
+    },
+    "calendar_cameraPhoto": {
+      "source": "Take photo",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Сделать фото",
+        "zh": ""
+      }
+    },
+    "calendar_cameraVideo": {
+      "source": "Record video",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Снять видео",
+        "zh": ""
+      }
+    },
+    "calendar_selectDayFirst": {
+      "source": "Select a day on the calendar first",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Сначала выберите день в календаре",
+        "zh": ""
+      }
+    },
+    "calendar_status_fileSaved": {
+      "source": "File saved",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تم حفظ الملف",
+        "de": "Datei gespeichert",
+        "es": "Archivo guardado",
+        "fr": "Fichier enregistré",
+        "hi": "फ़ाइल सहेजी गई",
+        "it": "File salvato",
+        "pt": "Arquivo salvo",
+        "ru": "Файл успешно сохранен",
+        "zh": "文件已保存"
+      }
+    },
+    "calendar_status_saveError": {
+      "source": "Save failed",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "فشل الحفظ",
+        "de": "Speichern fehlgeschlagen",
+        "es": "Error al guardar",
+        "fr": "Échec de l’enregistrement",
+        "hi": "सहेजने में त्रुटि",
+        "it": "Errore di salvataggio",
+        "pt": "Erro ao salvar",
+        "ru": "Ошибка при сохранении",
+        "zh": "保存失败"
+      }
+    },
+    "calendar_status_fileDeleted": {
+      "source": "File deleted",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تم حذف الملف",
+        "de": "Datei gelöscht",
+        "es": "Archivo eliminado",
+        "fr": "Fichier supprimé",
+        "hi": "फ़ाइल हटाई गई",
+        "it": "File eliminato",
+        "pt": "Arquivo excluído",
+        "ru": "Файл удален",
+        "zh": "文件已删除"
+      }
+    },
+    "calendar_status_deleteError": {
+      "source": "Delete failed",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "فشل الحذف",
+        "de": "Löschen fehlgeschlagen",
+        "es": "Error al eliminar",
+        "fr": "Échec de la suppression",
+        "hi": "हटाने में त्रुटि",
+        "it": "Errore di eliminazione",
+        "pt": "Erro ao excluir",
+        "ru": "Ошибка при удалении",
+        "zh": "删除失败"
+      }
+    },
+    "calendar_status_fileExportedToDownloads": {
+      "source": "Saved to Downloads",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تم الحفظ في التنزيلات",
+        "de": "In Downloads gespeichert",
+        "es": "Guardado en Descargas",
+        "fr": "Enregistré dans Téléchargements",
+        "hi": "डाउनलोड में सहेजा गया",
+        "it": "Salvato in Download",
+        "pt": "Salvo em Downloads",
+        "ru": "Файл сохранен в Загрузки",
+        "zh": "已保存到下载"
+      }
+    },
+    "calendar_status_exportError": {
+      "source": "Export failed",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "فشل التصدير",
+        "de": "Export fehlgeschlagen",
+        "es": "Error al exportar",
+        "fr": "Échec de l’export",
+        "hi": "निर्यात में त्रुटि",
+        "it": "Errore di esportazione",
+        "pt": "Erro ao exportar",
+        "ru": "Ошибка при экспорте",
+        "zh": "导出失败"
+      }
+    },
+    "calendar_action_onRepeat": {
+      "source": "On repeat",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تكرار",
+        "de": "Wiederholen",
+        "es": "En repetición",
+        "fr": "En répétition",
+        "hi": "दोहराव",
+        "it": "In ripetizione",
+        "pt": "Em repetição",
+        "ru": "На Повторе",
+        "zh": "重复"
+      }
+    },
+    "calendar_action_delete": {
+      "source": "Delete",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "حذف",
+        "de": "Löschen",
+        "es": "Eliminar",
+        "fr": "Supprimer",
+        "hi": "हटाएँ",
+        "it": "Elimina",
+        "pt": "Excluir",
+        "ru": "Удалить",
+        "zh": "删除"
+      }
+    },
+    "calendar_action_download": {
+      "source": "Download",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تنزيل",
+        "de": "Herunterladen",
+        "es": "Descargar",
+        "fr": "Télécharger",
+        "hi": "डाउनलोड",
+        "it": "Scarica",
+        "pt": "Baixar",
+        "ru": "Скачать",
+        "zh": "下载"
+      }
+    },
+    "calendar_action_remind": {
+      "source": "Remind",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تذكير",
+        "de": "Erinnern",
+        "es": "Recordar",
+        "fr": "Rappeler",
+        "hi": "याद दिलाएँ",
+        "it": "Ricorda",
+        "pt": "Lembrar",
+        "ru": "Напомнить",
+        "zh": "提醒"
+      }
+    },
+    "calendar_status_reminderSaved": {
+      "source": "Reminder saved",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تم حفظ التذكير",
+        "de": "Erinnerung gespeichert",
+        "es": "Recordatorio guardado",
+        "fr": "Rappel enregistré",
+        "hi": "अनुस्मारक सहेजा गया",
+        "it": "Promemoria salvato",
+        "pt": "Lembrete salvo",
+        "ru": "Напоминание сохранено",
+        "zh": "提醒已保存"
+      }
+    },
+    "calendar_recordingStatus": {
+      "source": "Recording: {duration}",
+      "placeholders": [
+        "duration"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "تسجيل: {duration}",
+        "de": "Aufnahme: {duration}",
+        "es": "Grabación: {duration}",
+        "fr": "Enregistrement : {duration}",
+        "hi": "रिकॉर्डिंग: {duration}",
+        "it": "Registrazione: {duration}",
+        "pt": "Gravação: {duration}",
+        "ru": "Запись: {duration}",
+        "zh": "录音：{duration}"
+      }
+    },
+    "calendar_reminderDialog_title": {
+      "source": "Reminder",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تذكير",
+        "de": "Erinnerung",
+        "es": "Recordatorio",
+        "fr": "Rappel",
+        "hi": "अनुस्मारक",
+        "it": "Promemoria",
+        "pt": "Lembrete",
+        "ru": "Напоминание",
+        "zh": "提醒"
+      }
+    },
+    "calendar_reminderDialog_afterAttachTitle": {
+      "source": "Remind me",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Напоминать",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_current": {
+      "source": "Now:",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "الآن:",
+        "de": "Jetzt:",
+        "es": "Ahora:",
+        "fr": "Maintenant :",
+        "hi": "अभी:",
+        "it": "Ora:",
+        "pt": "Agora:",
+        "ru": "Сейчас:",
+        "zh": "当前："
+      }
+    },
+    "calendar_reminderDialog_changeTo": {
+      "source": "Change to",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تغيير إلى",
+        "de": "Ändern zu",
+        "es": "Cambiar a",
+        "fr": "Changer pour",
+        "hi": "बदलें",
+        "it": "Cambia a",
+        "pt": "Mudar para",
+        "ru": "Изменить на",
+        "zh": "更改为"
+      }
+    },
+    "calendar_reminderDialog_yearly_title": {
+      "source": "Annually",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Ежегодно",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_yearly_subtitle": {
+      "source": "In 365 days",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Через 365 дней",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_quarterly_title": {
+      "source": "Quarterly",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Ежеквартально",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_quarterly_subtitle": {
+      "source": "In 3 months",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Через 3 месяца",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_monthly_title": {
+      "source": "Monthly",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Ежемесячно",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_monthly_subtitle": {
+      "source": "In 30 days",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Через 30 дней",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_customDays_title": {
+      "source": "Custom",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Мой выбор",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_customDays_subtitle": {
+      "source": "Enter number of days",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Укажите число дней",
+        "zh": ""
+      }
+    },
+    "calendar_reminderDialog_everyDay_title": {
+      "source": "Every day",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "كل يوم",
+        "de": "Jeden Tag",
+        "es": "Cada día",
+        "fr": "Chaque jour",
+        "hi": "हर दिन",
+        "it": "Ogni giorno",
+        "pt": "Todos os dias",
+        "ru": "Каждый день",
+        "zh": "每天"
+      }
+    },
+    "calendar_reminderDialog_everyDay_subtitle": {
+      "source": "In 24 hours",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "بعد 24 ساعة",
+        "de": "In 24 Stunden",
+        "es": "En 24 horas",
+        "fr": "Dans 24 heures",
+        "hi": "24 घंटे में",
+        "it": "Tra 24 ore",
+        "pt": "Em 24 horas",
+        "ru": "Через 24 часа",
+        "zh": "24 小时后"
+      }
+    },
+    "calendar_reminderDialog_custom_title": {
+      "source": "Custom",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "مخصص",
+        "de": "Benutzerdefiniert",
+        "es": "Personalizado",
+        "fr": "Personnalisé",
+        "hi": "कस्टम",
+        "it": "Personalizzato",
+        "pt": "Personalizado",
+        "ru": "Свой вариант",
+        "zh": "自定义"
+      }
+    },
+    "calendar_reminderDialog_custom_subtitle": {
+      "source": "Specify days, hours, or minutes",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "حدد أيامًا أو ساعات أو دقائق",
+        "de": "Tage, Stunden oder Minuten angeben",
+        "es": "Indica días, horas o minutos",
+        "fr": "Indiquez jours, heures ou minutes",
+        "hi": "दिन, घंटे या मिनट बताएं",
+        "it": "Specifica giorni, ore o minuti",
+        "pt": "Informe dias, horas ou minutos",
+        "ru": "Укажите дни, часы или минуты",
+        "zh": "设置天、小时或分钟"
+      }
+    },
+    "calendar_reminderDialog_unit_days": {
+      "source": "Days",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "أيام",
+        "de": "Tage",
+        "es": "Días",
+        "fr": "Jours",
+        "hi": "दिन",
+        "it": "Giorni",
+        "pt": "Dias",
+        "ru": "Дни",
+        "zh": "天"
+      }
+    },
+    "calendar_reminderDialog_unit_hours": {
+      "source": "Hours",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "ساعات",
+        "de": "Stunden",
+        "es": "Horas",
+        "fr": "Heures",
+        "hi": "घंटे",
+        "it": "Ore",
+        "pt": "Horas",
+        "ru": "Часы",
+        "zh": "小时"
+      }
+    },
+    "calendar_reminderDialog_unit_minutes": {
+      "source": "Minutes",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "دقائق",
+        "de": "Minuten",
+        "es": "Minutos",
+        "fr": "Minutes",
+        "hi": "मिनट",
+        "it": "Minuti",
+        "pt": "Minutos",
+        "ru": "Минуты",
+        "zh": "分钟"
+      }
+    },
+    "calendar_reminderDialog_save": {
+      "source": "Save",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "حفظ",
+        "de": "Speichern",
+        "es": "Guardar",
+        "fr": "Enregistrer",
+        "hi": "सहेजें",
+        "it": "Salva",
+        "pt": "Salvar",
+        "ru": "Сохранить",
+        "zh": "保存"
+      }
+    },
+    "calendar_reminderDialog_setError": {
+      "source": "Could not set reminder",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "تعذر ضبط التذكير",
+        "de": "Erinnerung konnte nicht gesetzt werden",
+        "es": "No se pudo configurar el recordatorio",
+        "fr": "Impossible de définir le rappel",
+        "hi": "अनुस्मारक सेट नहीं हो सका",
+        "it": "Impossibile impostare il promemoria",
+        "pt": "Não foi possível definir o lembrete",
+        "ru": "Ошибка при установке напоминания",
+        "zh": "无法设置提醒"
+      }
+    },
+    "calendar_reminderLabel_notSet": {
+      "source": "Not set",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "غير مضبوط",
+        "de": "Nicht gesetzt",
+        "es": "No establecido",
+        "fr": "Non défini",
+        "hi": "सेट नहीं",
+        "it": "Non impostato",
+        "pt": "Não definido",
+        "ru": "Не задано",
+        "zh": "未设置"
+      }
+    },
+    "calendar_reminderLabel_yearly": {
+      "source": "Annually",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Ежегодно",
+        "zh": ""
+      }
+    },
+    "calendar_reminderLabel_quarterly": {
+      "source": "Quarterly",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Ежеквартально",
+        "zh": ""
+      }
+    },
+    "calendar_reminderLabel_monthly": {
+      "source": "Monthly",
+      "placeholders": [],
+      "missing_in": [
+        "ar",
+        "de",
+        "es",
+        "fr",
+        "hi",
+        "it",
+        "pt",
+        "zh"
+      ],
+      "translations": {
+        "ar": "",
+        "de": "",
+        "es": "",
+        "fr": "",
+        "hi": "",
+        "it": "",
+        "pt": "",
+        "ru": "Ежемесячно",
+        "zh": ""
+      }
+    },
+    "calendar_reminderLabel_everyDay": {
+      "source": "Every day",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "كل يوم",
+        "de": "Jeden Tag",
+        "es": "Cada día",
+        "fr": "Chaque jour",
+        "hi": "हर दिन",
+        "it": "Ogni giorno",
+        "pt": "Todos os dias",
+        "ru": "Каждый день",
+        "zh": "每天"
+      }
+    },
+    "calendar_reminderLabel_inDays": {
+      "source": "In {count} d.",
+      "placeholders": [
+        "count"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "بعد {count} يوم",
+        "de": "In {count} T.",
+        "es": "En {count} d.",
+        "fr": "Dans {count} j.",
+        "hi": "{count} दिन में",
+        "it": "Tra {count} g.",
+        "pt": "Em {count} d.",
+        "ru": "Через {count} д.",
+        "zh": "{count} 天后"
+      }
+    },
+    "calendar_reminderLabel_inHours": {
+      "source": "In {count} h.",
+      "placeholders": [
+        "count"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "بعد {count} ساعة",
+        "de": "In {count} Std.",
+        "es": "En {count} h.",
+        "fr": "Dans {count} h",
+        "hi": "{count} घंटे में",
+        "it": "Tra {count} h",
+        "pt": "Em {count} h",
+        "ru": "Через {count} ч.",
+        "zh": "{count} 小时后"
+      }
+    },
+    "calendar_reminderLabel_inMinutes": {
+      "source": "In {count} min.",
+      "placeholders": [
+        "count"
+      ],
+      "missing_in": [],
+      "translations": {
+        "ar": "بعد {count} دقيقة",
+        "de": "In {count} Min.",
+        "es": "En {count} min.",
+        "fr": "Dans {count} min",
+        "hi": "{count} मिनट में",
+        "it": "Tra {count} min",
+        "pt": "Em {count} min",
+        "ru": "Через {count} мин.",
+        "zh": "{count} 分钟后"
+      }
+    },
+    "calendar_reminderDialog_hint_days": {
+      "source": "Number of days",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "عدد الأيام",
+        "de": "Anzahl der Tage",
+        "es": "Número de días",
+        "fr": "Nombre de jours",
+        "hi": "दिनों की संख्या",
+        "it": "Numero di giorni",
+        "pt": "Número de dias",
+        "ru": "Число дней",
+        "zh": "天数"
+      }
+    },
+    "calendar_reminderDialog_hint_hours": {
+      "source": "Number of hours",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "عدد الساعات",
+        "de": "Anzahl der Stunden",
+        "es": "Número de horas",
+        "fr": "Nombre d’heures",
+        "hi": "घंटों की संख्या",
+        "it": "Numero di ore",
+        "pt": "Número de horas",
+        "ru": "Число часов",
+        "zh": "小时数"
+      }
+    },
+    "calendar_reminderDialog_hint_minutes": {
+      "source": "Number of minutes",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "عدد الدقائق",
+        "de": "Anzahl der Minuten",
+        "es": "Número de minutos",
+        "fr": "Nombre de minutes",
+        "hi": "मिनटों की संख्या",
+        "it": "Numero di minuti",
+        "pt": "Número de minutos",
+        "ru": "Число минут",
+        "zh": "分钟数"
+      }
+    },
+    "calendar_reminderDialog_suffix_days": {
+      "source": "d",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "يوم",
+        "de": "T",
+        "es": "d",
+        "fr": "j",
+        "hi": "दिन",
+        "it": "g",
+        "pt": "d",
+        "ru": "дн.",
+        "zh": "天"
+      }
+    },
+    "calendar_reminderDialog_suffix_hours": {
+      "source": "h",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "ساعة",
+        "de": "Std",
+        "es": "h",
+        "fr": "h",
+        "hi": "घं",
+        "it": "h",
+        "pt": "h",
+        "ru": "ч.",
+        "zh": "小时"
+      }
+    },
+    "calendar_reminderDialog_suffix_minutes": {
+      "source": "min",
+      "placeholders": [],
+      "missing_in": [],
+      "translations": {
+        "ar": "دقيقة",
+        "de": "Min",
+        "es": "min",
+        "fr": "min",
+        "hi": "मि",
+        "it": "min",
+        "pt": "min",
+        "ru": "мин.",
+        "zh": "分钟"
+      }
+    }
+  }
+}

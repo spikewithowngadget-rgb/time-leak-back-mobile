@@ -9,6 +9,8 @@ class CalendarEntryModel {
   final DateTime date;
   /// Минуты до напоминания (null — не задано, 1440 — каждый день).
   final int? reminderMinutes;
+  /// Дата и время срабатывания напоминания.
+  final DateTime? reminderAt;
   /// Заголовок заметки (по умолчанию — локализованный шаблон из l10n `calendar_defaultNoteTitle`).
   final String? title;
   /// Id заметки на бэкенде (uuid из API).
@@ -22,6 +24,7 @@ class CalendarEntryModel {
     required this.type,
     required this.date,
     this.reminderMinutes,
+    this.reminderAt,
     this.title,
     this.backendNoteId,
   });
@@ -37,6 +40,7 @@ class CalendarEntryModel {
       type: entity.type,
       date: entity.date,
       reminderMinutes: entity.reminderMinutes,
+      reminderAt: entity.reminderAt,
       title: entity.title,
       backendNoteId: entity.backendNoteId,
     );
