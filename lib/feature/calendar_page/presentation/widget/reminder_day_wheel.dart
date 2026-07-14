@@ -44,10 +44,10 @@ class ReminderDayWheelState extends State<ReminderDayWheel> {
     if (oldWidget.selectedDays == widget.selectedDays || _snapping) return;
 
     final clamped = widget.selectedDays.clamp(reminderMinDays, reminderMaxDays);
-    if (clamped != _selectedDays) {
-      _selectedDays = clamped;
-      _scrollToDays(clamped, animate: true);
-    }
+    _selectedDays = clamped;
+    _scrollToDays(clamped, animate: true).then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -84,6 +84,7 @@ class ReminderDayWheelState extends State<ReminderDayWheel> {
       _controller.jumpTo(target);
     }
     _scrollingFromExternal = false;
+    if (mounted) setState(() {});
   }
 
   Future<void> _snapToNearest() async {

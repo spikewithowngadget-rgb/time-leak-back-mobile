@@ -84,9 +84,16 @@ class ReminderDialog extends StatefulWidget {
   State<ReminderDialog> createState() => _ReminderDialogState();
 }
 
+const int reminderDailyDays = 1;
+const int reminderQuarterlyDays = 91;
+const int reminderMonthlyDays = 30;
+
+enum _ReminderPreset { daily, quarterly, monthly, custom }
+
 class _ReminderDialogState extends State<ReminderDialog> {
   bool _saving = false;
   late int _selectedDays;
+  late _ReminderPreset _activePreset;
   late final TextEditingController _daysController;
   bool _syncingFromWheel = false;
 
@@ -97,8 +104,9 @@ class _ReminderDialogState extends State<ReminderDialog> {
     if (current != null && current >= 24 * 60) {
       _selectedDays = current ~/ (24 * 60);
     } else {
-      _selectedDays = 1;
+      _selectedDays = reminderDailyDays;
     }
+    _activePreset = _presetForDays(_selectedDays);
     _daysController = TextEditingController(text: '$_selectedDays');
   }
 
@@ -108,12 +116,33 @@ class _ReminderDialogState extends State<ReminderDialog> {
     super.dispose();
   }
 
+  _ReminderPreset _presetForDays(int days) {
+    if (days == reminderDailyDays) return _ReminderPreset.daily;
+    if (days == reminderQuarterlyDays) return _ReminderPreset.quarterly;
+    if (days == reminderMonthlyDays) return _ReminderPreset.monthly;
+    return _ReminderPreset.custom;
+  }
+
+  void _selectDays(int days, {_ReminderPreset? preset}) {
+    setState(() {
+      _selectedDays = days;
+      _activePreset = preset ?? _presetForDays(days);
+    });
+    _daysController.text = '$days';
+    _daysController.selection = TextSelection.collapsed(offset: _daysController.text.length);
+  }
+
+  void _onPresetDays(int days, _ReminderPreset preset) {
+    if (_syncingFromWheel) return;
+    _syncingFromWheel = true;
+    _selectDays(days, preset: preset);
+    _syncingFromWheel = false;
+  }
+
   void _onWheelChanged(int days) {
     if (_syncingFromWheel) return;
     _syncingFromWheel = true;
-    setState(() => _selectedDays = days);
-    _daysController.text = '$days';
-    _daysController.selection = TextSelection.collapsed(offset: _daysController.text.length);
+    _selectDays(days);
     _syncingFromWheel = false;
   }
 
@@ -121,7 +150,7 @@ class _ReminderDialogState extends State<ReminderDialog> {
     if (_syncingFromWheel) return;
     final days = int.tryParse(value.trim());
     if (days == null || days <= 0) return;
-    setState(() => _selectedDays = days);
+    _selectDays(days);
   }
 
   Future<void> _applyMinutes(int totalMinutes) async {
@@ -263,6 +292,29 @@ class _ReminderDialogState extends State<ReminderDialog> {
                 ),
               )
             else ...[
+              Wrap(
+                spacing: context.widthByContext(8),
+                runSpacing: context.heightByContext(8),
+                alignment: WrapAlignment.start,
+                children: [
+                  _ReminderPresetChip(
+                    label: l10n.calendar_reminderLabel_everyDay,
+                    isSelected: _activePreset == _ReminderPreset.daily,
+                    onTap: () => _onPresetDays(reminderDailyDays, _ReminderPreset.daily),
+                  ),
+                  _ReminderPresetChip(
+                    label: l10n.calendar_reminderLabel_quarterly,
+                    isSelected: _activePreset == _ReminderPreset.quarterly,
+                    onTap: () => _onPresetDays(reminderQuarterlyDays, _ReminderPreset.quarterly),
+                  ),
+                  _ReminderPresetChip(
+                    label: l10n.calendar_reminderLabel_monthly,
+                    isSelected: _activePreset == _ReminderPreset.monthly,
+                    onTap: () => _onPresetDays(reminderMonthlyDays, _ReminderPreset.monthly),
+                  ),
+                ],
+              ),
+              SizedBox(height: context.heightByContext(14)),
               ReminderDayWheel(
                 selectedDays: _selectedDays.clamp(reminderMinDays, reminderMaxDays),
                 onChanged: _onWheelChanged,
@@ -305,6 +357,48 @@ class _ReminderDialogState extends State<ReminderDialog> {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReminderPresetChip extends StatelessWidget {
+  const _ReminderPresetChip({required this.label, required this.isSelected, required this.onTap});
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(context.widthByContext(16)),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.widthByContext(14),
+            vertical: context.heightByContext(8),
+          ),
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.brandColor2.withValues(alpha: 0.5) : AppColors.brandColor,
+            borderRadius: BorderRadius.circular(context.widthByContext(16)),
+            border: Border.all(
+              color: isSelected ? AppColors.buttonColor : AppColors.brandColor1.withValues(alpha: 0.3),
+              width: isSelected ? 1.5 : 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: AppStyle.style(
+              context.widthByContext(13),
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              color: AppColors.black,
+            ),
+          ),
         ),
       ),
     );

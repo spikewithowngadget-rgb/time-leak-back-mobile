@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
 
 class NotificationService {
+  static const int androidBadgeNotificationId = 999999;
+
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
   final SyncedNotesRepository _syncedNotesRepository;
 
@@ -29,10 +33,62 @@ class NotificationService {
 
     await _notifications.initialize(settings: settings);
 
-    // На Android 13+ нужно запросить разрешение на уведомления
-    final androidImpl = _notifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final androidImpl = _notifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     await androidImpl?.requestNotificationsPermission();
+
+    await androidImpl?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        'app_badge_channel',
+        'App badge',
+        description: 'Shows note count on the app icon',
+        importance: Importance.low,
+        showBadge: true,
+      ),
+    );
+  }
+
+  Future<bool> ensureAndroidNotificationsEnabled() async {
+    if (!Platform.isAndroid) return true;
+    final androidImpl = _notifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    if (androidImpl == null) return false;
+    if (await androidImpl.areNotificationsEnabled() ?? false) return true;
+    return await androidImpl.requestNotificationsPermission() ?? false;
+  }
+
+  /// Stock Android launchers (Pixel etc.) show icon badges via active notifications.
+  Future<void> updateAndroidIconBadge(int count) async {
+    if (!Platform.isAndroid) return;
+    if (!await ensureAndroidNotificationsEnabled()) return;
+
+    if (count <= 0) {
+      await _notifications.cancel(id: androidBadgeNotificationId);
+      return;
+    }
+
+    await _notifications.show(
+      id: androidBadgeNotificationId,
+      title: 'TimeLeak',
+      body: '',
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          'app_badge_channel',
+          'App badge',
+          channelDescription: 'Shows note count on the app icon',
+          importance: Importance.low,
+          priority: Priority.low,
+          number: count,
+          channelShowBadge: true,
+          showWhen: false,
+          onlyAlertOnce: true,
+          silent: true,
+          ongoing: true,
+          autoCancel: false,
+          visibility: NotificationVisibility.secret,
+        ),
+      ),
+    );
   }
 
   Future<void> scheduleNotification({
@@ -98,12 +154,7 @@ class NotificationService {
     required DateTime newScheduledDate,
   }) async {
     await _notifications.cancel(id: id);
-    await scheduleNotification(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: newScheduledDate,
-    );
+    await scheduleNotification(id: id, title: title, body: body, scheduledDate: newScheduledDate);
   }
 
   /// Доступ к репозиторию (для синхронизации уведомлений с записями).

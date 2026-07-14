@@ -46,5 +46,5 @@ void setupLocator() {
   sl.registerLazySingleton(() => UserCubit(sl<UserRepository>()));
   sl.registerLazySingleton(() => ResetPasswordCubit(sl<AuthRepository>()));
   sl.registerLazySingleton(() => NotificationService(sl<SyncedNotesRepository>()));
-  sl.registerLazySingleton(() => AppIconBadgeService(sl<SyncedNotesRepository>()));
+  sl.registerLazySingleton(() => AppIconBadgeService(sl<SyncedNotesRepository>(), sl<NotificationService>()));
 }
