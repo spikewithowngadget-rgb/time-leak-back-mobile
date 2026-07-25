@@ -4,6 +4,7 @@ import 'package:time_leak_flutter/core/router/app_router.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
 import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 
 class DioClient {
   late final Dio dio;
@@ -115,6 +116,7 @@ class DioClient {
       await db.clearPinHash();
     }
     await db.deleteTokens();
+    await sl<AppIconBadgeService>().clear();
     sl<AppRouter>().replaceAll([const LoginRoute()]);
   }
 }

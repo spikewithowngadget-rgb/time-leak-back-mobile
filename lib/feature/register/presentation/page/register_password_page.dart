@@ -11,6 +11,7 @@ import 'package:time_leak_flutter/core/shared/button.dart';
 import 'package:time_leak_flutter/core/shared/responsive.dart' show AuthPageHeader, AuthPageLayout;
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 import 'package:time_leak_flutter/feature/register/presentation/cubit/register_cubit.dart';
 
 @RoutePage()
@@ -64,6 +65,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       listener: (context, state) {
         if (state is RegisterSuccess) {
           PinSession.reset();
+          sl<AppIconBadgeService>().start();
           TopSnackBar.show(context, message: l10n.register_success);
           context.router.replaceAll([const CalendarRoute()]);
         } else if (state is RegisterError) {

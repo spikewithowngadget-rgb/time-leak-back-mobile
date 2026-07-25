@@ -52,8 +52,10 @@ class AppIconBadgeService {
     }
   }
 
-  /// Сбросить бейдж (например при выходе).
+  /// Сбросить бейдж и отписаться от счётчика (например при выходе).
   Future<void> clear() async {
+    await _countSubscription?.cancel();
+    _countSubscription = null;
     await _applyCount(0);
   }
 

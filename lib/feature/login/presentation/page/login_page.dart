@@ -14,6 +14,7 @@ import 'package:time_leak_flutter/core/shared/responsive.dart' show AuthPageHead
 import 'package:time_leak_flutter/core/shared/text_field.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/snack_bar.dart';
 import 'package:time_leak_flutter/feature/login/presentation/cubit/login_cubit.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 
 @RoutePage()
 class LoginPage extends StatefulWidget {
@@ -38,6 +39,8 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _redirectIfAlreadySignedIn() async {
     final tokens = await sl<AppDatabase>().getTokens();
     if (!mounted || tokens == null) return;
+    await sl<AppIconBadgeService>().start();
+    if (!mounted) return;
     context.router.replaceAll([const CalendarRoute()]);
   }
 
@@ -60,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         if (state is LoginSuccess) {
           PinSession.reset();
+          sl<AppIconBadgeService>().start();
           context.router.replaceAll([const CalendarRoute()]);
         } else if (state is LoginError) {
           TopSnackBar.show(context, message: state.message);

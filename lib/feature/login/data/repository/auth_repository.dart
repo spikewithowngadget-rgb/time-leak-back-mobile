@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 import 'package:time_leak_flutter/feature/register/data/models/register_models.dart';
 
 String _messageFromDioException(DioException e, {String? fallback}) {
@@ -181,5 +183,6 @@ class AuthRepository {
     PinSession.reset();
     await _db.clearPinHash();
     await _db.deleteTokens();
+    await sl<AppIconBadgeService>().clear();
   }
 }
