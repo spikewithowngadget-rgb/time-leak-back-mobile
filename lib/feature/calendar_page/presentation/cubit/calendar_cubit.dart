@@ -12,6 +12,7 @@ import 'package:time_leak_flutter/feature/calendar_page/data/models/calendar_ent
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
 import 'package:time_leak_flutter/feature/calendar_page/presentation/widget/calendar_day_badge.dart';
 import 'package:time_leak_flutter/feature/locale/cubit/locale_cubit.dart';
+import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 import 'package:time_leak_flutter/feature/notification/notification_service.dart';
 import 'package:time_leak_flutter/l10n/app_localizations.dart';
 import 'package:time_leak_flutter/l10n/calendar_default_note_title.dart';
@@ -107,6 +108,9 @@ class CalendarCubit extends Cubit<CalendarState> {
     try {
       await _repo.syncFromBackend();
       loadMarkedDates();
+      // Бейдж обновится через watchUpcomingEntriesCount при insert'ах;
+      // дополнительно переприменяем на случай, если permission только что выдали.
+      unawaited(sl<AppIconBadgeService>().refresh());
     } catch (_) {}
   }
 

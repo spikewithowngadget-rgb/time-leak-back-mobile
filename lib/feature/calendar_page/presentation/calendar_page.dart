@@ -109,7 +109,6 @@ class _CalendarViewState extends State<CalendarView> {
             backgroundColor: AppColors.backgroundColor,
             drawer: const _CalendarDrawer(),
             body: SafeArea(
-              bottom: false,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final maxContentWidth = AppResponsive.isTablet(context) ? 720.0 : constraints.maxWidth;
@@ -123,18 +122,26 @@ class _CalendarViewState extends State<CalendarView> {
                           const ActionPanel(embeddedInHeader: true),
                           SizedBox(height: context.heightByContext(12)),
                           Expanded(
-                            child: BlocSelector<CalendarCubit, CalendarState, bool>(
-                              selector: (state) => state.clickedDate != null,
-                              builder: (context, hasDate) {
-                                if (!hasDate) return const SizedBox.shrink();
-                                return const SavedEntriesList();
+                            child: BlocBuilder<CalendarCubit, CalendarState>(
+                              buildWhen: (prev, curr) =>
+                                  prev.clickedDate != curr.clickedDate || prev.savedData != curr.savedData,
+                              builder: (context, state) {
+                                return CustomScrollView(
+                                  slivers: [
+                                    if (state.clickedDate != null) SavedEntriesList(entries: state.savedData),
+                                    const SliverToBoxAdapter(child: CalendarAdBlock()),
+                                    SliverToBoxAdapter(
+                                      child: SizedBox(
+                                        height: context.heightByContext(
+                                          AppResponsive.isCompact(context) ? 90 : 90,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
                               },
                             ),
                           ),
-                          const CalendarAdBlock(),
-                          // SizedBox(
-                          //   height: context.heightByContext(AppResponsive.isCompact(context) ? 12 : 16),
-                          // ),
                         ],
                       ),
                     ),
@@ -275,7 +282,7 @@ class _CalendarDrawer extends StatelessWidget {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 8 + MediaQuery.paddingOf(context).bottom),
               children: [
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
@@ -612,28 +619,26 @@ class _NavButtonWithBadge extends StatelessWidget {
 
 // --- СПИСОК ЗАПИСЕЙ ---
 class SavedEntriesList extends StatelessWidget {
-  const SavedEntriesList({super.key});
+  const SavedEntriesList({super.key, required this.entries});
+
+  final List<CalendarEntryModel> entries;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CalendarCubit, CalendarState>(
-      buildWhen: (prev, curr) => prev.savedData != curr.savedData,
-      builder: (context, state) {
-        if (state.savedData.isEmpty) return const SizedBox.shrink();
+    if (entries.isEmpty) {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
 
-        return ListView.separated(
-          padding: EdgeInsets.only(
-            left: AppResponsive.horizontalPadding(context),
-            right: AppResponsive.horizontalPadding(context),
-            // bottom: context.heightByContext(8),
-          ),
-          itemCount: state.savedData.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            return EntryItemWidget(entry: state.savedData[index]);
-          },
-        );
-      },
+    final hPad = AppResponsive.horizontalPadding(context);
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: hPad),
+      sliver: SliverList.separated(
+        itemCount: entries.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          return EntryItemWidget(entry: entries[index]);
+        },
+      ),
     );
   }
 }

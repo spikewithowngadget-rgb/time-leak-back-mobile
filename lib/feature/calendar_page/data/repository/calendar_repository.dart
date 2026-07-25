@@ -34,7 +34,20 @@ class CalendarRepository {
     return list.map((e) => CalendarEntryModel.fromEntity(e)).toList();
   }
 
-  /// Поток: общее число записей календаря (для бейджа на иконке приложения).
+  /// Поток: число записей с сегодня и дальше (как бейджи на сетке календаря).
+  /// Включает локальные и пришедшие с бэка при синхронизации.
+  Stream<int> watchUpcomingEntriesCount() {
+    return _db.select(_db.calendarEntries).watch().map((rows) {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      return rows.where((e) {
+        final day = DateTime(e.date.year, e.date.month, e.date.day);
+        return !day.isBefore(today);
+      }).length;
+    });
+  }
+
+  /// Поток: общее число записей календаря.
   Stream<int> watchEntriesCount() {
     return _db.select(_db.calendarEntries).watch().map((rows) => rows.length);
   }

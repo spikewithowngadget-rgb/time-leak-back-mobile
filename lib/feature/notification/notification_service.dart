@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:time_leak_flutter/feature/calendar_page/data/repository/synced_notes_repository.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -7,6 +8,8 @@ import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   static const int androidBadgeNotificationId = 999999;
+  static const String androidBadgeChannelId = 'app_badge_channel_v3';
+  static const String androidNotesChannelId = 'notes_channel';
 
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
   final SyncedNotesRepository _syncedNotesRepository;
@@ -17,7 +20,7 @@ class NotificationService {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      'ic_notification',
     );
 
     const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
@@ -35,32 +38,56 @@ class NotificationService {
 
     final androidImpl = _notifications
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-    await androidImpl?.requestNotificationsPermission();
 
     await androidImpl?.createNotificationChannel(
       const AndroidNotificationChannel(
-        'app_badge_channel',
+        androidBadgeChannelId,
         'App badge',
-        description: 'Shows note count on the app icon',
-        importance: Importance.low,
+        description: 'Shows reminder count on the app icon',
+        importance: Importance.high,
+        showBadge: true,
+      ),
+    );
+
+    await androidImpl?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        androidNotesChannelId,
+        'Notes Notifications',
+        description: 'Уведомления для заметок',
+        importance: Importance.max,
         showBadge: true,
       ),
     );
   }
 
+  /// Запрос разрешений после готовности Activity (не из main до runApp).
   Future<bool> ensureAndroidNotificationsEnabled() async {
     if (!Platform.isAndroid) return true;
     final androidImpl = _notifications
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     if (androidImpl == null) return false;
-    if (await androidImpl.areNotificationsEnabled() ?? false) return true;
-    return await androidImpl.requestNotificationsPermission() ?? false;
+
+    var enabled = await androidImpl.areNotificationsEnabled() ?? false;
+    if (!enabled) {
+      enabled = await androidImpl.requestNotificationsPermission() ?? false;
+    }
+
+    try {
+      await androidImpl.requestExactAlarmsPermission();
+    } catch (e, st) {
+      debugPrint('requestExactAlarmsPermission: $e\n$st');
+    }
+
+    return enabled;
   }
 
-  /// Stock Android launchers (Pixel etc.) show icon badges via active notifications.
+  /// Показать число напоминаний на иконке через активное уведомление + number.
   Future<void> updateAndroidIconBadge(int count) async {
     if (!Platform.isAndroid) return;
-    if (!await ensureAndroidNotificationsEnabled()) return;
+    if (!await ensureAndroidNotificationsEnabled()) {
+      debugPrint('updateAndroidIconBadge: notifications disabled');
+      return;
+    }
 
     if (count <= 0) {
       await _notifications.cancel(id: androidBadgeNotificationId);
@@ -70,22 +97,23 @@ class NotificationService {
     await _notifications.show(
       id: androidBadgeNotificationId,
       title: 'TimeLeak',
-      body: '',
+      body: count == 1 ? '1 note' : '$count notes',
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
-          'app_badge_channel',
+          androidBadgeChannelId,
           'App badge',
-          channelDescription: 'Shows note count on the app icon',
-          importance: Importance.low,
-          priority: Priority.low,
+          channelDescription: 'Shows reminder count on the app icon',
+          icon: 'ic_notification',
+          importance: Importance.high,
+          priority: Priority.high,
           number: count,
           channelShowBadge: true,
           showWhen: false,
           onlyAlertOnce: true,
-          silent: true,
-          ongoing: true,
           autoCancel: false,
-          visibility: NotificationVisibility.secret,
+          ongoing: true,
+          category: AndroidNotificationCategory.reminder,
+          visibility: NotificationVisibility.public,
         ),
       ),
     );
@@ -97,56 +125,95 @@ class NotificationService {
     required String body,
     required DateTime scheduledDate,
   }) async {
-    // ВАЖНО: Все аргументы теперь передаются строго по именам
-    await _notifications.zonedSchedule(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: tz.TZDateTime.from(scheduledDate, tz.local),
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'notes_channel',
-          'Notes Notifications',
-          channelDescription: 'Уведомления для заметок',
-          importance: Importance.max,
-          priority: Priority.high,
-        ),
+    if (Platform.isAndroid) {
+      await ensureAndroidNotificationsEnabled();
+    }
+
+    final details = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        androidNotesChannelId,
+        'Notes Notifications',
+        channelDescription: 'Уведомления для заметок',
+        icon: 'ic_notification',
+        importance: Importance.max,
+        priority: Priority.high,
+        channelShowBadge: true,
+        category: AndroidNotificationCategory.reminder,
       ),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
+
+    final when = tz.TZDateTime.from(scheduledDate, tz.local);
+    try {
+      await _notifications.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: when,
+        notificationDetails: details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+    } catch (e, st) {
+      debugPrint('exact schedule failed, fallback inexact: $e\n$st');
+      await _notifications.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: when,
+        notificationDetails: details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    }
   }
 
   Future<void> scheduleFlexibleNotification({
     required int id,
     required String title,
     required String body,
-    required int totalMinutes, // Передаем итоговое время в минутах из твоего диалога
+    required int totalMinutes,
   }) async {
-    final scheduledDate = tz.TZDateTime.now(tz.local).add(Duration(minutes: totalMinutes));
+    if (Platform.isAndroid) {
+      await ensureAndroidNotificationsEnabled();
+    }
 
-    await _notifications.zonedSchedule(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: scheduledDate,
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'notes_channel',
-          'Notes Notifications',
-          importance: Importance.max,
-          priority: Priority.high,
-        ),
+    final scheduledDate = tz.TZDateTime.now(tz.local).add(Duration(minutes: totalMinutes));
+    final details = const NotificationDetails(
+      android: AndroidNotificationDetails(
+        androidNotesChannelId,
+        'Notes Notifications',
+        icon: 'ic_notification',
+        importance: Importance.max,
+        priority: Priority.high,
+        channelShowBadge: true,
+        category: AndroidNotificationCategory.reminder,
       ),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
+
+    try {
+      await _notifications.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        notificationDetails: details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+    } catch (e, st) {
+      debugPrint('exact schedule failed, fallback inexact: $e\n$st');
+      await _notifications.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        notificationDetails: details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    }
   }
 
-  /// Отменить запланированное уведомление по id.
   Future<void> cancelNotification(int id) async {
     await _notifications.cancel(id: id);
   }
 
-  /// Обновить время показа уведомления (отменить старое и запланировать на новое время).
   Future<void> updateNotificationTime({
     required int id,
     required String title,
@@ -157,6 +224,5 @@ class NotificationService {
     await scheduleNotification(id: id, title: title, body: body, scheduledDate: newScheduledDate);
   }
 
-  /// Доступ к репозиторию (для синхронизации уведомлений с записями).
   SyncedNotesRepository get syncedNotesRepository => _syncedNotesRepository;
 }

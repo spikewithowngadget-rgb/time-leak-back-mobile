@@ -28,6 +28,9 @@ class SyncedNotesRepository {
   Stream<List<CalendarEntryModel>> watchCalendarsByRange(DateTime start, DateTime end) =>
       _local.watchCalendarsByRange(start, end);
 
+  /// Число записей с сегодня и дальше (локальные + с бэка) — для бейджа на иконке.
+  Stream<int> watchUpcomingEntriesCount() => _local.watchUpcomingEntriesCount();
+
   /// Общее число записей (то же, что сумма красных бейджей по всем дням).
   Stream<int> watchEntriesCount() => _local.watchEntriesCount();
 
@@ -106,7 +109,8 @@ class SyncedNotesRepository {
   /// Скачать файл в папку «Загрузки».
   Future<void> downloadCalendar(CalendarEntryModel model) => _local.downloadCalendar(model);
 
-  /// Синхронизация с бэком: загрузить заметки с API и сохранить в локальную БД (для пользователя после переустановки/логина).
+  /// Синхронизация с бэком: загрузить заметки с API и сохранить в локальную БД.
+  /// Каждая новая запись попадает в локальную БД → поток бейджа обновляется сам.
   Future<void> syncFromBackend() async {
     final response = await _api.getNotes();
     for (final note in response.data) {
