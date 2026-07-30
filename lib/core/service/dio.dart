@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:time_leak_flutter/core/dependencies/injection.dart';
 import 'package:time_leak_flutter/core/router/app_router.dart';
 import 'package:time_leak_flutter/core/router/app_router.gr.dart';
@@ -6,13 +7,38 @@ import 'package:time_leak_flutter/core/security/pin_session.dart';
 import 'package:time_leak_flutter/core/storage/app_database.dart';
 import 'package:time_leak_flutter/feature/notification/app_icon_badge_service.dart';
 
+/// Ошибка обновления токена.
+/// [isPermanent] = true только когда refresh точно мёртв (401/403 / нет токена) —
+/// тогда можно разлогинить. Иначе сессию сохраняем.
+class _AuthRefreshException implements Exception {
+  final String message;
+  final bool isPermanent;
+  final Object? cause;
+
+  const _AuthRefreshException(this.message, {required this.isPermanent, this.cause});
+
+  factory _AuthRefreshException.permanent(String message, [Object? cause]) =>
+      _AuthRefreshException(message, isPermanent: true, cause: cause);
+
+  factory _AuthRefreshException.transient(String message, [Object? cause]) =>
+      _AuthRefreshException(message, isPermanent: false, cause: cause);
+
+  @override
+  String toString() => message;
+}
+
 class DioClient {
   late final Dio dio;
   final AppDatabase db;
 
-  /// Single in-flight refresh: backend rotates refresh tokens, so parallel
-  /// 401 handlers must share one refresh call instead of each sending the same token.
+  /// Один общий refresh: бэк ротирует refresh-токен, параллельные 401
+  /// должны делить один вызов, а не слать один и тот же refresh дважды.
   Future<String>? _refreshFuture;
+
+  /// Анти-дубль принудительного логаута при пачке 401.
+  Future<void>? _logoutFuture;
+
+  static const _refreshAttempts = 3;
 
   DioClient(this.db) {
     dio = Dio(
@@ -40,9 +66,7 @@ class DioClient {
           final status = e.response?.statusCode;
           final path = e.requestOptions.path;
 
-          // 403 account_deactivated — бэк закрывает все refresh tokens.
-          // Чистим локальные токены/пин и выкидываем на логин, кроме самого логина
-          // (там 403 обрабатывает AuthRepository как AccountDeactivatedException).
+          // 403 account_deactivated — сессия закрыта на бэке.
           if (status == 403 &&
               !path.contains('/auth/login') &&
               !path.contains('/auth/register') &&
@@ -55,11 +79,13 @@ class DioClient {
             return handler.next(e);
           }
 
-          // 401 — пробуем обновить токен (но не на логине/рефреше/регистрации).
+          // 401 — до последнего стараемся обновить access через refresh.
           if (status == 401 &&
               !path.contains('/auth/login') &&
               !path.contains('/auth/refresh') &&
-              !path.contains('/auth/register')) {
+              !path.contains('/auth/register') &&
+              !path.contains('/auth/password-reset/')) {
+            // Уже ретраили с новым access — дальше только если refresh мёртв.
             if (e.requestOptions.extra['authRetried'] == true) {
               await _forceLogout();
               return handler.next(e);
@@ -71,10 +97,16 @@ class DioClient {
               e.requestOptions.headers['Authorization'] = 'Bearer $newAccess';
               final retryResponse = await dio.fetch(e.requestOptions);
               return handler.resolve(retryResponse);
-            } catch (_) {
-              // Refresh не прошёл (401 — пользователь отключён, либо token больше не валиден):
-              // бэк ротуирует refresh и закрывает старый, так что повторно не пробуем.
-              await _forceLogout();
+            } on _AuthRefreshException catch (err) {
+              debugPrint('Token refresh failed (permanent=${err.isPermanent}): $err');
+              if (err.isPermanent) {
+                await _forceLogout();
+              }
+              // Transient (сеть/5xx): токены не трогаем — следующий запрос снова попробует.
+              return handler.next(e);
+            } catch (err, st) {
+              // Неожиданная ошибка (в т.ч. сеть на retry) — сессию не сбрасываем.
+              debugPrint('Token refresh/retry unexpected: $err\n$st');
               return handler.next(e);
             }
           }
@@ -95,22 +127,87 @@ class DioClient {
 
   Future<String> _performTokenRefresh() async {
     final tokens = await db.getTokens();
-    if (tokens == null) {
-      throw StateError('No refresh token');
+    if (tokens == null || tokens.refreshToken.isEmpty) {
+      throw _AuthRefreshException.permanent('No refresh token');
     }
 
-    final response = await dio.post(
-      '/api/v1/auth/refresh',
-      data: {'refresh_token': tokens.refreshToken},
-    );
+    DioException? lastNetworkError;
 
-    final newAccess = response.data['access_token'] as String;
-    final newRefresh = response.data['refresh_token'] as String;
-    await db.updateTokens(newAccess, newRefresh);
-    return newAccess;
+    for (var attempt = 0; attempt < _refreshAttempts; attempt++) {
+      if (attempt > 0) {
+        await Future<void>.delayed(Duration(milliseconds: 400 * attempt));
+      }
+
+      try {
+        final response = await dio.post(
+          '/api/v1/auth/refresh',
+          data: {'refresh_token': tokens.refreshToken},
+        );
+
+        final data = response.data;
+        if (data is! Map) {
+          throw _AuthRefreshException.permanent('Invalid refresh response shape');
+        }
+
+        final newAccess = data['access_token']?.toString();
+        final newRefresh = data['refresh_token']?.toString();
+        if (newAccess == null ||
+            newAccess.isEmpty ||
+            newRefresh == null ||
+            newRefresh.isEmpty) {
+          throw _AuthRefreshException.permanent('Refresh response missing tokens');
+        }
+
+        await db.updateTokens(newAccess, newRefresh);
+        return newAccess;
+      } on _AuthRefreshException {
+        rethrow;
+      } on DioException catch (e) {
+        final status = e.response?.statusCode;
+
+        // Refresh отвергнут бэком — сессия реально кончилась.
+        if (status == 401 || status == 403) {
+          throw _AuthRefreshException.permanent('Refresh rejected by server', e);
+        }
+
+        lastNetworkError = e;
+        final transient = _isTransientDioError(e);
+        if (!transient) {
+          // Неожиданный 4xx (кроме 401/403) — не выкидываем пользователя.
+          throw _AuthRefreshException.transient('Refresh failed', e);
+        }
+        // Иначе ещё попытка.
+      }
+    }
+
+    throw _AuthRefreshException.transient(
+      'Refresh failed after $_refreshAttempts attempts',
+      lastNetworkError,
+    );
   }
 
-  Future<void> _forceLogout({bool clearPin = false}) async {
+  bool _isTransientDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.connectionError:
+        return true;
+      case DioExceptionType.badResponse:
+        final status = e.response?.statusCode;
+        return status != null && status >= 500;
+      default:
+        return false;
+    }
+  }
+
+  Future<void> _forceLogout({bool clearPin = false}) {
+    return _logoutFuture ??= _doForceLogout(clearPin: clearPin).whenComplete(() {
+      _logoutFuture = null;
+    });
+  }
+
+  Future<void> _doForceLogout({required bool clearPin}) async {
     PinSession.reset();
     if (clearPin) {
       await db.clearPinHash();
